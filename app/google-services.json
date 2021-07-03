@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "180223054221",
+    "project_id": "audition-15207",
+    "storage_bucket": "audition-15207.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:180223054221:android:107cc243894ad1cbccadc4",
+        "android_client_info": {
+          "package_name": "com.atria.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "180223054221-cthktpvpufegucu76jmrnmlj295meg0o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyjvPKDkTaAlKXSXtpeT6f4EC_0fgMEII"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "180223054221-cthktpvpufegucu76jmrnmlj295meg0o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

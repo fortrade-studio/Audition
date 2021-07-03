@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Audition</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Login Fragment -->
+    <string name="sign_up">Sign Up</string>
+    <string name="terms">I Accept the terms and condition</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="phNumber">Number</string>
+    <string name="empty_field">Field Can\'t be Empty</string>
+    <string name="login_text">Already Have An Account ?</string>
+
+    <!-- verification fragment -->
+    <string name="verification">Verification</string>
+    <string name="info_verification">Please Enter the verification code sent to %1$s </string>
+    <string name="verify">Verify</string>
+
+
+</resources>
