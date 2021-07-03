@@ -27,7 +27,7 @@
         app:layout_constraintVertical_bias="0.1" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/headerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/amiko_semibold"
@@ -41,21 +41,24 @@
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:layout_constraintVertical_bias="0.12" />
 
-    <com.mukesh.OtpView
+    <in.aabhasjindal.otptextview.OtpTextView
         android:id="@+id/otp_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:itemBackground="@color/black"
         android:textColor="@color/white"
-        app:OtpItemCount="6"
-        app:OtpLineColor="@color/white"
-        app:OtpViewType="rectangle"
+        app:bar_enabled="true"
+        app:bar_height="2dp"
+        app:bar_active_color="@color/white"
+
+        app:height="40dp"
+        app:length="6"
+        app:otp_text_size="24dp"
+        app:width="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.602"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/headerView"
         app:layout_constraintVertical_bias="0.079" />
 
     <androidx.appcompat.widget.AppCompatButton

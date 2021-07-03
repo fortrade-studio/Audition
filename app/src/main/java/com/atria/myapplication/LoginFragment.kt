@@ -67,7 +67,10 @@ class LoginFragment : Fragment() {
                 loginFragmentViewModel.showConfirmDialog(
                     objects[selectedItemPosition],
                     loginFragmentBinding.phoneEditText.text.toString()
-                ){ findNavController().navigate(R.id.action_loginFragment_to_verificationFragment) }
+                ) {
+                    val bundle = Bundle().apply { putString("phNumber",objects[loginFragmentBinding.countryCodeSpinner.selectedItemPosition]+loginFragmentBinding.phoneEditText.text.toString()) }
+                    findNavController().navigate(R.id.action_loginFragment_to_verificationFragment,bundle)
+                }
             }
         }
 

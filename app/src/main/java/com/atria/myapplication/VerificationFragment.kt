@@ -1,113 +1,106 @@
 package com.atria.myapplication
 
-import android.app.Activity.RESULT_OK
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContracts
-import com.atria.myapplication.broadcast.SmsBroadCastReceiver
-import com.atria.myapplication.databinding.FragmentLoginBinding
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.atria.myapplication.databinding.FragmentVerificationBinding
-import com.google.android.gms.auth.api.phone.SmsRetriever
-import org.jetbrains.annotations.Contract
-import java.util.regex.Pattern
+import com.atria.myapplication.viewModel.verify.VerificationFragmentViewModel
+import com.atria.myapplication.viewModel.verify.VerificationViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 
 class VerificationFragment : Fragment() {
 
     private lateinit var verificationBinding: FragmentVerificationBinding
-    private lateinit var smsBroadcastReceiver:SmsBroadCastReceiver
+    private lateinit var verificationFragmentViewModel: VerificationFragmentViewModel
 
-    companion object{
-        private val userRequestConsentCode = 20002;
+    companion object {
         private const val TAG = "VerificationFragment"
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View{
+    ): View {
         // Inflate the layout for this fragment
-        verificationBinding = FragmentVerificationBinding.inflate(inflater,container,false)
-        return  verificationBinding.root
+        verificationBinding = FragmentVerificationBinding.inflate(inflater, container, false)
+        return verificationBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        startSmsUserConsent()
-
-        verificationBinding.verifyButton.setOnClickListener {
-            verificationBinding.lvGhostView.visibility = View.VISIBLE
-            verificationBinding.lvGhostView.startAnim()
+        val phNumber: String? = arguments?.getString("phNumber")
+        verificationBinding.headerView.text = getString(R.string.info_verification,phNumber)
+        if (phNumber == null) {
+            findNavController().navigate(R.id.action_verificationFragment_to_loginFragment)
         }
 
-        verificationBinding.otpView.setOtpCompletionListener {
-        }
+        verificationFragmentViewModel = ViewModelProvider(
+            this,
+            VerificationViewModelFactory(requireContext(), requireView())
+        ).get(VerificationFragmentViewModel::class.java)
 
-    }
+        verificationFragmentViewModel.sendVerificationCode(requireActivity(), { i, auth ->
+            when (i) {
+                1 -> {
+                    verificationBinding.verifyButton.isClickable = false
+                    verificationBinding.lvGhostView.visibility = View.VISIBLE
+                    verificationBinding.lvGhostView.startAnim()
+                    verificationBinding.otpView.otp = auth?.smsCode
+                    Handler().postDelayed({
+                        verificationBinding.lvGhostView.visibility = View.INVISIBLE
+                        findNavController().navigate(R.id.action_verificationFragment_to_categoryFragment)
+                        },
+                        1000L
+                    )
+                }
+                -1 -> {
+                    Snackbar.make(
+                        requireView(),
+                        "Something Went Wrong Sending the OTP ! Please Try Again After Some Time",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }, phNumber!!)
 
-    private fun startSmsUserConsent(){
-        val client = SmsRetriever.getClient(requireContext())
-        client.startSmsRetriever().addOnSuccessListener {
-            Toast.makeText(requireContext(), "Consent Success", Toast.LENGTH_SHORT).show()
-        }.addOnFailureListener {
-            Toast.makeText(requireContext(), "Consent Failed", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun registerBroadCastReceiver(){
-        smsBroadcastReceiver = SmsBroadCastReceiver()
-        smsBroadcastReceiver.onSuccess = {
-            activity?.startActivityForResult(it, userRequestConsentCode)
-        }
-        smsBroadcastReceiver.onFailure = {
-            Toast.makeText(requireContext(), "failed", Toast.LENGTH_SHORT).show()
-        }
-        val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
-        requireContext().registerReceiver(smsBroadcastReceiver,intentFilter)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        registerBroadCastReceiver()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        requireContext().unregisterReceiver(smsBroadcastReceiver)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == userRequestConsentCode){
-            if(resultCode == RESULT_OK && data != null){
-                val message = data.getStringExtra(SmsRetriever.EXTRA_SMS_MESSAGE)
-                Log.i(TAG, "onActivityResult: $message")
-                Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show()
-                getOtpFromMessage(message)
-            }else{
-                Log.i(TAG, "onActivityResult: Result not okkay")
+        with(verificationBinding) {
+            verifyButton.setOnClickListener {
+                verificationBinding.lvGhostView.visibility = View.VISIBLE
+                verificationBinding.lvGhostView.startAnim()
+                if (otpView.otp.isEmpty() || otpView.otp.length < 6) {
+                    verificationBinding.lvGhostView.stopAnim()
+                    verificationBinding.lvGhostView.visibility = View.INVISIBLE
+                    otpView.showError()
+                } else {
+                    verificationFragmentViewModel.checkForCode(otpView.otp, {
+                        // invalid cred
+                        verificationBinding.lvGhostView.stopAnim()
+                        verificationBinding.lvGhostView.visibility = View.INVISIBLE
+                        otpView.showError()
+                    }) {
+                        if (!it) {
+                            verificationBinding.lvGhostView.stopAnim()
+                            verificationBinding.lvGhostView.visibility = View.INVISIBLE
+                            otpView.showError()
+                        } else {
+                            // here it is true that means verification was a success
+                            verificationBinding.lvGhostView.stopAnim()
+                            verificationBinding.lvGhostView.visibility = View.INVISIBLE
+                            findNavController().navigate(R.id.action_verificationFragment_to_categoryFragment)
+                        }
+                    }
+                }
             }
         }
+
     }
 
-    private fun getOtpFromMessage(message: String?) {
-
-        val pattern = Pattern.compile("(|^)\\d{6}")
-        val matcher = pattern.matcher(message)
-        if(matcher.find()){
-            Log.i(TAG, "getOtpFromMessage: matcher find  ${matcher.group(0 )}")
-            verificationBinding.otpView.setText(matcher.group(0))
-        }else{
-            Log.i(TAG, "getOtpFromMessage: Not found")
-        }
-    }
 
 }
