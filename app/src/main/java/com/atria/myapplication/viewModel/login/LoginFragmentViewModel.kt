@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.concurrent.TimeUnit
 
 class LoginFragmentViewModel(
@@ -19,7 +20,7 @@ class LoginFragmentViewModel(
     val view: View
 ) : ViewModel() {
 
-    private val firebaseAuth = FirebaseAuth.getInstance()
+    private val firebaseFireStore  = FirebaseFirestore.getInstance()
 
 
     fun showConfirmDialog(code:String,ph:String,onPositiveClick:()->Unit) {
@@ -31,6 +32,19 @@ class LoginFragmentViewModel(
             }
             .setNegativeButton("Back",{s,v->})
             .show()
+    }
+
+    fun checkIfUserExists(text: String,onUserChecked:(Boolean)->Unit) {
+        firebaseFireStore
+            .collection("Users")
+            .whereEqualTo("phNumber",text)
+            .get()
+            .addOnSuccessListener {
+                // true if user doesn't exists
+                 onUserChecked(it.isEmpty || it==null)
+            }.addOnFailureListener {
+                onUserChecked(true)
+            }
     }
 
 

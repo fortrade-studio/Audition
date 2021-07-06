@@ -15,6 +15,7 @@
     <string name="verification">Verification</string>
     <string name="info_verification">Please Enter the verification code sent to %1$s </string>
     <string name="verify">Verify</string>
+    <string name="resend">RESEND OTP ?</string>
 
 
 </resources>

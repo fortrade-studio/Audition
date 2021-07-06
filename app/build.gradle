@@ -39,6 +39,7 @@ android {
 
 dependencies {
     implementation 'com.google.firebase:firebase-auth:21.0.1'
+    implementation 'com.google.firebase:firebase-firestore:23.0.1'
 
 
     // multi dex
@@ -54,6 +55,10 @@ dependencies {
     // automatic otp verification
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.android.gms:play-services-auth-api-phone:17.5.1'
+
+    // lottie dependency
+    def lottieVersion = "3.4.0"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.5.0'

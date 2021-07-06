@@ -4,17 +4,21 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import androidx.lifecycle.ViewModel
+import com.atria.myapplication.VerificationFragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.concurrent.TimeUnit
 import kotlin.math.sign
 
-class VerificationFragmentViewModel(context: Context, view: View) : ViewModel() {
+class VerificationFragmentViewModel(context: Context, val view: View) : ViewModel() {
 
     private val firebaseAuth = FirebaseAuth.getInstance()
+    private val firebaseFireStore = FirebaseFirestore.getInstance()
     private var verificationId : String? = null
     // int 1 -> already verified
     // int 0 -> code sent
@@ -50,17 +54,37 @@ class VerificationFragmentViewModel(context: Context, view: View) : ViewModel() 
 
     }
 
-    fun checkForCode(verificationCode:String,invalidCred:()->Unit , onCompleted: (Boolean) -> Unit){
+    fun checkForCode(verificationCode:String,invalidCred:()->Unit ,user: VerificationFragment.User, onCompleted: (Boolean) -> Unit){
         if(verificationId != null) {
             val credential = PhoneAuthProvider.getCredential(verificationId!!, verificationCode)
-            signInWithCredentials(credential){ onCompleted(it) }
+            uploadUserToTheDatabase(user){
+                if(it){
+                    signInWithCredentials(credential){ onCompleted(it) }
+                }else{
+                    onCompleted(false)
+                    Snackbar.make(view,"Sync Failed !! Please Check Your Internet Connection",Snackbar.LENGTH_LONG).show()
+                }
+            }
         }else{
             invalidCred()
         }
     }
 
-    private fun signInWithCredentials(credential: PhoneAuthCredential,onCompleted:(Boolean)->Unit){
+     fun signInWithCredentials(credential: PhoneAuthCredential,onCompleted:(Boolean)->Unit){
         firebaseAuth.signInWithCredential(credential)
+            .addOnSuccessListener {
+                onCompleted(true)
+            }
+            .addOnFailureListener {
+                onCompleted(false)
+            }
+    }
+
+    fun uploadUserToTheDatabase(user:VerificationFragment.User,onCompleted: (Boolean) -> Unit){
+        firebaseFireStore
+            .collection("Users")
+            .document(user.phNumber)
+            .set(user)
             .addOnSuccessListener {
                 onCompleted(true)
             }

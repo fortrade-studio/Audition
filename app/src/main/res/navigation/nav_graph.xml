@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_loginFragment_to_verificationFragment"
             app:destination="@id/verificationFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_categoryFragment"
+            app:destination="@id/categoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginBackFragment"

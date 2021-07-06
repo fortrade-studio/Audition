@@ -15,6 +15,8 @@ import android.widget.EditText
 import android.widget.Spinner
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.children
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -23,6 +25,7 @@ import androidx.viewbinding.ViewBinding
 import com.atria.myapplication.databinding.FragmentLoginBinding
 import com.atria.myapplication.viewModel.login.LoginFragmentViewModel
 import com.atria.myapplication.viewModel.login.LoginFragmentViewModelFactory
+import com.google.firebase.auth.FirebaseAuth
 
 
 class LoginFragment : Fragment() {
@@ -30,6 +33,9 @@ class LoginFragment : Fragment() {
 
     private lateinit var loginFragmentViewModel: LoginFragmentViewModel
     private lateinit var loginFragmentBinding: FragmentLoginBinding
+    private var accountExists = MutableLiveData<Boolean>(true)
+    private val testing = true
+    private val firebase = FirebaseAuth.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +49,13 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if(firebase.currentUser !=null){
+            findNavController().navigate(R.id.action_loginFragment_to_categoryFragment)
+        }
+
+
         val objects = listOf("+91", "+00")
+        val gender = listOf("Gender", "Male", "Female")
         val inputMethodManager =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
@@ -51,6 +63,57 @@ class LoginFragment : Fragment() {
         loginFragmentBinding.root.setOnClickListener {
             inputMethodManager.hideSoftInputFromWindow(requireView().windowToken, 0)
         }
+
+        accountExists.observe(viewLifecycleOwner) {
+            if(testing){
+                loginFragmentBinding.materialCheckBox.isClickable = true
+                return@observe
+            }else{
+                if(it){
+                    loginFragmentBinding.materialCheckBox.isChecked = false
+                }
+                loginFragmentBinding.materialCheckBox.isClickable = !it
+            }
+        }
+
+        loginFragmentBinding.phoneEditText.addTextChangedListener {
+            loginFragmentViewModel.checkIfUserExists(objects[loginFragmentBinding.countryCodeSpinner.selectedItemPosition] + it.toString()) {
+                if (!it) {
+                    accountExists.postValue(true)
+                    loginFragmentBinding.phoneEditText.requestFocus()
+                    loginFragmentBinding.phoneEditText.error = "Account Already Exist"
+                } else {
+                    accountExists.postValue(false)
+                }
+            }
+        }
+
+        loginFragmentBinding.countryCodeSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    loginFragmentViewModel.checkIfUserExists(objects[position] + loginFragmentBinding.phoneEditText.text.toString()) {
+                        if (!it) {
+                            accountExists.postValue(true)
+                            loginFragmentBinding.phoneEditText.requestFocus()
+                            loginFragmentBinding.phoneEditText.error = "Account Already Exist"
+                        } else {
+                            accountExists.postValue(false)
+                            loginFragmentBinding.phoneEditText.error = null
+                        }
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+            }
+
 
         // init the view model
         loginFragmentViewModel =
@@ -68,8 +131,23 @@ class LoginFragment : Fragment() {
                     objects[selectedItemPosition],
                     loginFragmentBinding.phoneEditText.text.toString()
                 ) {
-                    val bundle = Bundle().apply { putString("phNumber",objects[loginFragmentBinding.countryCodeSpinner.selectedItemPosition]+loginFragmentBinding.phoneEditText.text.toString()) }
-                    findNavController().navigate(R.id.action_loginFragment_to_verificationFragment,bundle)
+                    val bundle = Bundle().apply {
+                        putString(
+                            "phNumber",
+                            objects[loginFragmentBinding.countryCodeSpinner.selectedItemPosition] + loginFragmentBinding.phoneEditText.text.toString()
+                        )
+                        putString("email", loginFragmentBinding.emailEditText.text.toString())
+                        putString("name", loginFragmentBinding.nameEditText.text.toString())
+                        putString(
+                            "gender",
+                            gender[loginFragmentBinding.spinner.selectedItemPosition]
+                        )
+                        putString("date", loginFragmentBinding.editTextDate.text.toString())
+                    }
+                    findNavController().navigate(
+                        R.id.action_loginFragment_to_verificationFragment,
+                        bundle
+                    )
                 }
             }
         }
@@ -84,7 +162,7 @@ class LoginFragment : Fragment() {
             ArrayAdapter(
                 requireContext(),
                 R.layout.spinner_item,
-                listOf("Gender", "Male", "Female")
+                gender
             )
 
         loginFragmentBinding.loginTextView.setOnClickListener {
@@ -94,6 +172,14 @@ class LoginFragment : Fragment() {
     }
 
     private fun checkForEmpty(onEmptyNotFound: () -> Unit) {
+
+
+        if (accountExists.value == true && !testing) {
+            loginFragmentBinding.phoneEditText.requestFocus()
+            loginFragmentBinding.phoneEditText.error = "Account Already Exist"
+            return
+        }
+
         var isEmpty = false
         loginFragmentBinding.root.children.forEach {
             if (it is EditText) {
