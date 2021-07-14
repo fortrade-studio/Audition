@@ -7,14 +7,13 @@
     android:layout_height="match_parent"
     android:background="@color/bg_black"
     android:paddingHorizontal="30dp"
-    android:transformPivotY="0dp"
     tools:context=".LoginFragment">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/amiko_semibold"
-        android:text="Welcome ,"
+        android:text="@string/welcome"
         android:textColor="@color/white"
         android:textSize="26sp"
         app:layout_constraintBottom_toTopOf="@+id/nameEditText"
@@ -140,7 +139,7 @@
         android:layout_height="50dp"
         android:background="@color/blackish"
         android:ems="10"
-        android:hint="Date"
+        android:hint="@string/dob"
         android:inputType="date"
         android:paddingHorizontal="20dp"
         app:layout_constraintBottom_toTopOf="@+id/signUpButton"

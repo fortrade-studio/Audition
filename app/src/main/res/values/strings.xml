@@ -16,6 +16,9 @@
     <string name="info_verification">Please Enter the verification code sent to %1$s </string>
     <string name="verify">Verify</string>
     <string name="resend">RESEND OTP ?</string>
+    <string name="welcome">Welcome</string>
+    <string name="dob">DOB</string>
+    <string name="header_category">Hi There ,\nTell Us About Yourself </string>
 
 
 </resources>

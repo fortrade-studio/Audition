@@ -54,9 +54,13 @@ class VerificationFragmentViewModel(context: Context, val view: View) : ViewMode
 
     }
 
-    fun checkForCode(verificationCode:String,invalidCred:()->Unit ,user: VerificationFragment.User, onCompleted: (Boolean) -> Unit){
+    fun checkForCode(verificationCode:String,invalidCred:()->Unit ,user: VerificationFragment.User?, onCompleted: (Boolean) -> Unit){
         if(verificationId != null) {
             val credential = PhoneAuthProvider.getCredential(verificationId!!, verificationCode)
+            if(user == null){
+                signInWithCredentials(credential){ onCompleted(it) }
+                return
+            }
             uploadUserToTheDatabase(user){
                 if(it){
                     signInWithCredentials(credential){ onCompleted(it) }
@@ -80,17 +84,19 @@ class VerificationFragmentViewModel(context: Context, val view: View) : ViewMode
             }
     }
 
-    fun uploadUserToTheDatabase(user:VerificationFragment.User,onCompleted: (Boolean) -> Unit){
-        firebaseFireStore
-            .collection("Users")
-            .document(user.phNumber)
-            .set(user)
-            .addOnSuccessListener {
-                onCompleted(true)
-            }
-            .addOnFailureListener {
-                onCompleted(false)
-            }
+    fun uploadUserToTheDatabase(user:VerificationFragment.User?,onCompleted: (Boolean) -> Unit){
+        if (user != null) {
+            firebaseFireStore
+                .collection("Users")
+                .document(user.phNumber)
+                .set(user)
+                .addOnSuccessListener {
+                    onCompleted(true)
+                }
+                .addOnFailureListener {
+                    onCompleted(false)
+                }
+        }
     }
 
 }

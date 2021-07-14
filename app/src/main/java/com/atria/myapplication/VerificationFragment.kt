@@ -21,6 +21,8 @@ class VerificationFragment : Fragment() {
     private lateinit var verificationFragmentViewModel: VerificationFragmentViewModel
     private lateinit var countDownTimer: CountDownTimer
 
+    private var user:User? = null
+
     companion object {
         private const val TAG = "VerificationFragment"
     }
@@ -46,7 +48,9 @@ class VerificationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val isLogin:Boolean  = arguments?.getBoolean("verification")?:false
         val phNumber: String? = arguments?.getString("phNumber")
+
         val name :String? = arguments?.getString("name")
         val email :String? = arguments?.getString("email")
         val gender :String? = arguments?.getString("gender")
@@ -54,11 +58,15 @@ class VerificationFragment : Fragment() {
 
 
         verificationBinding.headerView.text = getString(R.string.info_verification,phNumber)
-        if (phNumber == null || name ==null || email == null || gender ==null || date==null) {
+        if ( !isLogin &&  phNumber == null ) {
             findNavController().navigate(R.id.action_verificationFragment_to_loginFragment)
+        }else{
+            if(name != null && email != null && gender != null && date != null &&  phNumber != null){
+                user = User(name,email,gender,date,phNumber)
+            }
         }
 
-        val user = User(name!!,email!!,gender!!,date!!,phNumber!!)
+
 
         verificationFragmentViewModel = ViewModelProvider(
             this,
@@ -74,48 +82,53 @@ class VerificationFragment : Fragment() {
                         verificationBinding.lvGhostView.startAnim()
                         verificationBinding.otpView.otp = auth?.smsCode
 
-                        // here we need to upload the data to the cloud before confirming sign in
-                        verificationFragmentViewModel.uploadUserToTheDatabase(user) {
-                            if (it) {
-                                // success
-                                if (auth != null) {
-                                    verificationFragmentViewModel.signInWithCredentials(auth) {
-                                        if (it) {
-                                            // success
-                                            verificationBinding.lvGhostView.stopAnim()
-                                            verificationBinding.lvGhostView.visibility =
-                                                View.INVISIBLE
-                                            findNavController().navigate(R.id.action_verificationFragment_to_categoryFragment)
-                                        } else {
-                                            verificationBinding.lvGhostView.stopAnim()
-                                            verificationBinding.lvGhostView.visibility =
-                                                View.INVISIBLE
-                                            Snackbar.make(
-                                                requireView(),
-                                                "Error Signing In",
-                                                Snackbar.LENGTH_LONG
-                                            ).show()
+                        if (isLogin) {
+                            findNavController().navigate(R.id.action_verificationFragment_to_categoryFragment)
+                        } else {
+
+                            // here we need to upload the data to the cloud before confirming sign in
+                            verificationFragmentViewModel.uploadUserToTheDatabase(user) {
+                                if (it) {
+                                    // success
+                                    if (auth != null) {
+                                        verificationFragmentViewModel.signInWithCredentials(auth) {
+                                            if (it) {
+                                                // success
+                                                verificationBinding.lvGhostView.stopAnim()
+                                                verificationBinding.lvGhostView.visibility =
+                                                    View.INVISIBLE
+                                                findNavController().navigate(R.id.action_verificationFragment_to_categoryFragment)
+                                            } else {
+                                                verificationBinding.lvGhostView.stopAnim()
+                                                verificationBinding.lvGhostView.visibility =
+                                                    View.INVISIBLE
+                                                Snackbar.make(
+                                                    requireView(),
+                                                    "Error Signing In",
+                                                    Snackbar.LENGTH_LONG
+                                                ).show()
+                                            }
                                         }
+                                    } else {
+                                        verificationBinding.lvGhostView.stopAnim()
+                                        verificationBinding.lvGhostView.visibility = View.INVISIBLE
+                                        Snackbar.make(
+                                            requireView(),
+                                            "Error Signing In",
+                                            Snackbar.LENGTH_LONG
+                                        ).show()
                                     }
                                 } else {
+                                    // failed
                                     verificationBinding.lvGhostView.stopAnim()
                                     verificationBinding.lvGhostView.visibility = View.INVISIBLE
                                     Snackbar.make(
                                         requireView(),
-                                        "Error Signing In",
+                                        "Sync To Cloud Failed !! Please Check Your Connection",
                                         Snackbar.LENGTH_LONG
                                     ).show()
-                                }
-                            } else {
-                                // failed
-                                verificationBinding.lvGhostView.stopAnim()
-                                verificationBinding.lvGhostView.visibility = View.INVISIBLE
-                                Snackbar.make(
-                                    requireView(),
-                                    "Sync To Cloud Failed !! Please Check Your Connection",
-                                    Snackbar.LENGTH_LONG
-                                ).show()
 
+                                }
                             }
                         }
                     }
@@ -127,7 +140,7 @@ class VerificationFragment : Fragment() {
                         ).show()
                     }
                 }
-            }, phNumber)
+            }, phNumber!!)
         }
 
         verificationFunction()

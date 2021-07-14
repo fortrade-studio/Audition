@@ -5,55 +5,93 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.atria.myapplication.databinding.FragmentLoginBackBinding
+import com.atria.myapplication.viewModel.register.LoginBackFragmentViewModel
+import com.atria.myapplication.viewModel.register.LoginBackFragmentViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginBackFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LoginBackFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var loginFragmentBinding: FragmentLoginBackBinding
+    private var stateNumber = MutableLiveData<Int>(0)
+    private lateinit var loginBackFragmentViewModel: LoginBackFragmentViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login_back, container, false)
+    ): View {
+        loginFragmentBinding = FragmentLoginBackBinding.inflate(inflater, container, false)
+        return loginFragmentBinding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LoginBackFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LoginBackFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        loginBackFragmentViewModel = ViewModelProvider(
+            this, LoginBackFragmentViewModelFactory(
+                requireContext(), requireView()
+            )
+        ).get(LoginBackFragmentViewModel::class.java)
+
+
+
+        loginFragmentBinding.phoneEditText.addTextChangedListener {
+            loginFragmentBinding.phoneEditText.error = null
+            stateNumber.postValue(0)
+            loginBackFragmentViewModel.verifyNumber("+91" + it.toString()) {
+                if (it) {
+                    // available
+                    stateNumber.postValue(1)
+                } else {
+                    // not available
+                    loginFragmentBinding.phoneEditText.requestFocus()
+                    loginFragmentBinding.phoneEditText.error = "No Account For this Number"
+                    stateNumber.postValue(-1)
                 }
             }
+        }
+
+        val objects = listOf("+91", "+00")
+
+        loginFragmentBinding.countryCodeSpinner.adapter =
+            ArrayAdapter(requireContext(), R.layout.spinner_item, objects)
+
+        stateNumber.observe(viewLifecycleOwner) {
+            if (it == 1) {
+                // if true means user can move on
+                loginFragmentBinding.phoneEditText.error = null
+                val bundle = Bundle().apply {
+                    putBoolean("verification", true)
+                    putString(
+                        "phNumber",
+                        objects[loginFragmentBinding.countryCodeSpinner.selectedItemPosition] + loginFragmentBinding.phoneEditText.text
+                    )
+                }
+                loginFragmentBinding.loginButton.setOnClickListener {
+                    findNavController().navigate(
+                        R.id.action_loginBackFragment_to_verificationFragment,
+                        bundle
+                    )
+                }
+            } else if (it == 0) {
+                // here it is loading
+                loginFragmentBinding.loginButton.setOnClickListener {
+                    Snackbar.make(requireView(), "Verifying your number....", Snackbar.LENGTH_LONG)
+                        .show()
+                }
+            } else {
+                loginFragmentBinding.phoneEditText.requestFocus()
+                loginFragmentBinding.phoneEditText.error = "No Account For this Number"
+            }
+        }
+
     }
+
+
 }

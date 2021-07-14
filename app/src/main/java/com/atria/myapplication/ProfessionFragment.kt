@@ -31,6 +31,10 @@ class ProfessionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        professionFragmentBinding.itemSelected.setOnClickListener {
+            findNavController().navigate(R.id.action_professionFragment_to_topicFragment)
+        }
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             animatedVectorDrawable = context?.getDrawable(R.drawable.avd_anim) as AnimatedVectorDrawable
             professionFragmentBinding.pagerView.setImageDrawable(animatedVectorDrawable)

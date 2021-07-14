@@ -34,7 +34,7 @@ class LoginFragment : Fragment() {
     private lateinit var loginFragmentViewModel: LoginFragmentViewModel
     private lateinit var loginFragmentBinding: FragmentLoginBinding
     private var accountExists = MutableLiveData<Boolean>(true)
-    private val testing = true
+    private val testing = false
     private val firebase = FirebaseAuth.getInstance()
 
     override fun onCreateView(
