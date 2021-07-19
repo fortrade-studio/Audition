@@ -3,6 +3,7 @@ package com.atria.myapplication
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.service.autofill.UserData
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,17 +12,27 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.atria.myapplication.databinding.FragmentVerificationBinding
+import com.atria.myapplication.room.User
+import com.atria.myapplication.room.UserDatabase
+import com.atria.myapplication.room.UserRepository
 import com.atria.myapplication.viewModel.verify.VerificationFragmentViewModel
 import com.atria.myapplication.viewModel.verify.VerificationViewModelFactory
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class VerificationFragment : Fragment() {
 
     private lateinit var verificationBinding: FragmentVerificationBinding
     private lateinit var verificationFragmentViewModel: VerificationFragmentViewModel
     private lateinit var countDownTimer: CountDownTimer
+    private lateinit var repo:UserRepository
 
-    private var user:User? = null
+    private var user: User? = null
+
+    private val ioScope = CoroutineScope(Dispatchers.IO)
+    private val mainScope = CoroutineScope(Dispatchers.Main)
 
     companion object {
         private const val TAG = "VerificationFragment"
@@ -36,17 +47,12 @@ class VerificationFragment : Fragment() {
         return verificationBinding.root
     }
 
-     data class User(
-        var name :String,
-        var email :String,
-        var gender :String,
-        var date :String,
-        var phNumber:String,
-        var username:String = "not set"
-    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val userDao = UserDatabase.getDatabase(requireContext()).getUserDao()
+        repo = UserRepository(userDao)
 
         val isLogin:Boolean  = arguments?.getBoolean("verification")?:false
         val phNumber: String? = arguments?.getString("phNumber")
@@ -62,7 +68,7 @@ class VerificationFragment : Fragment() {
             findNavController().navigate(R.id.action_verificationFragment_to_loginFragment)
         }else{
             if(name != null && email != null && gender != null && date != null &&  phNumber != null){
-                user = User(name,email,gender,date,phNumber)
+                user = User(0,name,email,gender,date,phNumber,"not set","","")
             }
         }
 
@@ -187,7 +193,16 @@ class VerificationFragment : Fragment() {
                             // here it is true that means verification was a success
                             verificationBinding.lvGhostView.stopAnim()
                             verificationBinding.lvGhostView.visibility = View.INVISIBLE
-                            findNavController().navigate(R.id.action_verificationFragment_to_categoryFragment)
+                            if (user != null) {
+                                ioScope.launch {
+                                    repo.insertUser(user!!)
+                                    mainScope.launch {
+                                        findNavController().navigate(R.id.action_verificationFragment_to_categoryFragment)
+                                    }
+                                }
+                            } else {
+                                findNavController().navigate(R.id.action_verificationFragment_to_categoryFragment)
+                            }
                         }
                     }
                 }

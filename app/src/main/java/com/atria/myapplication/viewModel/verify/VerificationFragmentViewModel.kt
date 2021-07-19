@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.View
 import androidx.lifecycle.ViewModel
 import com.atria.myapplication.VerificationFragment
+import com.atria.myapplication.room.User
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -54,7 +55,7 @@ class VerificationFragmentViewModel(context: Context, val view: View) : ViewMode
 
     }
 
-    fun checkForCode(verificationCode:String,invalidCred:()->Unit ,user: VerificationFragment.User?, onCompleted: (Boolean) -> Unit){
+    fun checkForCode(verificationCode:String, invalidCred:()->Unit, user: User?, onCompleted: (Boolean) -> Unit){
         if(verificationId != null) {
             val credential = PhoneAuthProvider.getCredential(verificationId!!, verificationCode)
             if(user == null){
@@ -84,7 +85,7 @@ class VerificationFragmentViewModel(context: Context, val view: View) : ViewMode
             }
     }
 
-    fun uploadUserToTheDatabase(user:VerificationFragment.User?,onCompleted: (Boolean) -> Unit){
+    fun uploadUserToTheDatabase(user:User?,onCompleted: (Boolean) -> Unit){
         if (user != null) {
             firebaseFireStore
                 .collection("Users")
