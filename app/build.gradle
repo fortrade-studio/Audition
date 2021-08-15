@@ -41,6 +41,7 @@ android {
 dependencies {
     implementation 'com.google.firebase:firebase-auth:21.0.1'
     implementation 'com.google.firebase:firebase-firestore:23.0.1'
+    implementation 'com.google.firebase:firebase-storage-ktx:20.0.0'
 
 
     // multi dex
@@ -57,12 +58,22 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.android.gms:play-services-auth-api-phone:17.5.1'
 
+    // circular view
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
     // lottie dependency
     def lottieVersion = "3.4.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
     // room dependency
     def room_version = "2.3.0"
+
+    //shimmer dependency
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    // easy image
+    implementation 'com.github.jkwiecien:EasyImage:3.2.0'
+
 
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"

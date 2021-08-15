@@ -1,5 +1,6 @@
 package com.atria.myapplication
 
+import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
 import android.os.Bundle
@@ -40,6 +41,12 @@ class TopicFragment : Fragment() {
         val topics = listOf(R.raw.movies, R.raw.television, R.raw.musiclofi)
         fragmentTopicBinding.cardPagerView.adapter =
             CategoryCardAdapter(topics, requireContext(), 3)
+
+        fragmentTopicBinding.itemSelected.setOnClickListener {
+            // this is where we navigate to the home activity
+            val intent = Intent(requireContext(),HomeActivity::class.java)
+            requireContext().startActivity(intent)
+        }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             animatedDrawable = context?.getDrawable(R.drawable.firsttomid) as AnimatedVectorDrawable

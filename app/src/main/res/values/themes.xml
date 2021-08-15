@@ -15,6 +15,13 @@
     </style>
 
     <!-- Edit Text -->
+
+    <style name="Theme.Transparent" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+
     <style name="Base.TextAppearance.AppCompat.Widget.Button.AuditionButton">
         <item name="android:background">@drawable/button_rounded_rect</item>
         <item name="android:textAlignment">center</item>

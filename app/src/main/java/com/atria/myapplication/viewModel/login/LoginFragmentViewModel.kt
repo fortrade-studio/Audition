@@ -1,19 +1,10 @@
 package com.atria.myapplication.viewModel.login
 
-import android.app.Activity
 import android.content.Context
 import android.view.View
 import androidx.lifecycle.ViewModel
-import com.atria.myapplication.MainActivity
-import com.atria.myapplication.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.FirebaseException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
-import java.util.concurrent.TimeUnit
 
 class LoginFragmentViewModel(
     val context: Context,

@@ -1,0 +1,29 @@
+[33mcommit 7f5078dda1fe036f47264d339fc41be51a6fa662[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: PumpkinDev <aryeahtyagi@gmail.com>
+Date:   Mon Jul 19 13:52:55 2021 +0530
+
+    ADDED : Verification Fragment and record the choice
+
+[33mcommit 126deb9faef5312327def3dceadb294d0c914a4b[m
+Author: PumpkinDev <aryeahtyagi@gmail.com>
+Date:   Wed Jul 14 11:43:54 2021 +0530
+
+    Login/SignUp task 34554
+
+[33mcommit c8f5c16f4c53af4048c4686f2600652774af8dce[m
+Author: PumpkinDev <aryeahtyagi@gmail.com>
+Date:   Tue Jul 6 17:46:06 2021 +0530
+
+    ADDED Home Fragment and topic and profession fragment
+
+[33mcommit 923adb4ee73b880740d2695e2e73499e4fdd77a5[m
+Author: PumpkinDev <aryeahtyagi@gmail.com>
+Date:   Sun Jul 4 00:03:53 2021 +0530
+
+    ADDED : Sign Up With OTP feature
+
+[33mcommit bab8cdd2c125217e1110f438be194aa7d27e0354[m
+Author: PumpkinDev <aryeahtyagi@gmail.com>
+Date:   Sat Jul 3 18:17:45 2021 +0530
+
+    INIT

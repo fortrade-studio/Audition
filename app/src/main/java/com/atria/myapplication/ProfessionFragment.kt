@@ -80,8 +80,6 @@ class ProfessionFragment : Fragment() {
                     professionFragmentBinding.itemSelected.setOnClickListener {  }
                 }
 
-
-
                 professionFragmentBinding.itemSelected
                     .animate()
                     .alpha(0.5f)

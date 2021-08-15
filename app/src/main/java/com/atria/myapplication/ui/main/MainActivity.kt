@@ -1,13 +1,10 @@
-package com.atria.myapplication
+package com.atria.myapplication.ui.main
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
+import com.atria.myapplication.R
 
 
 class MainActivity : AppCompatActivity() {

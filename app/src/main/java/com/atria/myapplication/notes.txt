@@ -1,0 +1,12 @@
+
+NOTES :::
+
+*
+ -- profile fragment changes / updates --
+*
+
+    #1 : Match the dimensions of images and videos
+    #2 : Corner radius of videos
+    #3 : view mode for dp and big screen image
+    #4 : line b/w the tab title
+    #5 :
