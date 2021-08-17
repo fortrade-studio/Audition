@@ -20,4 +20,5 @@ object Constants {
     var profile_id = ""
     val extras = "data"
     val current = "current"
+    val user_id = "userId"
 }
