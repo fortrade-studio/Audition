@@ -3,25 +3,27 @@ package com.atria.myapplication
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Html
 import android.util.Log
-import androidx.fragment.app.Fragment
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.atria.myapplication.adapter.VideoAdapter
 import com.atria.myapplication.databinding.FragmentVideoBinding
 import com.atria.myapplication.viewModel.video.VideoFragmentViewModel
 import com.atria.myapplication.viewModel.video.VideoFragmentViewModelFactory
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -35,8 +37,11 @@ class VideoFragment : Fragment() {
     private lateinit var videoFragmentBinding : FragmentVideoBinding
     private lateinit var videoFragmentViewModel : VideoFragmentViewModel
     private lateinit var but: TextView
-    private lateinit var builder: AlertDialog.Builder
+    private lateinit var builder: MaterialAlertDialogBuilder
     private lateinit var fragment:VideoFragment
+
+
+
 
 
 
@@ -69,9 +74,13 @@ class VideoFragment : Fragment() {
     }
 
     private fun showdialogfun() {
+        val upl=Html.fromHtml(getString(R.string.UPLOAD))
+
+
         builder =
-            AlertDialog.Builder(context)
-                .setMessage("UPLOAD VIDEO")
+            MaterialAlertDialogBuilder(requireContext())
+                .setBackground(getResources().getDrawable(R.drawable.dialogbox_background))
+                .setMessage(upl)
                 .setPositiveButton("Upload from gallery") { dialog, which ->
                     Log.i("upload from gallery", "true ")
                     Dexter.withContext(context)
@@ -128,19 +137,22 @@ class VideoFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            val builders = AlertDialog.Builder(context)
+            val builders = MaterialAlertDialogBuilder(requireContext())
             builders.setCancelable(false)
             val videoView: VideoView = VideoView(context)
             val videoUri = data?.data
+            val str1=Html.fromHtml(getString(R.string.some_text))
 
             videoView.setVideoURI(videoUri)
             videoView.start()
 
-            builders.setPositiveButton(
-                getString(R.string.upload),
+            builders
+                .setBackground(getResources().getDrawable(R.drawable.videopreview_bg))
+                .setPositiveButton(
+                str1,
                 object : DialogInterface.OnClickListener {
                     override fun onClick(dialog: DialogInterface?, which: Int) {
-                        Toast.makeText(context, "Next", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "uploaded", Toast.LENGTH_SHORT).show()
                         //uploadCameraVideoToFirebase(videoUri)
                     }
                 })
@@ -150,9 +162,12 @@ class VideoFragment : Fragment() {
 
         if (resultCode == Activity.RESULT_OK && requestCode == 8) {
             if (data?.data != null) {
-                val builders = AlertDialog.Builder(context)
+                //val builders = AlertDialog.Builder(context)
+                val builders = MaterialAlertDialogBuilder(requireContext())
                 builders.setCancelable(false)
                 val videoView: VideoView = VideoView(context)
+                val str1=Html.fromHtml(getString(R.string.some_text))
+
                 var uri: Uri = data.data!!
                 videoView.setVideoURI(uri)
                 var mediaController: MediaController = MediaController(context)
@@ -165,8 +180,10 @@ class VideoFragment : Fragment() {
                     if (timeInMillisec <= 60000) {
                         videoView.setMediaController(mediaController)
                         videoView.start()
-                        builders.setPositiveButton(
-                            getString(R.string.upload),
+                        builders
+                            .setBackground(getResources().getDrawable(R.drawable.videopreview_bg))
+                            .setPositiveButton(
+                            str1,
                             object : DialogInterface.OnClickListener {
                                 override fun onClick(dialog: DialogInterface?, which: Int) {
                                     //uploadGalleryVideoToFirebase(uri)
@@ -176,13 +193,13 @@ class VideoFragment : Fragment() {
                         builders.setView(videoView).show()
                         Toast.makeText(
                             getActivity(),
-                            "Choose File successfully",
+                            "File selected successfully",
                             Toast.LENGTH_SHORT
                         ).show();
                     } else {
                         Toast.makeText(
                             getActivity(),
-                            "Duration of video more than 60 seconds",
+                            "Duration of video exceeds 60 seconds",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
