@@ -49,10 +49,15 @@ import java.lang.ClassCastException
 class VideoAdapter(
     val videos:List<String>,
     val context:Context,
-    val fragment:VideoFragment
+    val fragment:VideoFragment,
+    val isUserProfile:Boolean
 ) : RecyclerView.Adapter<VideoAdapter.VideoHolder>() {
 
     private lateinit var builder: AlertDialog.Builder
+
+    companion object{
+        private const val TAG = "VideoAdapter"
+    }
 
     class VideoHolder(view: View) : RecyclerView.ViewHolder(view) {
         val videoView = view.findViewById<VideoView>(R.id.videoView)
@@ -137,25 +142,20 @@ class VideoAdapter(
     override fun onBindViewHolder(holder: VideoHolder, position: Int) {
         if (position == 0) {
             holder.imageView.setImageResource(R.drawable.ic_upload)
-            holder.imageView.setOnClickListener {
-                showDialog()
-                builder.show()
-            }
             return
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val link = videos[position - 1]
+            Log.i(TAG, "onBindViewHolder: ${videos.toString()}")
+            val link = videos[position.minus(1)]
             holder.videoView.setVideoURI(Uri.parse(link))
             val random = Random()
             holder.videoView.setOnPreparedListener {
                 it.setVolume(0f, 0f)
                 it.start()
-                it.seekTo(random.nextInt(1_00_000))
-                it.pause()
                 holder.videoView.setOnClickListener {
                     val intent = Intent(context, WindowActivity::class.java)
                     intent.putExtra(extras, videos.toTypedArray())
-                    intent.putExtra(current, position)
+                    intent.putExtra(current, if(isUserProfile) position-1 else position)
                     intent.putExtra(Constants.videos, true)
                     context.startActivity(intent)
                 }
@@ -212,7 +212,11 @@ class VideoAdapter(
 
 
     override fun getItemCount(): Int {
-            return videos.size;
+            if(isUserProfile) {
+                return videos.size+1;
+            }else{
+                return videos.size
+            }
         }
 
 

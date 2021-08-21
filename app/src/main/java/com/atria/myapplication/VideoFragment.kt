@@ -24,12 +24,14 @@ import com.atria.myapplication.databinding.FragmentVideoBinding
 import com.atria.myapplication.viewModel.video.VideoFragmentViewModel
 import com.atria.myapplication.viewModel.video.VideoFragmentViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import kotlin.properties.Delegates
 
 
 class VideoFragment : Fragment() {
@@ -39,6 +41,8 @@ class VideoFragment : Fragment() {
     private lateinit var but: TextView
     private lateinit var builder: MaterialAlertDialogBuilder
     private lateinit var fragment:VideoFragment
+    private var isUserProfile by Delegates.notNull<Boolean>()
+
 
 
 
@@ -59,17 +63,31 @@ class VideoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        isUserProfile = Constants.profile_id == FirebaseAuth.getInstance().currentUser?.phoneNumber
+
 
         videoFragmentViewModel = ViewModelProvider(this,VideoFragmentViewModelFactory(requireContext(),requireView())).get(VideoFragmentViewModel::class.java)
         videoFragmentBinding.videosRecyclerView.layoutManager = GridLayoutManager(requireContext(),3,GridLayoutManager.VERTICAL,false)
 
         videoFragmentViewModel.getVideos {
-            videoFragmentBinding.videosRecyclerView.adapter = VideoAdapter(it,requireContext(),this)
+            videoFragmentBinding.videosRecyclerView.adapter = VideoAdapter(it,requireContext(),this,isUserProfile)
         }
+
         but = view.findViewById(R.id.uploadVideoButton)
         but.setOnClickListener{
             showdialogfun()
         }
+
+        if (isUserProfile){
+            but.setOnClickListener{
+                showdialogfun()
+            }
+        }else
+        {
+            but.setOnClickListener{
+            }
+        }
+
 
     }
 
@@ -148,6 +166,7 @@ class VideoFragment : Fragment() {
 
             builders
                 .setBackground(getResources().getDrawable(R.drawable.videopreview_bg))
+                .setCancelable(true)
                 .setPositiveButton(
                 str1,
                 object : DialogInterface.OnClickListener {
@@ -182,11 +201,12 @@ class VideoFragment : Fragment() {
                         videoView.start()
                         builders
                             .setBackground(getResources().getDrawable(R.drawable.videopreview_bg))
+                            .setCancelable(true)
                             .setPositiveButton(
                             str1,
                             object : DialogInterface.OnClickListener {
                                 override fun onClick(dialog: DialogInterface?, which: Int) {
-                                    //uploadGalleryVideoToFirebase(uri)
+                                    videoFragmentViewModel.uploadVideo(uri)
                                 }
                             })
 

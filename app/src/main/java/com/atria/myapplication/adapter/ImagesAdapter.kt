@@ -51,6 +51,7 @@ class ImagesAdapter(
 
     companion object{
         private const val TAG = "ImagesAdapter"
+        private val auth = FirebaseAuth.getInstance().currentUser
     }
 
     private val easyImage: EasyImage by lazy {
@@ -109,8 +110,8 @@ class ImagesAdapter(
 
 
     override fun onImageSelected(media: MediaFile) {
-            FirebaseStorage.getInstance().getReference("images")
-                .child(Date().toLocaleString())
+            FirebaseStorage.getInstance().getReference("users/images/${auth?.phoneNumber}/")
+                .child(System.currentTimeMillis().toString())
                 .putFile(media.file.toUri())
                 .addOnSuccessListener {
                     it.storage.downloadUrl.addOnSuccessListener {
