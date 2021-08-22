@@ -40,4 +40,23 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <!-- Alert Dialog -->
+<!--    <style name="MyThemeOverlay.MaterialComponents.MaterialAlertDialog"-->
+<!--        parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">-->
+<!--        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>-->
+<!--        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>-->
+<!--        <item name="buttonBarNeutralButtonStyle">....</item>-->
+<!--    </style>-->
+
+
+    <style name="PositiveButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/colorOnPrimary</item>
+        <item name="backgroundTint">@color/colorPrimary</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/colorOnPrimary</item>
+        <item name="backgroundTint">@color/colorPrimary</item>
+    </style>
+
 </resources>

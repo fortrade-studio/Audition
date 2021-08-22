@@ -29,6 +29,7 @@ class CategoryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        //val button=
         categoryFragmentBinding = FragmentCategoryBinding.inflate(inflater, container, false)
         return categoryFragmentBinding.root
     }
@@ -36,5 +37,4 @@ class CategoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
-
 }
