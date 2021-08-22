@@ -20,8 +20,10 @@ import java.net.URL
 
 class ProfileFragment : Fragment() {
 
-    private lateinit var profileFragmentBinding : FragmentProfileBinding
-    private lateinit var profileViewModel : ProfileFragmentViewModel
+    private lateinit var profileFragmentBinding: FragmentProfileBinding
+    private lateinit var profileViewModel: ProfileFragmentViewModel
+
+    private var isFollowing = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,15 +36,11 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        
-        // we get the id of the user
-        val id = arguments?.getString("ph")?:"+919548955457"
-        Constants.profile_id = id
 
-        profileFragmentBinding.followButton.setOnClickListener {
-            Toast.makeText(requireContext(), "Feature #0025 missing", Toast.LENGTH_SHORT).show()
-        }
+
+        // we get the id of the user
+        val id = arguments?.getString("ph") ?: "+919548955457"
+        Constants.profile_id = id
 
         profileViewModel = ViewModelProvider(
             this, ProfileFragmentViewModelFactory(
@@ -51,13 +49,43 @@ class ProfileFragment : Fragment() {
             )
         ).get(ProfileFragmentViewModel::class.java)
 
-        profileViewModel.getUserData(id){ v ->
+        profileViewModel.checkIfFollow(id)
+
+        profileViewModel.followLive.observe(viewLifecycleOwner) {
+            if (it) {
+                isFollowing = true
+                profileFragmentBinding.followButton.text = "UNFOLLOW"
+                profileFragmentBinding.followButton.setBackgroundResource(R.drawable.button_rounded_hollow)
+            } else {
+                isFollowing = false
+                profileFragmentBinding.followButton.text = "FOLLOW"
+                profileFragmentBinding.followButton.setBackgroundResource(R.drawable.button_rounded_rect)
+            }
+        }
+
+
+        profileViewModel.getUserData(id) { v ->
             CoroutineScope(Dispatchers.IO).launch {
                 val url = URL(v.big)
                 val bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
                 val url2 = URL(v.circular)
                 val bmp2 = BitmapFactory.decodeStream(url2.openConnection().getInputStream())
                 CoroutineScope(Dispatchers.Main).launch {
+
+                    profileFragmentBinding.followButton.setOnClickListener {
+                        if (isFollowing) {
+                            profileViewModel.unFollowUser(id) {
+                                isFollowing = false
+                                profileViewModel.followLive.postValue(false)
+                            }
+                        } else {
+                            profileViewModel.followUser(id, v.username) {
+                                isFollowing = true
+                                profileViewModel.followLive.postValue(true)
+                            }
+                        }
+                    }
+
                     profileFragmentBinding.cicularProfileView.setImageBitmap(bmp2)
                     profileFragmentBinding.bigScreenImageView.setImageBitmap(bmp)
                     profileFragmentBinding.nameTextView.text = v.name
@@ -72,7 +100,7 @@ class ProfileFragment : Fragment() {
 
     }
 
-    companion object{
+    companion object {
         private const val TAG = "ProfileFragment"
     }
 

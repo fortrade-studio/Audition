@@ -9,6 +9,7 @@ class AboutFragmentViewModelFactory(
     val context: Context,
     val view: View
 ) : ViewModelProvider.Factory {
+
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return AboutFragmentViewModel(context, view) as T
     }

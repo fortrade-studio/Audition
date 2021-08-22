@@ -147,6 +147,7 @@ class VideoAdapter(
         CoroutineScope(Dispatchers.Main).launch {
             Log.i(TAG, "onBindViewHolder: ${videos.toString()}")
             val link = videos[position.minus(1)]
+
             holder.videoView.setVideoURI(Uri.parse(link))
             val random = Random()
             holder.videoView.setOnPreparedListener {
