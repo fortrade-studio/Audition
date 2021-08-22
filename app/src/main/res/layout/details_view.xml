@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@color/bg_black">
+
+
+    <androidx.gridlayout.widget.GridLayout
+        android:id="@+id/gridLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Details"
+            android:textColor="@color/colorOnPrimary"
+            android:textSize="14sp"
+            app:layout_column="0"
+            app:layout_row="0" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:text="First Name"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_column="0"
+            app:layout_row="1" />
+
+        <TextView
+            android:id="@+id/firstNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="19dp"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_column="1"
+            app:layout_row="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="19dp"
+            android:text="Last Name"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_column="3"
+            app:layout_row="1" />
+
+        <TextView
+            android:id="@+id/lastNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="19dp"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_column="4"
+            app:layout_row="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:text="Phone"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_column="0"
+            app:layout_row="2" />
+
+        <TextView
+            android:id="@+id/phoneNumberTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="19dp"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_column="1"
+            app:layout_row="2" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="19dp"
+            android:text="Date of birth"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_column="3"
+            app:layout_row="2" />
+
+        <TextView
+            android:id="@+id/dobTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="19dp"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_column="4"
+            app:layout_row="2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:text="Gender"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_column="0"
+            app:layout_row="3" />
+
+
+        <TextView
+            android:id="@+id/genderTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="19dp"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_column="1"
+            app:layout_row="3" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="19dp"
+            android:text="City"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_column="3"
+            app:layout_row="3" />
+
+        <TextView
+            android:id="@+id/cityTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="19dp"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_column="4"
+            app:layout_row="3" />
+
+    </androidx.gridlayout.widget.GridLayout>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginTop="19dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/gridLayout2"
+        app:layout_constraintStart_toStartOf="@+id/gridLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/gridLayout2">
+
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="E-mail"
+            android:layout_weight="0.14"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/gridLayout2"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@+id/gridLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/gridLayout2"
+            app:layout_constraintVertical_bias="0" />
+
+        <TextView
+            android:id="@+id/emailEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:layout_weight="1"
+            android:layout_marginStart="11dp"
+            app:layout_constraintEnd_toEndOf="@+id/gridLayout2"
+            app:layout_constraintStart_toStartOf="@+id/gridLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/gridLayout2"
+            />
+
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

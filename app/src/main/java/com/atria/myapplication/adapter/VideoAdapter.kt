@@ -51,7 +51,7 @@ class VideoAdapter(
             return
         }
         CoroutineScope(Dispatchers.Main).launch {
-            val link = videos[position]
+            val link = videos[position-1]
             holder.videoView.setVideoURI(Uri.parse(link))
             val random = Random()
             holder.videoView.setOnPreparedListener {

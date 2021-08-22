@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="15dp"
+    android:background="@color/bg_black">
+
+
+    <androidx.gridlayout.widget.GridLayout
+        android:id="@+id/gridLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Carrer &amp; Expertise"
+            android:textColor="@color/colorOnPrimary"
+            android:textSize="13sp"
+            app:layout_column="0"
+            app:layout_row="0" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:text="Artist Type"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_column="0"
+            app:layout_row="1" />
+
+        <TextView
+            android:id="@+id/artistTypeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_column="1"
+            app:layout_row="1" />
+
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            app:layout_column="2"
+            app:layout_row="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:text="Ethnicity"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_column="3"
+            app:layout_row="1" />
+
+        <TextView
+            android:id="@+id/ethnicityTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="19dp"
+            android:layout_marginEnd="40dp"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_column="5"
+            app:layout_row="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:text="Language"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_column="0"
+            app:layout_row="2" />
+
+        <TextView
+            android:id="@+id/languageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="19dp"
+            android:maxEms="5"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_column="1"
+            app:layout_row="2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:maxEms="6"
+            android:text="Preference"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_column="3"
+            app:layout_row="2" />
+
+
+        <TextView
+            android:id="@+id/preferenceTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="19dp"
+            android:layout_marginEnd="40dp"
+            android:ems="5"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_column="5"
+            app:layout_row="2" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:text="Experience"
+            android:textColor="@color/grey"
+            android:textSize="12sp"
+            app:layout_column="0"
+            app:layout_row="3" />
+
+
+        <TextView
+            android:id="@+id/experienceTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="19dp"
+            android:maxEms="5"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_column="1"
+            app:layout_row="3" />
+
+    </androidx.gridlayout.widget.GridLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.atria.myapplication.adapter.AboutAdapter
 import com.atria.myapplication.databinding.FragmentAboutBinding
 import com.atria.myapplication.viewModel.about.AboutFragmentViewModel
 import com.atria.myapplication.viewModel.about.AboutFragmentViewModelFactory
@@ -32,13 +35,9 @@ class AboutFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         aboutFragmentViewModel  = ViewModelProvider(this,AboutFragmentViewModelFactory(requireContext(),requireView())).get(AboutFragmentViewModel::class.java)
 
-        ioScope.launch {
-            aboutFragmentViewModel.getPersonalData {
-                mainScope.launch {
-                    aboutFragmentBinding.textView.text = it
-                }
-            }
-        }
+        aboutFragmentBinding.aboutRecyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+        aboutFragmentBinding.aboutRecyclerView.adapter  = AboutAdapter(aboutFragmentViewModel)
+
 
 
     }
