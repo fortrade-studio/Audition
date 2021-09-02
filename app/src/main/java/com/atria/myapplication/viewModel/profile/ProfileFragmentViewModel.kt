@@ -17,6 +17,7 @@ import com.atria.myapplication.Constants.user
 import com.atria.myapplication.Constants.user_id
 import com.atria.myapplication.Constants.username
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ProfileFragmentViewModel(
@@ -31,6 +32,7 @@ class ProfileFragmentViewModel(
 
     // if following then follow live says true else false
     val followLive = MutableLiveData<Boolean>(false)
+    val onFollowFetch = MutableLiveData<Long>()
 
     data class ViewData(
         val big: String = "",
@@ -51,8 +53,8 @@ class ProfileFragmentViewModel(
             .addOnSuccessListener {
                 followLive.postValue(it.exists())
             }
-
     }
+
 
     fun unFollowUser(ph:String,onSuccess: () -> Unit){
         firebase.collection(user)
@@ -61,7 +63,15 @@ class ProfileFragmentViewModel(
             .document(ph)
             .delete()
             .addOnSuccessListener {
-                onSuccess()
+                firebase.collection(user)
+                    .document(ph)
+                    .collection("ViewData")
+                    .document("links")
+                    .update("follower",FieldValue.increment(-1))
+                    .addOnSuccessListener {
+                        getFollowData(ph)
+                        onSuccess()
+                    }
             }
     }
 
@@ -74,14 +84,29 @@ class ProfileFragmentViewModel(
                 .document(ph)
                 .set(mapOf(Pair(user, username)))
                 .addOnSuccessListener {
-                    onSuccess()
+                    firebase.collection(user)
+                        .document(ph)
+                        .collection("ViewData")
+                        .document("links")
+                        .update("follower",FieldValue.increment(1))
+                        .addOnSuccessListener {
+                            getFollowData(ph)
+                            onSuccess()
+                        }
                 }
-        } else {
-            // you would have to unfollow
-            Toast.makeText(context, "Already Following", Toast.LENGTH_SHORT)
-                .show()
         }
 
+    }
+
+    fun getFollowData(ph:String){
+        firebase.collection(user)
+            .document(ph)
+            .collection("ViewData")
+            .document("links")
+            .get()
+            .addOnSuccessListener {
+                onFollowFetch.postValue(it.get("follower") as Long)
+            }
     }
 
     fun getUserData(ph: String, onSuccess: (ViewData) -> Unit) {

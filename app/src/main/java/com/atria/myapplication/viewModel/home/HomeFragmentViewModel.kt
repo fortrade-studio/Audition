@@ -12,38 +12,51 @@ import com.atria.myapplication.Constants.user
 import com.atria.myapplication.Constants.username
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 
 
-class HomeFragmentViewModel
-    (val view:View,val context : Context):
-    ViewModel(){
+class HomeFragmentViewModel(
+    val view: View,
+    val context: Context
+) : ViewModel() {
 
     companion object{
-        private val phNumber = FirebaseAuth.getInstance().currentUser?.phoneNumber
-        private val firebase = FirebaseFirestore.getInstance()
-        private const val TAG = "HomeFragmentViewModel"
+        val firebase = FirebaseFirestore.getInstance()
     }
 
-    data class Top(
-        val username:String="",
-        val profileImage:String=""
+    data class Audition(
+        val company:String = "",
+        val image : String = "",
+        val location : String = "",
+        val position : String = ""
+    )
+    data class Active(
+        val company:String = "",
+        val image : String = "",
+        val location : String = "",
+        val position : String = "",
+        val details:String = ""
     )
 
-    var liveTopScorer : MutableLiveData<List<Top>> = MutableLiveData()
-
-
-    fun getTopAuditionData() {
-        firebase.collection(top)
+    fun getNewestOpenings(onSuccess:(List<Audition>)->Unit){
+        firebase.collection("Auditions")
+            .document("new")
+            .collection("New")
             .get()
             .addOnSuccessListener {
-                val top = it.toObjects(Top::class.java)
-                Log.i(TAG, "getTopAuditionData: success")
-                liveTopScorer.postValue(top)
-            }
-            .addOnFailureListener {
-                Log.e(TAG, "getTopAuditionData: ",it )
-                Log.i(TAG, "getTopAuditionData: failed")
+                val auditions = it.toObjects(Audition::class.java)
+                onSuccess(auditions)
             }
     }
 
+    fun getActivelyOpening(onSuccess: (List<Active>) -> Unit){
+        firebase.collection("Auditions")
+            .document("active")
+            .collection("Active")
+            .get()
+            .addOnSuccessListener {
+                val actives = it.toObjects(Active::class.java)
+                onSuccess(actives)
+            }
+    }
 }

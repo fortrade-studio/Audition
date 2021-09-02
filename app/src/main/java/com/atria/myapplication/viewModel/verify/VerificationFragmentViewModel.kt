@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import com.atria.myapplication.VerificationFragment
 import com.atria.myapplication.room.User
+import com.atria.myapplication.viewModel.profile.ProfileFragmentViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -92,12 +93,33 @@ class VerificationFragmentViewModel(context: Context, val view: View) : ViewMode
                 .document(user.phNumber)
                 .set(user)
                 .addOnSuccessListener {
-                    onCompleted(true)
+                    uploadDefaultLinkToUser(user){
+                        onCompleted(true)
+                    }
                 }
                 .addOnFailureListener {
                     onCompleted(false)
                 }
         }
+    }
+
+    fun uploadDefaultLinkToUser(user:User,onSuccess:()->Unit){
+        firebaseFireStore.collection("Users")
+            .document(user.phNumber)
+            .collection("ViewData")
+            .document("links")
+            .set(ProfileFragmentViewModel.ViewData(
+                "https://www.knivesindia.com/ecom/wp-content/uploads/2017/06/wood-blog-placeholder.jpg",
+                "https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png",
+                0,
+                0,
+                user.name,
+                user.username,
+                ".."
+            ))
+            .addOnSuccessListener {
+                onSuccess()
+            }
     }
 
 }

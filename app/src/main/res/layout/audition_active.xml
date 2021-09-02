@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    android:background="@color/bg_black"
+    android:layout_marginBottom="20dp"
+    android:id="@+id/newestOpeningRecyclerView"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="347dp"
+        android:layout_height="234dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/white_rectangle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/companyProfileImageView"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/opop"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+        app:layout_constraintEnd_toEndOf="@+id/imageView8"
+        app:layout_constraintHorizontal_bias="0.091"
+        app:layout_constraintStart_toStartOf="@+id/imageView8"
+        app:layout_constraintTop_toTopOf="@+id/imageView8"
+        app:layout_constraintVertical_bias="0.188" />
+
+
+    <ImageView
+        android:id="@+id/saveImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tag="unsaved"
+        android:src="@drawable/ic_baseline_bookmark_border_24"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+        app:layout_constraintEnd_toEndOf="@+id/imageView8"
+        app:layout_constraintHorizontal_bias="0.928"
+        app:layout_constraintStart_toStartOf="@+id/imageView8"
+        app:layout_constraintTop_toTopOf="@+id/imageView8"
+        app:layout_constraintVertical_bias="0.08" />
+
+    <TextView
+        android:id="@+id/companyNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/amiko_semibold"
+        android:text="Sony Pictures Entertainment"
+        android:singleLine="false"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+        app:layout_constraintEnd_toEndOf="@+id/companyProfileImageView"
+        app:layout_constraintStart_toStartOf="@+id/companyProfileImageView"
+        app:layout_constraintTop_toBottomOf="@+id/companyProfileImageView"
+        app:layout_constraintVertical_bias="0.1" />
+
+
+    <TextView
+        android:id="@+id/locationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/amiko_semibold"
+        android:text="Mumbai , Maharashtra"
+        android:textColor="#D8D1D1"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+        app:layout_constraintEnd_toEndOf="@+id/imageView8"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="@+id/companyNameTextView"
+        app:layout_constraintTop_toBottomOf="@+id/companyNameTextView"
+        app:layout_constraintVertical_bias="0.83" />
+
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_location_on_24"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+        app:layout_constraintEnd_toStartOf="@+id/locationTextView"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@+id/companyProfileImageView"
+        app:layout_constraintTop_toBottomOf="@+id/companyNameTextView"
+        app:layout_constraintVertical_bias="0.8" />
+
+    <TextView
+        android:id="@+id/positionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="T.V Actor"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/locationTextView"
+        app:layout_constraintEnd_toEndOf="@+id/imageView8"
+        app:layout_constraintHorizontal_bias="0.179"
+        app:layout_constraintStart_toEndOf="@+id/companyProfileImageView"
+        app:layout_constraintTop_toTopOf="@+id/imageView8"
+        app:layout_constraintVertical_bias="0.168" />
+
+    <TextView
+        android:id="@+id/detailTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:singleLine="false"
+        android:text=". Supporting role for a short film.\n. Minimum experience 2 yrs.\n.
+Proficient in English language. "
+        android:textColor="#D8D1D1"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@+id/locationTextView"
+        app:layout_constraintEnd_toEndOf="@+id/imageView8"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/positionTextView"
+        app:layout_constraintTop_toBottomOf="@+id/positionTextView"
+        app:layout_constraintVertical_bias="0.142" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/showButton"
+        style="@style/Base.TextAppearance.AppCompat.Widget.Button.AuditionButton"
+        android:layout_width="80dp"
+        android:layout_height="35dp"
+        android:text="show more"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+        app:layout_constraintEnd_toEndOf="@+id/imageView8"
+        app:layout_constraintHorizontal_bias="0.757"
+        app:layout_constraintStart_toEndOf="@+id/locationTextView"
+        app:layout_constraintTop_toBottomOf="@+id/detailTextView"
+        app:layout_constraintVertical_bias="0.843" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

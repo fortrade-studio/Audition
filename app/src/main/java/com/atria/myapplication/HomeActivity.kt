@@ -9,6 +9,10 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-
+        Constants.checkIfUser = when {
+            intent.extras?.getInt("user")!=0 -> 1
+            else -> 0
+        }
     }
+
 }

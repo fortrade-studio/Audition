@@ -13,6 +13,18 @@
         android:background="@color/bg_black"
         tools:context=".ProfileFragment">
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/ic_baseline_arrow_back_24"
+            app:layout_constraintBottom_toTopOf="@+id/cicularProfileView"
+            app:layout_constraintEnd_toEndOf="@+id/bigScreenImageView"
+            app:layout_constraintHorizontal_bias="0.041"
+            app:layout_constraintStart_toStartOf="@+id/bigScreenImageView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.122" />
+
         <ImageView
             android:id="@+id/bigScreenImageView"
             android:layout_width="match_parent"
@@ -102,6 +114,7 @@
                 android:textSize="11sp" />
 
             <ImageView
+                android:id="@+id/hamburgerImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:visibility="gone"
@@ -152,9 +165,9 @@
             android:fontFamily="@font/amiko_semibold"
             android:text="Summary"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/usernameTextView"
             app:layout_constraintHorizontal_bias="0.046"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/usernameTextView"
             app:layout_constraintTop_toBottomOf="@+id/usernameTextView" />
 
         <TextView

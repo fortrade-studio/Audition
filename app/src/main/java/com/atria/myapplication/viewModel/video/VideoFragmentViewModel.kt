@@ -23,7 +23,7 @@ class VideoFragmentViewModel(
     val view: View
 ) : ViewModel() {
 
-    private lateinit var videos:ArrayList<String>
+    private lateinit var videos: ArrayList<String>
 
     fun getVideos(onSuccess: (ArrayList<String>) -> Unit) {
         firebase.collection(user)
@@ -32,12 +32,16 @@ class VideoFragmentViewModel(
             .document(Constants.videos)
             .get()
             .addOnSuccessListener {
-                videos = it.get(links) as ArrayList<String>
-                onSuccess(videos)
+                if (it.exists()) {
+                    videos = it.get(links) as ArrayList<String>
+                    onSuccess(videos)
+                } else {
+                    onSuccess(arrayListOf())
+                }
             }
     }
 
-    fun uploadVideo(uri:Uri){
+    fun uploadVideo(uri: Uri) {
         storage.getReference("users/videos/${auth.currentUser?.phoneNumber}/")
             .child(System.currentTimeMillis().toString())
             .putFile(uri)
@@ -47,7 +51,7 @@ class VideoFragmentViewModel(
                         .document(auth.currentUser?.phoneNumber!!)
                         .collection(viewdata)
                         .document(Constants.videos)
-                        .set(mapOf(Pair(links,videos.apply { add(it.toString()) })))
+                        .set(mapOf(Pair(links, videos.apply { add(it.toString()) })))
                         .addOnSuccessListener {
                             Log.i(TAG, "uploadVideo: DONE VIDEO")
                         }

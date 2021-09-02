@@ -1,5 +1,7 @@
 package com.atria.myapplication
 
+import com.atria.myapplication.room.User
+
 object Constants {
     val user = "Users"
     val notset = "not set"
@@ -21,4 +23,11 @@ object Constants {
     val extras = "data"
     val current = "current"
     val user_id = "userId"
+
+    //testing boolean
+    var checkIfUser = 0 // 1 means yes it is userprofile , -1 means no
+
+    var profile : User? = null
+    var big_link :String = "https://www.knivesindia.com/ecom/wp-content/uploads/2017/06/wood-blog-placeholder.jpg"
+    var circular_link:String = "https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png"
 }

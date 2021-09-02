@@ -66,7 +66,9 @@ class AboutAdapter(
             // this is the details fragment
             aboutFragmentViewModel.getPersonalData {
                 holder.firstNameTextView.text = it.name.split(" ")[0]
-                holder.lastNameTextView.text = it.name.split(" ")[1]
+                if (it.name.split(" ").size>1) {
+                    holder.lastNameTextView.text = it.name.split(" ")[1]
+                }
                 holder.phoneTextView.text = it.phNumber
                 holder.dobTextView.text = it.date
                 holder.genderTextView.text = it.gender
@@ -95,5 +97,6 @@ class AboutAdapter(
     override fun getItemCount(): Int {
         return 3;
     }
+
 
 }

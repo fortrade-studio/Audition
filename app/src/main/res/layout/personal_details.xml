@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="30dp"
+    android:background="@color/bg_black">
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/personalDetailsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+
+            <TextView
+                android:id="@+id/personalDetailsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Personal Details"
+                android:textColor="@color/colorOnPrimary"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.092"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0"
+                />
+
+            <EditText
+                android:id="@+id/fnameEditText"
+                style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+android:textColorHint="#AFACAC" 
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="40dp"
+                android:hint="Name"
+                android:tag="name"
+                android:padding="10dp"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/personalDetailsTextView"
+                app:layout_constraintTop_toBottomOf="@+id/personalDetailsTextView" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@+id/fnameEditText"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/fnameEditText"
+                app:layout_constraintTop_toBottomOf="@+id/fnameEditText">
+
+                <EditText
+                    android:id="@+id/genderEditText"
+                    style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+                    android:layout_width="wrap_content"
+                    android:textColorHint="#AFACAC"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_weight="0.2"
+                    android:hint="Gender"
+                    android:tag="gender"
+                    android:padding="10dp"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/personalDetailsTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/personalDetailsTextView"
+                    app:layout_constraintVertical_bias="0.007" />
+
+
+                <EditText
+                    android:id="@+id/dateEditText"
+                    style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+android:textColorHint="#AFACAC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_weight="0.7"
+                    android:hint="DOB (DD/MM/YY)"
+                    android:tag="date"
+                    android:padding="10dp"
+                    android:layout_marginEnd="40dp"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/personalDetailsTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/personalDetailsTextView"
+                    app:layout_constraintVertical_bias="0.007" />
+
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/summaryEditText"
+                style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+android:textColorHint="#AFACAC"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="40dp"
+                android:hint="Summary"
+                android:tag="summary"
+                android:gravity="top"
+                android:padding="10dp"
+                android:textSize="16sp"/>
+
+
+            <TextView
+                android:id="@+id/contactDetailsEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Contact Details"
+                android:layout_marginTop="40dp"
+                android:textColor="@color/colorOnPrimary"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.092"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+
+                <EditText
+                    android:id="@+id/emailEditText"
+                    style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+android:textColorHint="#AFACAC"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="40dp"
+                    android:hint="E-Mail"
+                    android:tag="email"
+                    android:padding="10dp"
+                    android:textSize="16sp"/>
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/residenceHeaderTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Residence Details"
+                android:layout_marginTop="40dp"
+                android:textColor="@color/colorOnPrimary"
+                android:textSize="16sp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+                <EditText
+                    android:id="@+id/countryEditText"
+                    style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+android:textColorHint="#AFACAC"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="40dp"
+                    android:hint="Country"
+                    android:tag="country"
+                    android:padding="10dp"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/stateEditText"
+                    style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+android:textColorHint="#AFACAC"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="40dp"
+                    android:hint="State"
+                    android:tag="state"
+                    android:padding="10dp"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/cityEditText"
+                    style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+android:textColorHint="#AFACAC"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="40dp"
+                    android:hint="City"
+                    android:tag="city"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    />
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/careerHeaderTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Career &amp; Expertise Details"
+                android:layout_marginTop="40dp"
+                android:textColor="@color/colorOnPrimary"
+                android:textSize="16sp"
+                />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+
+            <EditText
+                android:id="@+id/artistTypeEditText"
+                style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+android:textColorHint="#AFACAC"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="40dp"
+                android:hint="Artist Type"
+                android:tag="artistType"
+                android:padding="10dp"
+                android:textSize="16sp"
+                />
+
+            <EditText
+                android:id="@+id/ethnicityEditText"
+                style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+android:textColorHint="#AFACAC"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="40dp"
+                android:hint="Ethnicity"
+                android:tag="ethnicity"
+                android:padding="10dp"
+                android:textSize="16sp"
+                />
+
+            <EditText
+                android:id="@+id/languageEditText"
+                style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+android:textColorHint="#AFACAC"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="40dp"
+                android:hint="Languages"
+                android:tag="languages"
+                android:padding="10dp"
+                android:textSize="16sp"
+                />
+
+            <EditText
+                android:id="@+id/preferenceEditText"
+                style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+android:textColorHint="#AFACAC"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="40dp"
+                android:hint="Preferences"
+                android:tag="preferences"
+                android:padding="10dp"
+                android:textSize="16sp"
+                />
+
+            <EditText
+                android:id="@+id/experienceEditText"
+                style="@style/Base.Widget.AppCompat.EditText.AuditionEditText" 
+android:textColorHint="#AFACAC"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="40dp"
+                android:hint="Experience"
+                android:tag="experience"
+                android:padding="10dp"
+                android:textSize="16sp"
+                android:layout_marginBottom="30dp"
+                />
+
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

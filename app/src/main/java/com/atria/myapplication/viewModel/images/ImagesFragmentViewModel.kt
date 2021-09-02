@@ -26,8 +26,12 @@ class ImagesFragmentViewModel(
             .document(images)
             .get()
             .addOnSuccessListener {
-                val images = it.get(links) as ArrayList<String>
-                onSuccess(images)
+                if(it.exists()) {
+                    val images = it.get(links) as ArrayList<String>
+                    onSuccess(images)
+                }else {
+                    onSuccess(arrayListOf())
+                }
             }
     }
 

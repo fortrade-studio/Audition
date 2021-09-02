@@ -21,6 +21,7 @@ class AboutFragment : Fragment() {
 
     private lateinit var aboutFragmentBinding : FragmentAboutBinding
     private lateinit var aboutFragmentViewModel : AboutFragmentViewModel
+    private lateinit var aboutAdapter : AboutAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,12 +36,17 @@ class AboutFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         aboutFragmentViewModel  = ViewModelProvider(this,AboutFragmentViewModelFactory(requireContext(),requireView())).get(AboutFragmentViewModel::class.java)
 
+        aboutAdapter = AboutAdapter(aboutFragmentViewModel)
         aboutFragmentBinding.aboutRecyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
-        aboutFragmentBinding.aboutRecyclerView.adapter  = AboutAdapter(aboutFragmentViewModel)
-
-
+        aboutFragmentBinding.aboutRecyclerView.adapter  = aboutAdapter
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        aboutAdapter.notifyDataSetChanged()
+    }
+
 
     companion object{
         private val mainScope = CoroutineScope(Dispatchers.Main)

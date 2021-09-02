@@ -10,15 +10,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.atria.myapplication.adapter.CategoryCardAdapter
 import com.atria.myapplication.databinding.FragmentTopicBinding
+import com.atria.myapplication.viewModel.profession.ProfessionFragmentViewModel
+import com.atria.myapplication.viewModel.profession.ProfessionFragmentViewModelFactory
+import com.atria.myapplication.viewModel.topic.TopicFragmentViewModel
+import com.atria.myapplication.viewModel.topic.TopicFragmentViewModelFactory
 
 
 class TopicFragment : Fragment() {
 
     private lateinit var fragmentTopicBinding: FragmentTopicBinding
     private lateinit var animatedDrawable: AnimatedVectorDrawable
+    private lateinit var topicFragmentViewModel : TopicFragmentViewModel
     private val scrollStateLive = MutableLiveData<State>()
     private var previousPage:Int = 0
 
@@ -26,6 +32,8 @@ class TopicFragment : Fragment() {
     private val TELEVISION = "AUDITIONING FOR TELEVISION"
     private val MUSIC = "AUDITIONING FOR MUSIC"
 
+    private lateinit var intent : Intent
+    private var value : String = "MOVIES"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,14 +46,21 @@ class TopicFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        topicFragmentViewModel = ViewModelProvider(this, TopicFragmentViewModelFactory(requireActivity())).get(
+            TopicFragmentViewModel::class.java
+        )
+
+
         val topics = listOf(R.raw.movies, R.raw.television, R.raw.musiclofi)
         fragmentTopicBinding.cardPagerView.adapter =
             CategoryCardAdapter(topics, requireContext(), 3)
 
         fragmentTopicBinding.itemSelected.setOnClickListener {
             // this is where we navigate to the home activity
-            val intent = Intent(requireContext(),HomeActivity::class.java)
-            requireContext().startActivity(intent)
+            topicFragmentViewModel.uploadAuditionType(value) {
+                intent = Intent(requireContext(), HomeActivity::class.java)
+                requireContext().startActivity(intent)
+            }
         }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -80,12 +95,15 @@ class TopicFragment : Fragment() {
                             when (position) {
                                 0 -> {
                                     itemSelected.text = MOVIES
+                                    value = "MOVIES"
                                 }
                                 1 -> {
                                     itemSelected.text = TELEVISION
+                                    value = "TELEVISION"
                                 }
                                 else -> {
                                     itemSelected.text = MUSIC
+                                    value = "MUSIC"
                                 }
                             }
                             itemSelected.animate().alpha(1f).start()

@@ -9,6 +9,7 @@ import android.view.View
 import com.atria.myapplication.Constants.current
 import com.atria.myapplication.Constants.extras
 import com.atria.myapplication.databinding.ActivityWindowBinding
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,6 +36,7 @@ class WindowActivity : AppCompatActivity() {
         val isVideos = intent.getBooleanExtra(Constants.videos, false)
         val position = intent.getIntExtra(current, -1)
         list.addAll(stringArrayExtra)
+
         if (isVideos) {
             windowActivityBinding.bigVideoView.visibility = View.VISIBLE
             windowActivityBinding.bigImageView.visibility = View.GONE
@@ -45,14 +47,9 @@ class WindowActivity : AppCompatActivity() {
             }
 
         } else {
-            ioScope.launch {
-                val url = URL(list[position])
-                val bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
-                mainScope.launch {
-                    windowActivityBinding.bigImageView.setImageBitmap(bmp)
-                }
-            }
+            Glide.with(this)
+                .load(list[position])
+                .into(windowActivityBinding.bigImageView)
         }
-
     }
 }

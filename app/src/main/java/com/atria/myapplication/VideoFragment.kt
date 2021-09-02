@@ -36,20 +36,12 @@ import kotlin.properties.Delegates
 
 class VideoFragment : Fragment() {
 
-    private lateinit var videoFragmentBinding : FragmentVideoBinding
-    private lateinit var videoFragmentViewModel : VideoFragmentViewModel
+    private lateinit var videoFragmentBinding: FragmentVideoBinding
+    private lateinit var videoFragmentViewModel: VideoFragmentViewModel
     private lateinit var but: TextView
     private lateinit var builder: MaterialAlertDialogBuilder
-    private lateinit var fragment:VideoFragment
+    private lateinit var fragment: VideoFragment
     private var isUserProfile by Delegates.notNull<Boolean>()
-
-
-
-
-
-
-
-
 
 
     override fun onCreateView(
@@ -57,34 +49,38 @@ class VideoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        videoFragmentBinding = FragmentVideoBinding.inflate(inflater,container,false)
+        videoFragmentBinding = FragmentVideoBinding.inflate(inflater, container, false)
         return videoFragmentBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        isUserProfile = Constants.profile_id == FirebaseAuth.getInstance().currentUser?.phoneNumber
+        isUserProfile =
+            Constants.profile_id == FirebaseAuth.getInstance().currentUser?.phoneNumber
 
-
-        videoFragmentViewModel = ViewModelProvider(this,VideoFragmentViewModelFactory(requireContext(),requireView())).get(VideoFragmentViewModel::class.java)
-        videoFragmentBinding.videosRecyclerView.layoutManager = GridLayoutManager(requireContext(),3,GridLayoutManager.VERTICAL,false)
+        videoFragmentViewModel = ViewModelProvider(
+            this,
+            VideoFragmentViewModelFactory(requireContext(), requireView())
+        ).get(VideoFragmentViewModel::class.java)
+        videoFragmentBinding.videosRecyclerView.layoutManager =
+            GridLayoutManager(requireContext(), 3, GridLayoutManager.VERTICAL, false)
 
         videoFragmentViewModel.getVideos {
-            videoFragmentBinding.videosRecyclerView.adapter = VideoAdapter(it,requireContext(),this,isUserProfile)
+            videoFragmentBinding.videosRecyclerView.adapter =
+                VideoAdapter(it, requireContext(), this, isUserProfile)
         }
 
         but = view.findViewById(R.id.uploadVideoButton)
-        but.setOnClickListener{
+        but.setOnClickListener {
             showdialogfun()
         }
 
-        if (isUserProfile){
-            but.setOnClickListener{
+        if (isUserProfile) {
+            but.setOnClickListener {
                 showdialogfun()
             }
-        }else
-        {
-            but.setOnClickListener{
+        } else {
+            but.setOnClickListener {
             }
         }
 
@@ -92,7 +88,7 @@ class VideoFragment : Fragment() {
     }
 
     private fun showdialogfun() {
-        val upl=Html.fromHtml(getString(R.string.UPLOAD))
+        val upl = Html.fromHtml(getString(R.string.UPLOAD))
 
 
         builder =
@@ -109,7 +105,7 @@ class VideoFragment : Fragment() {
                                 intent.type = "video/*"
                                 intent.action = Intent.ACTION_GET_CONTENT
 
-                               // fragment.activity?.
+                                // fragment.activity?.
                                 startActivityForResult(intent, 8)
 
                             }
@@ -158,8 +154,8 @@ class VideoFragment : Fragment() {
             val builders = MaterialAlertDialogBuilder(requireContext())
             builders.setCancelable(false)
             val videoView: VideoView = VideoView(context)
-            val videoUri = data?.data
-            val str1=Html.fromHtml(getString(R.string.some_text))
+            val videoUri = data?.data!!
+            val str1 = Html.fromHtml(getString(R.string.some_text))
 
             videoView.setVideoURI(videoUri)
             videoView.start()
@@ -168,13 +164,12 @@ class VideoFragment : Fragment() {
                 .setBackground(getResources().getDrawable(R.drawable.videopreview_bg))
                 .setCancelable(true)
                 .setPositiveButton(
-                str1,
-                object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                        Toast.makeText(requireContext(), "uploaded", Toast.LENGTH_SHORT).show()
-                        //uploadCameraVideoToFirebase(videoUri)
-                    }
-                })
+                    str1,
+                    object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface?, which: Int) {
+                            videoFragmentViewModel.uploadVideo(videoUri)
+                        }
+                    })
             builders.setView(videoView).show()
 
         }
@@ -185,7 +180,7 @@ class VideoFragment : Fragment() {
                 val builders = MaterialAlertDialogBuilder(requireContext())
                 builders.setCancelable(false)
                 val videoView: VideoView = VideoView(context)
-                val str1=Html.fromHtml(getString(R.string.some_text))
+                val str1 = Html.fromHtml(getString(R.string.some_text))
 
                 var uri: Uri = data.data!!
                 videoView.setVideoURI(uri)
@@ -203,12 +198,12 @@ class VideoFragment : Fragment() {
                             .setBackground(getResources().getDrawable(R.drawable.videopreview_bg))
                             .setCancelable(true)
                             .setPositiveButton(
-                            str1,
-                            object : DialogInterface.OnClickListener {
-                                override fun onClick(dialog: DialogInterface?, which: Int) {
-                                    videoFragmentViewModel.uploadVideo(uri)
-                                }
-                            })
+                                str1,
+                                object : DialogInterface.OnClickListener {
+                                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                                        videoFragmentViewModel.uploadVideo(uri)
+                                    }
+                                })
 
                         builders.setView(videoView).show()
                         Toast.makeText(
@@ -227,10 +222,6 @@ class VideoFragment : Fragment() {
             }
         }
     }
-
-
-
-
 
 
 }

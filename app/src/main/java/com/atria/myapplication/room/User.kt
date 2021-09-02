@@ -21,5 +21,6 @@ data class User (
     var ethnicity:String= "not set",
     var languages:String= "not set",
     var preferences:String= "not set",
-    var experience:String= "not set"
+    var experience:String= "not set",
+    var summary:String  = "not set"
 )

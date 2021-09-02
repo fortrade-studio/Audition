@@ -23,6 +23,7 @@ import com.atria.myapplication.ImagesFragment
 import com.atria.myapplication.R
 import com.atria.myapplication.WindowActivity
 import com.atria.myapplication.callbacks.ImageUploadCallback
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -42,14 +43,14 @@ class ImagesAdapter(
     val images: List<String>,
     val context: Context,
     val isUserProfile: Boolean,
-    val fragment:ImagesFragment
-) : RecyclerView.Adapter<ImagesAdapter.ImagesViewHolder>(),ImageUploadCallback {
+    val fragment: ImagesFragment
+) : RecyclerView.Adapter<ImagesAdapter.ImagesViewHolder>(), ImageUploadCallback {
 
-    class ImagesViewHolder(view: View) : RecyclerView.ViewHolder(view){
+    class ImagesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView = view.findViewById<ImageView>(R.id.roundedImageView)
     }
 
-    companion object{
+    companion object {
         private const val TAG = "ImagesAdapter"
         private val auth = FirebaseAuth.getInstance().currentUser
     }
@@ -62,7 +63,7 @@ class ImagesAdapter(
             .build()
     }
 
-    private val number:String? by lazy {
+    private val number: String? by lazy {
         FirebaseAuth.getInstance().currentUser?.phoneNumber
     }
 
@@ -72,60 +73,58 @@ class ImagesAdapter(
     }
 
     override fun onBindViewHolder(holder: ImagesViewHolder, position: Int) {
-        if(position == 0){
+        if (position == 0 && isUserProfile) {
             holder.imageView.setImageResource(R.drawable.ic_upload)
             holder.imageView.setOnClickListener {
                 easyImage.openGallery(fragment)
             }
-        }else{
-            val pos = if (isUserProfile) position-1
+            return
+        } else {
+            val pos = if (isUserProfile) position - 1
             else position
-            ioScope.launch {
-                val url = URL(images[pos])
-                val bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream())
-                mainScope.launch {
-                    holder.imageView.setImageBitmap(bitmap)
-                    holder.imageView.setOnClickListener {
-                        val intent = Intent(context, WindowActivity::class.java)
-                        intent.putExtra(extras, images.toTypedArray())
-                        intent.putExtra(current, pos)
-                        context.startActivity(intent)
-                    }
-                }
+            Glide.with(context)
+                .load(images[pos])
+                .dontAnimate()
+                .into(holder.imageView)
+            holder.imageView.setOnClickListener {
+                val intent = Intent(context, WindowActivity::class.java)
+                intent.putExtra(extras, images.toTypedArray())
+                intent.putExtra(current, pos)
+                context.startActivity(intent)
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return if(isUserProfile) images.size+1;
+        return if (isUserProfile) images.size + 1;
         else images.size
     }
 
-    fun getImage():EasyImage{
+    fun getImage(): EasyImage {
         return easyImage
     }
 
-    private val ioScope  = CoroutineScope(Dispatchers.IO)
+    private val ioScope = CoroutineScope(Dispatchers.IO)
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
 
     override fun onImageSelected(media: MediaFile) {
-            FirebaseStorage.getInstance().getReference("users/images/${auth?.phoneNumber}/")
-                .child(System.currentTimeMillis().toString())
-                .putFile(media.file.toUri())
-                .addOnSuccessListener {
-                    it.storage.downloadUrl.addOnSuccessListener {
-                        uploadImageLink(it.toString())
-                    }
+        FirebaseStorage.getInstance().getReference("f")
+            .child(System.currentTimeMillis().toString())
+            .putFile(media.file.toUri())
+            .addOnSuccessListener {
+                it.storage.downloadUrl.addOnSuccessListener {
+                    uploadImageLink(it.toString())
                 }
+            }
     }
 
-    fun uploadImageLink(link:String){
+    fun uploadImageLink(link: String) {
         FirebaseFirestore.getInstance().collection(user)
             .document(number!!)
             .collection(viewdata)
             .document(Constants.images)
-            .set(mapOf(Pair(links,images.toMutableList().apply { add(link) })))
+            .set(mapOf(Pair(links, images.toMutableList().apply { add(link) })))
             .addOnSuccessListener {
                 mainScope.launch {
                     fragment.onImageUploaded()
