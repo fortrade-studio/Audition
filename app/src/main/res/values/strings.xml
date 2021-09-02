@@ -21,9 +21,19 @@
     <string name="header_category">Hi There ,\nTell Us About Yourself </string>
     <string name="topaudition">Top Audition</string>
 
-    <!--    <string name="upload">upload</string>-->
+<!--    <string name="upload">upload</string>-->
     <string name="some_text"><![CDATA[<font color=\'#f57f17\'>upload</font> ]]></string>
     <string name="UPLOAD"><![CDATA[<font color=\'#000\'><b>UPLOAD</b></font> ]]></string>
+
+    <string-array name="Category">
+        <item>acting</item>
+        <item>singing Islands</item>
+        <item>dancing</item>
+        <item>anchoring</item>
+
+    </string-array>
+
+
 
 
 </resources>

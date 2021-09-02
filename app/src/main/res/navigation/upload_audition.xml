@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/upload_audition"
+    app:startDestination="@id/uploadAuditionFragment">
+
+
+    <fragment
+        android:id="@+id/uploadAuditionFragment"
+        android:name="com.atria.myapplication.UploadAuditionFragment"
+        android:label="fragment_upload_audition"
+        tools:layout="@layout/fragment_upload_audition" />
+</navigation>
