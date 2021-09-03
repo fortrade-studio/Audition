@@ -11,11 +11,13 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.atria.myapplication.adapter.TopAuditionAdapter
 import com.atria.myapplication.databinding.FragmentHomeBinding
 import com.atria.myapplication.viewModel.home.HomeFragmentViewModel
 import com.atria.myapplication.viewModel.home.HomeFragmentViewModelFactory
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,6 +28,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var homeFragmentBinding: FragmentHomeBinding
     private lateinit var homeFragmentViewModel: HomeFragmentViewModel
+    private lateinit var fabbut : FloatingActionButton
 
     companion object {
         private const val TAG = "HomeFragment"
@@ -43,6 +46,14 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        fabbut=view.findViewById(R.id.fabToUploadAudition)
+        fabbut=view.findViewById(R.id.fabbut)
+        fabbut.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_homeFragment_to_upload_audition
+            )
+        }
 
         homeFragmentViewModel = ViewModelProvider(
             this, HomeFragmentViewModelFactory(
