@@ -1,5 +1,6 @@
 package com.atria.myapplication
 
+import android.content.Context
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
@@ -14,6 +15,7 @@ import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.viewpager.widget.ViewPager
 import com.atria.myapplication.adapter.CategoryCardAdapter
 import com.atria.myapplication.databinding.FragmentCategoryBinding
+import kotlin.system.exitProcess
 
 
 class CategoryFragment : Fragment() {
@@ -37,4 +39,20 @@ class CategoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
+
+    override fun onResume() {
+        super.onResume()
+        if(checkRecord() == 0){
+            activity?.finish()
+            exitProcess(0)
+        }
+    }
+
+    fun checkRecord():Int{
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return -1
+        val highScore = sharedPref.getInt("saved", -1)
+        return highScore
+    }
+
+
 }

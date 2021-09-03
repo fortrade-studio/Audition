@@ -39,6 +39,7 @@ class MainHomeFragment : Fragment() {
             mainHomeFragmentBinding.newestOpeningRecyclerView.adapter = AuditionAdapter(it,this)
         }
 
+        mainHomeFragmentBinding.activelyHiringRecyclerView.isNestedScrollingEnabled = false
         mainHomeFragmentBinding.activelyHiringRecyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
         homeFragmentViewModel.getActivelyOpening {
             mainHomeFragmentBinding.activelyHiringRecyclerView.adapter =ActiveAuditionAdapter(it, this)

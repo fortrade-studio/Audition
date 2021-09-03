@@ -1,9 +1,11 @@
 package com.atria.myapplication
 
+import android.animation.TimeInterpolator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.atria.myapplication.databinding.FragmentHomeBinding
@@ -32,7 +34,23 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         homeFragmentBinding.profileImageView.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
+            homeFragmentBinding.profileImageView.animate()
+                .rotation(45f)
+                .setDuration(190L)
+                .setInterpolator(AccelerateInterpolator())
+                .withEndAction {
+                    homeFragmentBinding.profileImageView.animate()
+                        .rotation(-45f)
+                        .setInterpolator(AccelerateInterpolator())
+                        .withEndAction {
+                            homeFragmentBinding.profileImageView.animate()
+                                .rotation(0f)
+                                .setInterpolator(AccelerateInterpolator())
+                                .start()
+                        }
+                        .start()
+                }
+                .start()
         }
 
     }
