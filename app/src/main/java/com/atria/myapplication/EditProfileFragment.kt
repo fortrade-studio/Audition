@@ -94,6 +94,7 @@ class EditProfileFragment : Fragment() {
         editProfileFragmentBinding.backTextView.setOnClickListener {
             Constants.checkIfUser = 0
             findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
+
         }
 
         editProfileViewModel = ViewModelProvider(

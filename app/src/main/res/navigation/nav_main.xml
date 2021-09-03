@@ -9,11 +9,16 @@
         android:id="@+id/homeFragment"
         android:name="com.atria.myapplication.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_upload_audition"
+            app:destination="@id/upload_audition" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.atria.myapplication.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <include app:graph="@navigation/upload_audition" />
 
 </navigation>
