@@ -215,7 +215,9 @@ class UploadAuditionFragment : Fragment() {
                                 object : DialogInterface.OnClickListener {
                                     override fun onClick(dialog: DialogInterface?, which: Int) {
                                         videoURITextview.text= uri.toString()
-                                        videoPreview.setVideoPath("http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4")
+                                            //videoPreview.setVideoPath("http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4")
+
+                                        videoPreview.setVideoPath(uri.toString())
                                         videoPreview.alpha=1f
                                         videoPreview.start()
 //                                        fun uploadVideo(uri:Uri){
