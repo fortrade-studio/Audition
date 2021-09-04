@@ -10,7 +10,7 @@
 
     <ImageView
         android:id="@+id/imageView8"
-        android:layout_width="347dp"
+        android:layout_width="0dp"
         android:layout_height="234dp"
         android:scaleType="fitXY"
         android:src="@drawable/white_rectangle"
@@ -33,10 +33,10 @@
 
     <ImageView
         android:id="@+id/saveImageView"
-        android:layout_width="wrap_content"
+        android:layout_width="24dp"
         android:layout_height="wrap_content"
-        android:tag="unsaved"
         android:src="@drawable/ic_baseline_bookmark_border_24"
+        android:tag="unsaved"
         app:layout_constraintBottom_toBottomOf="@+id/imageView8"
         app:layout_constraintEnd_toEndOf="@+id/imageView8"
         app:layout_constraintHorizontal_bias="0.928"
@@ -66,9 +66,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/amiko_semibold"
-        android:text="Mumbai , Maharashtra"
+        android:text="East Mumbai"
         android:textColor="#D8D1D1"
         android:textSize="12sp"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/imageView8"
         app:layout_constraintEnd_toEndOf="@+id/imageView8"
         app:layout_constraintHorizontal_bias="0.05"
@@ -106,15 +107,13 @@
         android:id="@+id/detailTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
         android:singleLine="false"
         android:text=". Supporting role for a short film.\n. Minimum experience 2 yrs.\n.
 Proficient in English language. "
         android:textColor="#D8D1D1"
         android:textSize="13sp"
         app:layout_constraintBottom_toTopOf="@+id/locationTextView"
-        app:layout_constraintEnd_toEndOf="@+id/imageView8"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toEndOf="@+id/showButton"
         app:layout_constraintStart_toStartOf="@+id/positionTextView"
         app:layout_constraintTop_toBottomOf="@+id/positionTextView"
         app:layout_constraintVertical_bias="0.142" />
@@ -127,12 +126,11 @@ Proficient in English language. "
         android:text="show more"
         android:textSize="8sp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView8"
-        app:layout_constraintEnd_toEndOf="@+id/imageView8"
-        app:layout_constraintHorizontal_bias="0.757"
+        app:layout_constraintEnd_toStartOf="@+id/saveImageView"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/locationTextView"
         app:layout_constraintTop_toBottomOf="@+id/detailTextView"
-        app:layout_constraintVertical_bias="0.843" />
-
+        app:layout_constraintVertical_bias="0.903" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -49,10 +49,9 @@
             android:text="Actively Hiring"
             android:textColor="@color/white"
             android:textSize="18sp"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintVertical_bias="0.08"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/newestOpeningRecyclerView"
             app:layout_constraintTop_toBottomOf="@+id/newestOpeningRecyclerView" />
 
@@ -64,6 +63,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             tools:listitem="@layout/audition_active"
             android:layout_marginBottom="20dp"
+            android:layout_marginEnd="30dp"
             app:layout_constraintStart_toStartOf="@+id/activelyHiringTextView"
             app:layout_constraintTop_toBottomOf="@+id/activelyHiringTextView" />
 
