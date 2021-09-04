@@ -24,7 +24,7 @@ class MainHomeFragment : Fragment() {
 
     private lateinit var mainHomeFragmentBinding : FragmentMainHomeBinding
     private lateinit var homeFragmentViewModel: HomeFragmentViewModel
-    private lateinit var fabbut : FloatingActionButton
+   // private lateinit var fabbut : FloatingActionButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,12 +38,12 @@ class MainHomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         homeFragmentViewModel  = ViewModelProvider(this,HomeFragmentViewModelFactory(requireView(),requireContext())).get(HomeFragmentViewModel::class.java)
 
-        fabbut=view.findViewById(R.id.fabbut)
-        fabbut.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_homeFragment_to_upload_audition
-            )
-        }
+//        fabbut=view.findViewById(R.id.fabbut)
+//        fabbut.setOnClickListener {
+//            findNavController().navigate(
+//                R.id.action_homeFragment_to_upload_audition
+//            )
+//        }
 
 
         mainHomeFragmentBinding.newestOpeningRecyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)

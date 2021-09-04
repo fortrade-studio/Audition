@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
+import com.atria.myapplication.Constants.categoryFragment
 import com.atria.myapplication.adapter.CategoryCardAdapter
 import com.atria.myapplication.databinding.FragmentProfessionBinding
 import com.atria.myapplication.viewModel.profession.ProfessionFragmentViewModel
@@ -35,6 +36,8 @@ class ProfessionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         professionFragmentViewModel =
             ViewModelProvider(this, ProfessionFragmentViewModelFactory(requireActivity())).get(
@@ -100,7 +103,11 @@ class ProfessionFragment : Fragment() {
                         }
                     }
                 } else {
-                    professionFragmentBinding.itemSelected.setOnClickListener { }
+                    professionFragmentBinding.itemSelected.setOnClickListener {
+                        professionFragmentViewModel.uploadArtistType("director") {
+                            categoryFragment?.findNavController()?.navigate(R.id.action_categoryFragment_to_directorHome)
+                        }
+                    }
                 }
 
                 professionFragmentBinding.itemSelected

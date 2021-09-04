@@ -50,5 +50,23 @@
         android:id="@+id/categoryFragment"
         android:name="com.atria.myapplication.CategoryFragment"
         android:label="fragment_category"
-        tools:layout="@layout/fragment_category" />
+        tools:layout="@layout/fragment_category" >
+        <action
+            android:id="@+id/action_categoryFragment_to_directorHome"
+            app:destination="@id/directorHome" />
+    </fragment>
+    <fragment
+        android:id="@+id/directorHome"
+        android:name="com.atria.myapplication.DirectorHome"
+        android:label="fragment_director_home"
+        tools:layout="@layout/fragment_director_home" >
+        <action
+            android:id="@+id/action_directorHome_to_uploadAuditionFragment"
+            app:destination="@id/uploadAuditionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/uploadAuditionFragment"
+        android:name="com.atria.myapplication.UploadAuditionFragment"
+        android:label="fragment_upload_audition"
+        tools:layout="@layout/fragment_upload_audition" />
 </navigation>

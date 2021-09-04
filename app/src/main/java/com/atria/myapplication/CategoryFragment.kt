@@ -38,6 +38,7 @@ class CategoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Constants.categoryFragment = this
     }
 
     override fun onResume() {

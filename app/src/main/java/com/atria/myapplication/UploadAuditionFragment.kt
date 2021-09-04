@@ -17,6 +17,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.atria.myapplication.databinding.FragmentUploadAuditionBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.common.base.Strings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -34,11 +35,11 @@ class UploadAuditionFragment : Fragment() {
     private lateinit var fragmentUploadAuditionBinding: FragmentUploadAuditionBinding
     private lateinit var but: ImageView
     private lateinit var videoPreview: VideoView
-    private lateinit var videoURITextview: TextView
+    //private lateinit var videoURITextview: TextView
     private lateinit var spinner: Spinner
     private lateinit var builder: MaterialAlertDialogBuilder
     private var isUserProfile by Delegates.notNull<Boolean>()
-    var category = resources.getStringArray(R.array.Category)
+    private lateinit var category : Array<String?>
    // private val categoryOfAudition: String? = null
 
 
@@ -55,6 +56,8 @@ class UploadAuditionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         isUserProfile = Constants.profile_id == FirebaseAuth.getInstance().currentUser?.phoneNumber
         spinner = view.findViewById(R.id.spinner)
+        category = getResources().getStringArray(R.array.Category)
+
         if (spinner != null) {
             val adapter= ArrayAdapter(requireContext(),android.R.layout.simple_dropdown_item_1line,category)
             spinner.adapter = adapter
@@ -78,7 +81,7 @@ class UploadAuditionFragment : Fragment() {
 //            videoFragmentBinding.videosRecyclerView.adapter = VideoAdapter(it,requireContext(),this,isUserProfile)
 //        }
          videoPreview = view.findViewById(R.id.uploadVideoVideoView)
-         videoURITextview = view.findViewById(R.id.videoURIdisplayTextview)
+        // videoURITextview = view.findViewById(R.id.videoURIdisplayTextview)
 
 
         but = view.findViewById(com.atria.myapplication.R.id.uploadVideoImageView)
@@ -87,15 +90,15 @@ class UploadAuditionFragment : Fragment() {
             showdialogfun()
         }
 
-        if (isUserProfile){
-            but.setOnClickListener{
-                showdialogfun()
-            }
-        }else
-        {
-            but.setOnClickListener{
-            }
-        }
+//        if (isUserProfile){
+//            but.setOnClickListener{
+//                showdialogfun()
+//            }
+//        }else
+//        {
+//            but.setOnClickListener{
+//            }
+//        }
 
 
     }
@@ -214,11 +217,12 @@ class UploadAuditionFragment : Fragment() {
                                 str1,
                                 object : DialogInterface.OnClickListener {
                                     override fun onClick(dialog: DialogInterface?, which: Int) {
-                                        videoURITextview.text= uri.toString()
+                                        //videoURITextview.text= uri.toString()
                                             //videoPreview.setVideoPath("http://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4")
 
                                         videoPreview.setVideoPath(uri.toString())
                                         videoPreview.alpha=1f
+                                        but.alpha=0f
                                         videoPreview.start()
 //                                        fun uploadVideo(uri:Uri){
 //                                            storage.getReference("users/videos/${auth.currentUser?.phoneNumber}/")
