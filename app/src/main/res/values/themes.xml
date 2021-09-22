@@ -36,6 +36,13 @@
         <item name="fontFamily">@font/amiko_semibold</item>
     </style>
 
+    <style name="Widget.AppCompat.TextView.AuditionTextView">
+
+        <item name="fontFamily">@font/amiko_semibold</item>
+        <item name="android:textStyle">bold</item>
+
+    </style>
+
     <style name="Widget.AppCompat.Spinner.DropDown.AuditionSpinner">
         <item name="android:textColor">@color/white</item>
     </style>

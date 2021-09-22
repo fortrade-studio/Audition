@@ -52,7 +52,7 @@ class ProfileFragment : Fragment() {
         ).get(ProfileFragmentViewModel::class.java)
 
         profileFragmentBinding.backButton.setOnClickListener {
-            requireActivity().onBackPressed()
+            findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
         }
 
         profileViewModel.checkIfFollow(id)

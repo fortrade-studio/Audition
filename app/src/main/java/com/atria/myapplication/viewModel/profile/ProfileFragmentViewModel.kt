@@ -45,14 +45,19 @@ class ProfileFragmentViewModel(
     )
 
     fun checkIfFollow(ph: String) {
-        firebase.collection(user)
-            .document(user_name!!)
-            .collection("Following")
-            .document(ph)
-            .get()
-            .addOnSuccessListener {
-                followLive.postValue(it.exists())
-            }
+        try {
+            firebase.collection(user)
+                .document(user_name!!)
+                .collection("Following")
+                .document(ph)
+                .get()
+                .addOnSuccessListener {
+                    followLive.postValue(it.exists())
+                }
+        }catch (e : Exception){
+            followLive.postValue(false)
+        }
+
     }
 
 

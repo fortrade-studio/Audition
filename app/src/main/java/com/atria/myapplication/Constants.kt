@@ -1,5 +1,6 @@
 package com.atria.myapplication
 
+import androidx.lifecycle.MutableLiveData
 import com.atria.myapplication.room.User
 
 object Constants {
@@ -27,6 +28,11 @@ object Constants {
     //testing boolean
     var checkIfUser = 0 // 1 means yes it is userprofile , -1 means no
 
+    var mainHomeFragment: MainHomeFragment ? = null
+    var searchStringLiveData : MutableLiveData<String> = MutableLiveData()
+
+    var backCallback : MutableLiveData<Int> = MutableLiveData(0)
+    var homeToProfileCallback  = MutableLiveData("")
     var profile : User? = null
     var big_link :String = "https://www.knivesindia.com/ecom/wp-content/uploads/2017/06/wood-blog-placeholder.jpg"
     var circular_link:String = "https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png"
