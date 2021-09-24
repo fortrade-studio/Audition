@@ -14,7 +14,7 @@ class AboutAdapter(
 ) : RecyclerView.Adapter<AboutAdapter.AboutViewHolder>() {
 
     inner class AboutViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        // details view
+
         val firstNameTextView = view.findViewById<TextView>(R.id.firstNameTextView)
         val lastNameTextView = view.findViewById<TextView>(R.id.lastNameTextView)
         val phoneTextView = view.findViewById<TextView>(R.id.phoneNumberTextView)

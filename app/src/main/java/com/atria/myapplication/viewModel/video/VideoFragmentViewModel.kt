@@ -12,6 +12,8 @@ import com.atria.myapplication.Constants.user
 import com.atria.myapplication.Constants.videos
 import com.atria.myapplication.Constants.viewdata
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
@@ -23,7 +25,7 @@ class VideoFragmentViewModel(
     val view: View
 ) : ViewModel() {
 
-    private lateinit var videos: ArrayList<String>
+    private var videos: ArrayList<String> = ArrayList()
 
     fun getVideos(onSuccess: (ArrayList<String>) -> Unit) {
         firebase.collection(user)
@@ -41,7 +43,7 @@ class VideoFragmentViewModel(
             }
     }
 
-    fun uploadVideo(uri: Uri) {
+    fun uploadVideo(uri: Uri,onSuccess: () -> Unit,onFailed:()->Unit) {
         storage.getReference("users/videos/${auth.currentUser?.phoneNumber}/")
             .child(System.currentTimeMillis().toString())
             .putFile(uri)
@@ -52,8 +54,19 @@ class VideoFragmentViewModel(
                         .collection(viewdata)
                         .document(Constants.videos)
                         .set(mapOf(Pair(links, videos.apply { add(it.toString()) })))
-                        .addOnSuccessListener {
-                            Log.i(TAG, "uploadVideo: DONE VIDEO")
+                        .addOnSuccessListener {v->
+                            database.getReference("videos")
+                                .child(auth.currentUser?.phoneNumber.toString()+videos.size)
+                                .setValue(mapOf(Pair("link",it.toString()),Pair("likes",0),Pair("userid",
+                                    auth.currentUser?.phoneNumber)),DatabaseReference.CompletionListener { error, ref ->
+                                    if(error == null){
+                                        onSuccess()
+                                        Log.i(TAG, "uploadVideo: DONE VIDEO")
+                                    }else{
+                                        onFailed()
+                                    }
+                                })
+
                         }
                 }
             }
@@ -65,6 +78,8 @@ class VideoFragmentViewModel(
         val firebase = FirebaseFirestore.getInstance()
         val auth = FirebaseAuth.getInstance()
         val storage = FirebaseStorage.getInstance()
+        val database = FirebaseDatabase.getInstance()
+
     }
 
 }

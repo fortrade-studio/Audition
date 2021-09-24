@@ -90,7 +90,6 @@ class VideoFragment : Fragment() {
     private fun showdialogfun() {
         val upl = Html.fromHtml(getString(R.string.UPLOAD))
 
-
         builder =
             MaterialAlertDialogBuilder(requireContext())
                 .setBackground(getResources().getDrawable(R.drawable.dialogbox_background))
@@ -104,10 +103,7 @@ class VideoFragment : Fragment() {
                                 val intent = Intent()
                                 intent.type = "video/*"
                                 intent.action = Intent.ACTION_GET_CONTENT
-
-                                // fragment.activity?.
                                 startActivityForResult(intent, 8)
-
                             }
 
                             override fun onPermissionDenied(permissionDeniedResponse: PermissionDeniedResponse) {}
@@ -167,7 +163,9 @@ class VideoFragment : Fragment() {
                     str1,
                     object : DialogInterface.OnClickListener {
                         override fun onClick(dialog: DialogInterface?, which: Int) {
-                            videoFragmentViewModel.uploadVideo(videoUri)
+                            videoFragmentViewModel.uploadVideo(videoUri,{
+                                Toast.makeText(requireContext(),"Success",Toast.LENGTH_LONG).show()
+                            }){ Toast.makeText(requireContext(),"Failed",Toast.LENGTH_LONG).show()}
                         }
                     })
             builders.setView(videoView).show()
@@ -201,7 +199,9 @@ class VideoFragment : Fragment() {
                                 str1,
                                 object : DialogInterface.OnClickListener {
                                     override fun onClick(dialog: DialogInterface?, which: Int) {
-                                        videoFragmentViewModel.uploadVideo(uri)
+                                        videoFragmentViewModel.uploadVideo(uri,{
+                                            Toast.makeText(requireContext(),"Success",Toast.LENGTH_LONG).show()
+                                        }){ Toast.makeText(requireContext(),"Failed",Toast.LENGTH_LONG).show()}
                                     }
                                 })
 

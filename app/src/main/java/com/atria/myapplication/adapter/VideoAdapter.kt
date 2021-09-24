@@ -81,7 +81,6 @@ class VideoAdapter(
             val link = if(isUserProfile) videos[position.minus(1)]
             else videos[position]
             holder.videoView.setVideoURI(Uri.parse(link))
-            val random = Random()
             holder.videoView.setOnPreparedListener {
                 it.setVolume(0f, 0f)
                 it.start()

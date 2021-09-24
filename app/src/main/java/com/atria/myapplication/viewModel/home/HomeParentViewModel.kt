@@ -8,11 +8,13 @@ import com.atria.myapplication.Constants.links
 import com.atria.myapplication.Constants.name
 import com.atria.myapplication.Constants.user
 import com.atria.myapplication.Constants.viewdata
+import com.atria.myapplication.diffutils.VideoData
 import com.atria.myapplication.notification.PushNotification
 import com.atria.myapplication.notification.RetrofitInstance
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,12 +25,12 @@ class HomeParentViewModel : ViewModel() {
         val firebase = FirebaseFirestore.getInstance()
         val phNumber = FirebaseAuth.getInstance().currentUser?.phoneNumber
         val ioScope = CoroutineScope(Dispatchers.IO)
-
+        val database = FirebaseDatabase.getInstance()
         private const val TAG = "HomeParentViewModel"
 
     }
 
-    fun getUserProfileAndName(onSuccess:(String , String)->Unit){
+    fun getUserProfileAndName(onSuccess: (String, String) -> Unit){
         ioScope.launch {
             firebase.collection(user)
                 .document(phNumber!!)
@@ -38,12 +40,12 @@ class HomeParentViewModel : ViewModel() {
                 .addOnSuccessListener {
                     val circular = it.get(circular) as String
                     val name = it.get(name) as String
-                    onSuccess(circular,name)
+                    onSuccess(circular, name)
                 }
         }
     }
 
-    fun sendNotification(notification:PushNotification){
+    fun sendNotification(notification: PushNotification){
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitInstance.api.postNotification(notification)
@@ -54,9 +56,23 @@ class HomeParentViewModel : ViewModel() {
                 }
 
             }catch (e: Exception){
-                Log.e(TAG, "sendNotification: ",e )
+                Log.e(TAG, "sendNotification: ", e)
             }
         }
+    }
+
+    fun getVideos(onSuccess: (map:Map<String,VideoData>)->Unit){
+        database.getReference("videos")
+            .get()
+            .addOnSuccessListener {
+                Log.i(TAG, "getVideos: ${it.value.toString()}");
+                val t: GenericTypeIndicator<Map<String,VideoData>> =
+                    object : GenericTypeIndicator<Map<String,VideoData>>() {}
+                val value = it.getValue(t)
+                if (value != null) {
+                    onSuccess(value)
+                }
+            }
     }
 
 }
