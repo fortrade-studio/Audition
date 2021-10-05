@@ -1,31 +1,33 @@
 package com.atria.myapplication.utils
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import java.lang.StringBuilder
 
 class NumberToUniqueStringGenerator {
 
-    companion object{
+    companion object {
 
         val firebase = FirebaseAuth.getInstance().currentUser?.phoneNumber
-        private val alphabet:CharArray = charArrayOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
+        private val alphabet: CharArray =
+            charArrayOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
 
-        fun numberToUniqueString(number:String):String{
-            val stringBuilder  = StringBuilder()
-            number.removePrefix("+").forEach {
-                val numb = it.toInt()
-                stringBuilder.append(alphabet[numb])
+        fun numberToUniqueString(number: String): String {
+            val stringBuilder = StringBuilder()
+            for (num in number.removePrefix("+")) {
+                stringBuilder.append(alphabet[num.toString().toInt()])
             }
-
-            return stringBuilder.toString()
+            Log.i("NumberToUnique", "numberToUniqueString: ${stringBuilder.toString()}")
+            return stringBuilder.toString().trim()
         }
 
-        fun userUniqueString():String{
+        //jbjggicdaiid
+        fun userUniqueString(): String {
             val stringBuilder = StringBuilder()
-            firebase!!.forEach {
-                stringBuilder.append(alphabet.indexOf(it))
+            for (num in firebase!!.removePrefix("+")) {
+                stringBuilder.append(alphabet[num.toString().toInt()])
             }
-            return stringBuilder.toString()
+            return stringBuilder.toString().trim()
         }
 
     }

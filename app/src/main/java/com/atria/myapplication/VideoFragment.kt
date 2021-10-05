@@ -8,6 +8,7 @@ import android.content.Intent
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.text.Html
 import android.util.Log
@@ -16,6 +17,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,12 +29,16 @@ import com.atria.myapplication.viewModel.video.VideoFragmentViewModel
 import com.atria.myapplication.viewModel.video.VideoFragmentViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
+import com.gowtham.library.utils.CompressOption
+import com.gowtham.library.utils.TrimVideo
+import com.gowtham.library.utils.TrimmerUtils
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import java.io.File
 import kotlin.properties.Delegates
 
 
@@ -42,6 +50,11 @@ class VideoFragment : Fragment() {
     private lateinit var builder: MaterialAlertDialogBuilder
     private lateinit var fragment: VideoFragment
     private var isUserProfile by Delegates.notNull<Boolean>()
+    private lateinit var startForResult: ActivityResultLauncher<Intent>
+
+    companion object {
+        private const val TAG = "VideoFragment"
+    }
 
 
     override fun onCreateView(
@@ -57,6 +70,7 @@ class VideoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         isUserProfile =
             Constants.profile_id == FirebaseAuth.getInstance().currentUser?.phoneNumber
+
 
         videoFragmentViewModel = ViewModelProvider(
             this,
@@ -84,6 +98,43 @@ class VideoFragment : Fragment() {
             }
         }
 
+        startForResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == AppCompatActivity.RESULT_OK && it.data != null) {
+                    val builders = MaterialAlertDialogBuilder(requireContext())
+                    builders.setCancelable(false)
+                    val uri = Uri.fromFile(File(TrimVideo.getTrimmedVideoPath(it.data)))
+                    val videoView: VideoView = VideoView(context)
+                    videoView.setVideoURI(uri)
+                    videoView.start()
+
+                    val str1 = Html.fromHtml(getString(R.string.some_text))
+
+                    builders
+                        .setBackground(getResources().getDrawable(R.drawable.videopreview_bg))
+                        .setCancelable(true)
+                        .setPositiveButton(
+                            str1,
+                            object : DialogInterface.OnClickListener {
+                                override fun onClick(dialog: DialogInterface?, which: Int) {
+                                    videoFragmentViewModel.uploadVideo(uri, {
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "Success",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }) {
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "Failed",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
+                            })
+                    builders.setView(videoView).show()
+                }
+            }
 
     }
 
@@ -145,31 +196,19 @@ class VideoFragment : Fragment() {
 
     }
 
+
+    private fun compressVideo(uri: String) {
+        val arr = TrimmerUtils.getVideoWidthHeight(requireActivity(), Uri.parse(uri))
+        TrimVideo.activity(uri)
+            .setCompressOption(CompressOption(30, "1M", arr[0], arr[1]))
+            .start(this, startForResult)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            val builders = MaterialAlertDialogBuilder(requireContext())
-            builders.setCancelable(false)
-            val videoView: VideoView = VideoView(context)
             val videoUri = data?.data!!
-            val str1 = Html.fromHtml(getString(R.string.some_text))
 
-            videoView.setVideoURI(videoUri)
-            videoView.start()
-
-            builders
-                .setBackground(getResources().getDrawable(R.drawable.videopreview_bg))
-                .setCancelable(true)
-                .setPositiveButton(
-                    str1,
-                    object : DialogInterface.OnClickListener {
-                        override fun onClick(dialog: DialogInterface?, which: Int) {
-                            videoFragmentViewModel.uploadVideo(videoUri,{
-                                Toast.makeText(requireContext(),"Success",Toast.LENGTH_LONG).show()
-                            }){ Toast.makeText(requireContext(),"Failed",Toast.LENGTH_LONG).show()}
-                        }
-                    })
-            builders.setView(videoView).show()
-
+            compressVideo(videoUri.toString())
         }
 
         if (resultCode == Activity.RESULT_OK && requestCode == 8) {
@@ -182,7 +221,6 @@ class VideoFragment : Fragment() {
 
                 var uri: Uri = data.data!!
                 videoView.setVideoURI(uri)
-                var mediaController: MediaController = MediaController(context)
                 val retriever = MediaMetadataRetriever()
                 retriever.setDataSource(context, Uri.parse(uri.toString()))
                 val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
@@ -190,22 +228,7 @@ class VideoFragment : Fragment() {
                 retriever.release()
                 if (timeInMillisec != null) {
                     if (timeInMillisec <= 60000) {
-                        videoView.setMediaController(mediaController)
-                        videoView.start()
-                        builders
-                            .setBackground(getResources().getDrawable(R.drawable.videopreview_bg))
-                            .setCancelable(true)
-                            .setPositiveButton(
-                                str1,
-                                object : DialogInterface.OnClickListener {
-                                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                                        videoFragmentViewModel.uploadVideo(uri,{
-                                            Toast.makeText(requireContext(),"Success",Toast.LENGTH_LONG).show()
-                                        }){ Toast.makeText(requireContext(),"Failed",Toast.LENGTH_LONG).show()}
-                                    }
-                                })
-
-                        builders.setView(videoView).show()
+                        compressVideo(uri.toString())
                         Toast.makeText(
                             getActivity(),
                             "File selected successfully",

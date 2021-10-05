@@ -26,5 +26,7 @@
     <string name="UPLOAD"><![CDATA[<font color=\'#000\'><b>UPLOAD</b></font> ]]></string>
     <string name="number">1</string>
 
+    <string name="username">/@mohitanand</string>
+
 
 </resources>

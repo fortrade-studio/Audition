@@ -19,6 +19,7 @@ import android.widget.Toast
 import android.widget.VideoView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.atria.myapplication.Constants
 import com.atria.myapplication.Constants.current
 import com.atria.myapplication.Constants.extras
@@ -76,6 +77,7 @@ class VideoAdapter(
             holder.imageView.setImageResource(R.drawable.ic_upload)
             return
         }
+
         CoroutineScope(Dispatchers.Main).launch {
             Log.i(TAG, "onBindViewHolder: ${videos.toString()}")
             val link = if(isUserProfile) videos[position.minus(1)]
@@ -95,6 +97,7 @@ class VideoAdapter(
         }
 
     }
+
 
     override fun getItemCount(): Int {
             if(isUserProfile) {

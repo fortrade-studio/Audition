@@ -46,7 +46,7 @@ class MainHomeFragment : Fragment()  {
         callback.observe(viewLifecycleOwner){
             if(it == 1){
                 Constants.mainHomeFragment?.callback?.value = 0
-                findNavController().navigate(R.id.action_mainHomeFragment_to_searchFragment)
+//                findNavController().navigate(R.id.action_mainHomeFragment_to_searchFragment)
             }
         }
 

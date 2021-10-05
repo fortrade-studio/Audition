@@ -35,7 +35,7 @@ class ProfileTabFragment : Fragment() {
         val sectionsPagerAdapter = SectionsPageAdapter(requireContext(),  childFragmentManager,FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
         profileTabFragmentBinding.viewPager.adapter = sectionsPagerAdapter
         profileTabFragmentBinding.tabs.setupWithViewPager(profileTabFragmentBinding.viewPager)
-        profileTabFragmentBinding.viewPager.offscreenPageLimit = 3
+        profileTabFragmentBinding.viewPager.offscreenPageLimit = 2
 
     }
 

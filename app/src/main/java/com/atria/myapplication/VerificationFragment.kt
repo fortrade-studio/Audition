@@ -1,5 +1,6 @@
 package com.atria.myapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -27,7 +28,7 @@ class VerificationFragment : Fragment() {
     private lateinit var verificationBinding: FragmentVerificationBinding
     private lateinit var verificationFragmentViewModel: VerificationFragmentViewModel
     private lateinit var countDownTimer: CountDownTimer
-    private lateinit var repo:UserRepository
+    private lateinit var repo: UserRepository
 
     private var user: User? = null
 
@@ -54,21 +55,21 @@ class VerificationFragment : Fragment() {
         val userDao = UserDatabase.getDatabase(requireContext()).getUserDao()
         repo = UserRepository(userDao)
 
-        val isLogin:Boolean  = arguments?.getBoolean("verification")?:false
+        val isLogin: Boolean = arguments?.getBoolean("verification") ?: false
         val phNumber: String? = arguments?.getString("phNumber")
 
-        val name :String? = arguments?.getString("name")
-        val email :String? = arguments?.getString("email")
-        val gender :String? = arguments?.getString("gender")
-        val date :String? = arguments?.getString("date")
+        val name: String? = arguments?.getString("name")
+        val email: String? = arguments?.getString("email")
+        val gender: String? = arguments?.getString("gender")
+        val date: String? = arguments?.getString("date")
 
 
-        verificationBinding.headerView.text = getString(R.string.info_verification,phNumber)
-        if ( !isLogin &&  phNumber == null ) {
+        verificationBinding.headerView.text = getString(R.string.info_verification, phNumber)
+        if (!isLogin && phNumber == null) {
             findNavController().navigate(R.id.action_verificationFragment_to_loginFragment)
-        }else{
-            if(name != null && email != null && gender != null && date != null &&  phNumber != null){
-                user = User(0,name,email,gender,date,phNumber,"not set","","")
+        } else {
+            if (name != null && email != null && gender != null && date != null && phNumber != null) {
+                user = User(0, name, email, gender, date, phNumber, "not set", "", "")
             }
         }
 
@@ -79,7 +80,7 @@ class VerificationFragment : Fragment() {
             VerificationViewModelFactory(requireContext(), requireView())
         ).get(VerificationFragmentViewModel::class.java)
 
-        val verificationFunction  = {
+        val verificationFunction = {
             verificationFragmentViewModel.sendVerificationCode(requireActivity(), { i, auth ->
                 when (i) {
                     1 -> {
@@ -87,9 +88,22 @@ class VerificationFragment : Fragment() {
                         verificationBinding.lvGhostView.visibility = View.VISIBLE
                         verificationBinding.lvGhostView.startAnim()
                         verificationBinding.otpView.otp = auth?.smsCode
-
+//+919668230883
                         if (isLogin) {
-                            findNavController().navigate(R.id.action_verificationFragment_to_categoryFragment)
+                            verificationFragmentViewModel.signInWithCredentials(auth!!) {
+                                if (it) {
+                                    // success
+                                    verificationBinding.lvGhostView.stopAnim()
+                                    verificationBinding.lvGhostView.visibility =
+                                        View.INVISIBLE
+                                    mainScope.launch {
+                                        val intent =
+                                            Intent(requireContext(), HomeActivity::class.java)
+                                        requireContext().startActivity(intent)
+                                    }
+
+                                }
+                            }
                         } else {
 
                             // here we need to upload the data to the cloud before confirming sign in
@@ -97,13 +111,21 @@ class VerificationFragment : Fragment() {
                                 if (it) {
                                     // success
                                     if (auth != null) {
-                                        verificationFragmentViewModel.signInWithCredentials(auth) {
+                                        verificationFragmentViewModel.signInWithCredentials(
+                                            auth
+                                        ) {
                                             if (it) {
                                                 // success
                                                 verificationBinding.lvGhostView.stopAnim()
                                                 verificationBinding.lvGhostView.visibility =
                                                     View.INVISIBLE
-                                                findNavController().navigate(R.id.action_verificationFragment_to_categoryFragment)
+                                                mainScope.launch {
+                                                    val intent = Intent(
+                                                        requireContext(),
+                                                        HomeActivity::class.java
+                                                    )
+                                                    requireContext().startActivity(intent)
+                                                }
                                             } else {
                                                 verificationBinding.lvGhostView.stopAnim()
                                                 verificationBinding.lvGhostView.visibility =
@@ -117,7 +139,8 @@ class VerificationFragment : Fragment() {
                                         }
                                     } else {
                                         verificationBinding.lvGhostView.stopAnim()
-                                        verificationBinding.lvGhostView.visibility = View.INVISIBLE
+                                        verificationBinding.lvGhostView.visibility =
+                                            View.INVISIBLE
                                         Snackbar.make(
                                             requireView(),
                                             "Error Signing In",
@@ -127,7 +150,8 @@ class VerificationFragment : Fragment() {
                                 } else {
                                     // failed
                                     verificationBinding.lvGhostView.stopAnim()
-                                    verificationBinding.lvGhostView.visibility = View.INVISIBLE
+                                    verificationBinding.lvGhostView.visibility =
+                                        View.INVISIBLE
                                     Snackbar.make(
                                         requireView(),
                                         "Sync To Cloud Failed !! Please Check Your Connection",
@@ -151,10 +175,11 @@ class VerificationFragment : Fragment() {
 
         verificationFunction()
 
-        countDownTimer = object : CountDownTimer(60_000,1000) {
+        countDownTimer = object : CountDownTimer(60_000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 verificationBinding.resendOtp.isClickable = false
-                verificationBinding.resendOtp.text = "00:"+(millisUntilFinished/1000).toString();
+                verificationBinding.resendOtp.text =
+                    "00:" + (millisUntilFinished / 1000).toString();
             }
 
             override fun onFinish() {
@@ -174,7 +199,7 @@ class VerificationFragment : Fragment() {
             verifyButton.setOnClickListener {
                 verificationBinding.lvGhostView.visibility = View.VISIBLE
                 verificationBinding.lvGhostView.startAnim()
-                if (otpView.otp.isEmpty() || otpView.otp.length < 6) {
+                if (otpView.otp.isEmpty()) {
                     verificationBinding.lvGhostView.stopAnim()
                     verificationBinding.lvGhostView.visibility = View.INVISIBLE
                     otpView.showError()
@@ -184,7 +209,7 @@ class VerificationFragment : Fragment() {
                         verificationBinding.lvGhostView.stopAnim()
                         verificationBinding.lvGhostView.visibility = View.INVISIBLE
                         otpView.showError()
-                    },user) {
+                    }, user) {
                         if (!it) {
                             verificationBinding.lvGhostView.stopAnim()
                             verificationBinding.lvGhostView.visibility = View.INVISIBLE
@@ -197,11 +222,17 @@ class VerificationFragment : Fragment() {
                                 ioScope.launch {
                                     repo.insertUser(user!!)
                                     mainScope.launch {
-                                        findNavController().navigate(R.id.action_verificationFragment_to_categoryFragment)
+                                        val intent = Intent(
+                                            requireContext(),
+                                            HomeActivity::class.java
+                                        )
+                                        requireContext().startActivity(intent)
                                     }
                                 }
                             } else {
-                                findNavController().navigate(R.id.action_verificationFragment_to_categoryFragment)
+                                val intent =
+                                    Intent(requireContext(), HomeActivity::class.java)
+                                requireContext().startActivity(intent)
                             }
                         }
                     }

@@ -6,18 +6,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_black"
+    android:paddingTop="20dp"
     tools:context=".SearchFragment">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/searchResultRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/searchInputEditText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/white_rectangle"
+            android:layout_weight="0.9"
+            android:textCursorDrawable="@color/white"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:paddingStart="20dp"
+            android:hint="search"
+            android:textColorHint="#A6A3A3"
+            android:fontFamily="@font/amiko_semibold"
+            android:layout_marginStart="20dp"
+            />
+
+        <ImageView
+            android:id="@+id/searchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_search_24"
+            android:background="@color/bg_black"
+            android:layout_weight="0.05"
+            android:layout_gravity="center"
+            />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchResultRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/search_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
+        app:layout_constraintTop_toBottomOf="@id/linearLayout3"
+        tools:listitem="@layout/search_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

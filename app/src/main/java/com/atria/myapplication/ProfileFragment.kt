@@ -77,10 +77,7 @@ class ProfileFragment : Fragment() {
         }
         profileViewModel.onFollowFetch.observe(viewLifecycleOwner) {
             profileFragmentBinding.followTextView.text = it.toString()
-
         }
-
-
 
         profileViewModel.getUserData(id) { v ->
             var biglink = ""

@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_ONE_SHOT
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -53,7 +54,7 @@ class NotificationFirebaseService : FirebaseMessagingService() {
         }
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this,0,intent,FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(this,0,intent, FLAG_UPDATE_CURRENT)
         val notification = NotificationCompat.Builder(this,channel_id)
             .setContentText(message.data["message"])
             .setAutoCancel(true)

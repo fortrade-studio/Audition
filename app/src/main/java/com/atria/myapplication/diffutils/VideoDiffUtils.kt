@@ -21,7 +21,8 @@ class VideoDiffUtils(val newList: List<VideoData>,val oldList: List<VideoData>):
 
 }
     data class VideoData(
-    val link:String="",
-    val likes : Long = 0L,
-    val userId : String = ""
+        val link:String="",
+        val likes : Long = 0L,
+        val userid : String = "",
+        val uvid : String = ""
 )
