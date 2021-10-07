@@ -200,7 +200,7 @@ class VideoFragment : Fragment() {
     private fun compressVideo(uri: String) {
         val arr = TrimmerUtils.getVideoWidthHeight(requireActivity(), Uri.parse(uri))
         TrimVideo.activity(uri)
-            .setCompressOption(CompressOption(30, "1M", arr[0], arr[1]))
+            .setCompressOption(CompressOption(20, "0.1M", arr[0], arr[1]))
             .start(this, startForResult)
     }
 

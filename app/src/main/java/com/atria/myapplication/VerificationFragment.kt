@@ -73,8 +73,6 @@ class VerificationFragment : Fragment() {
             }
         }
 
-
-
         verificationFragmentViewModel = ViewModelProvider(
             this,
             VerificationViewModelFactory(requireContext(), requireView())

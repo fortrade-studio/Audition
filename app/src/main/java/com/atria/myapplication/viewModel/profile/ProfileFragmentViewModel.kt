@@ -87,7 +87,7 @@ class ProfileFragmentViewModel(
                 .document(user_name!!)
                 .collection("Following")
                 .document(ph)
-                .set(mapOf(Pair(user, username)))
+                .set(mapOf(Pair(user, username),Pair("userId",ph)))
                 .addOnSuccessListener {
                     firebase.collection(user)
                         .document(ph)
@@ -111,6 +111,16 @@ class ProfileFragmentViewModel(
             .get()
             .addOnSuccessListener {
                 onFollowFetch.postValue(it.get("follower") as Long)
+            }
+    }
+
+    fun getFollowing(id:String,onFetched:(Int)->Unit){
+        firebase.collection(user)
+            .document(id)
+            .collection("Following")
+            .get()
+            .addOnSuccessListener {
+                onFetched(it.size())
             }
     }
 

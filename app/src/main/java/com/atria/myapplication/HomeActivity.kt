@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import com.google.firebase.auth.FirebaseAuth
 
 class HomeActivity : AppCompatActivity() {
 
@@ -19,6 +20,7 @@ class HomeActivity : AppCompatActivity() {
             intent.extras?.getInt("user")!=0 -> 1
             else -> 0
         }
+
 
     }
 

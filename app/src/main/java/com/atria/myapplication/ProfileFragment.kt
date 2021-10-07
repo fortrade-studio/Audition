@@ -128,7 +128,9 @@ class ProfileFragment : Fragment() {
             profileFragmentBinding.usernameTextView.text = v.username
             profileFragmentBinding.summaryTextView.text = v.summary
             profileFragmentBinding.followTextView.text = v.follower.toString()
-            profileFragmentBinding.followingTextView.text = v.following.toString()
+            profileViewModel.getFollowing(id) {
+                 profileFragmentBinding.followingTextView.text = it.toString()
+            }
 
         }
 

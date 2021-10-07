@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 class HomeAdapter(
     val context: Context,
@@ -38,12 +39,18 @@ class HomeAdapter(
     val list: ArrayList<VideoData>
 ) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>() {
 
+    var mute: Boolean = true
     companion object {
         var mediaPlayer: MediaPlayer? = null
         val db = FirebaseDatabase.getInstance()
         val firebase = FirebaseFirestore.getInstance()
         val phNumber = FirebaseAuth.getInstance().currentUser?.phoneNumber
         private const val TAG = "HomeAdapter"
+        val init :(Int)->MediaPlayer={
+             MediaPlayer()
+        }
+        val map = mutableMapOf<Int,MediaPlayer>()
+        val listMedia = Array(11, init)
         val liked = "Liked"
     }
 
@@ -67,6 +74,7 @@ class HomeAdapter(
         list.clear()
         list.addAll(newList)
         diff.dispatchUpdatesTo(this)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
@@ -100,12 +108,19 @@ class HomeAdapter(
             }
     }
 
+
+    // 11- x = 1
+    // 21 -x = 1
+    // 31 -x = 1
+
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
+
         holder.progressView.visibility = View.VISIBLE
         holder.videoView.setOnPreparedListener {
             it.isLooping = true
-            mediaPlayer = it
-            it.start()
+            synchronized(listMedia) {
+                map.put(position,it)
+            }
             holder.progressView.visibility = View.INVISIBLE
         }
         var like: Boolean = false
@@ -153,7 +168,6 @@ class HomeAdapter(
         }
 
         var tapCounter = 0
-        var mute: Boolean = true
         val postDelayed = Handler()
         val function = {
             tapCounter = if (tapCounter >= 2) {
@@ -173,11 +187,13 @@ class HomeAdapter(
                 if (mute) {
                     holder.volumeImageView.visibility = View.VISIBLE
                     holder.volumeImageView.setImageResource(R.drawable.ic_mute)
-                    blockError { mediaPlayer?.setVolume(0f, 0f) }
+                    blockError {
+                        map[position]?.setVolume(0f, 0f)
+                    }
                 } else {
                     holder.volumeImageView.visibility = View.VISIBLE
                     holder.volumeImageView.setImageResource(R.drawable.ic_unmute)
-                    blockError { mediaPlayer?.setVolume(1f, 1f) }
+                    blockError { map[position]?.setVolume(1f, 1f) }
                 }
                 hideFunction.postDelayed(hide, 400)
                 mute = !mute
@@ -281,6 +297,7 @@ class HomeAdapter(
             }
         }
     }
+
 
     private fun saveToLikes(uvid: String){
         firebase.collection(Constants.user)
