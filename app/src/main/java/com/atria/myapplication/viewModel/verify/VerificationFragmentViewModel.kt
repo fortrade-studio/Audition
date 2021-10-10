@@ -2,9 +2,10 @@ package com.atria.myapplication.viewModel.verify
 
 import android.app.Activity
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.view.View
 import androidx.lifecycle.ViewModel
-import com.atria.myapplication.VerificationFragment
 import com.atria.myapplication.room.User
 import com.atria.myapplication.viewModel.profile.ProfileFragmentViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -15,31 +16,37 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.concurrent.TimeUnit
-import kotlin.math.sign
 
-class VerificationFragmentViewModel(context: Context, val view: View) : ViewModel() {
+
+class VerificationFragmentViewModel(val context: Context, val view: View) : ViewModel() {
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val firebaseFireStore = FirebaseFirestore.getInstance()
     private var verificationId : String? = null
+    private val MY_PREFS_NAME = "User"
+    private val logged = "loggedIn"
     // int 1 -> already verified
     // int 0 -> code sent
     // int -1 -> failure
-    fun sendVerificationCode(activity: Activity, onCodeSentFunction:(Int,PhoneAuthCredential?)->Unit,phNumber:String){
+    fun sendVerificationCode(
+        activity: Activity,
+        onCodeSentFunction: (Int, PhoneAuthCredential?) -> Unit,
+        phNumber: String
+    ){
 
         val authCallback = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                onCodeSentFunction(1,credential)
+                onCodeSentFunction(1, credential)
             }
 
             override fun onVerificationFailed(p0: FirebaseException) {
-                onCodeSentFunction(-1,null)
+                onCodeSentFunction(-1, null)
             }
 
             override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
                 super.onCodeSent(p0, p1)
                 verificationId = p0
-                onCodeSentFunction(0,null)
+                onCodeSentFunction(0, null)
             }
 
         }
@@ -56,7 +63,12 @@ class VerificationFragmentViewModel(context: Context, val view: View) : ViewMode
 
     }
 
-    fun checkForCode(verificationCode:String, invalidCred:()->Unit, user: User?, onCompleted: (Boolean) -> Unit){
+    fun checkForCode(
+        verificationCode: String,
+        invalidCred: () -> Unit,
+        user: User?,
+        onCompleted: (Boolean) -> Unit
+    ){
         if(verificationId != null) {
             val credential = PhoneAuthProvider.getCredential(verificationId!!, verificationCode)
             if(user == null){
@@ -68,7 +80,11 @@ class VerificationFragmentViewModel(context: Context, val view: View) : ViewMode
                     signInWithCredentials(credential){ onCompleted(it) }
                 }else{
                     onCompleted(false)
-                    Snackbar.make(view,"Sync Failed !! Please Check Your Internet Connection",Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(
+                        view,
+                        "Sync Failed !! Please Check Your Internet Connection",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
             }
         }else{
@@ -76,7 +92,7 @@ class VerificationFragmentViewModel(context: Context, val view: View) : ViewMode
         }
     }
 
-     fun signInWithCredentials(credential: PhoneAuthCredential,onCompleted:(Boolean)->Unit){
+     fun signInWithCredentials(credential: PhoneAuthCredential, onCompleted: (Boolean) -> Unit){
         firebaseAuth.signInWithCredential(credential)
             .addOnSuccessListener {
                 onCompleted(true)
@@ -86,7 +102,7 @@ class VerificationFragmentViewModel(context: Context, val view: View) : ViewMode
             }
     }
 
-    fun uploadUserToTheDatabase(user:User?,onCompleted: (Boolean) -> Unit){
+    fun uploadUserToTheDatabase(user: User?, onCompleted: (Boolean) -> Unit){
         if (user != null) {
             firebaseFireStore
                 .collection("Users")
@@ -103,20 +119,29 @@ class VerificationFragmentViewModel(context: Context, val view: View) : ViewMode
         }
     }
 
-    fun uploadDefaultLinkToUser(user:User,onSuccess:()->Unit){
+    fun storeInCache(){
+        val editor: SharedPreferences.Editor =
+            context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit()
+        editor.putBoolean("loggedIn", true)
+        editor.apply()
+    }
+
+    fun uploadDefaultLinkToUser(user: User, onSuccess: () -> Unit){
         firebaseFireStore.collection("Users")
             .document(user.phNumber)
             .collection("ViewData")
             .document("links")
-            .set(ProfileFragmentViewModel.ViewData(
-                "https://www.knivesindia.com/ecom/wp-content/uploads/2017/06/wood-blog-placeholder.jpg",
-                "https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png",
-                0,
-                0,
-                user.name,
-                user.username,
-                ".."
-            ))
+            .set(
+                ProfileFragmentViewModel.ViewData(
+                    "https://www.knivesindia.com/ecom/wp-content/uploads/2017/06/wood-blog-placeholder.jpg",
+                    "https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png",
+                    0,
+                    0,
+                    user.name,
+                    user.username,
+                    ".."
+                )
+            )
             .addOnSuccessListener {
                 onSuccess()
             }

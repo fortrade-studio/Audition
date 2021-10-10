@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.atria.myapplication.Constants
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,14 +40,39 @@ class UsernameFragmentViewModel : ViewModel() {
 
     }
 
-    fun uploadUsernameToCloud(username: String)= CoroutineScope(Dispatchers.IO).launch {
+
+
+    fun uploadUsernameToCloud(username: String,onSuccess:()->Unit, onUploadFailed:()->Unit)= CoroutineScope(Dispatchers.IO).launch {
         // two things are needed here , upload name to user fields and name to username list
         firebase
             .collection("Users")
             .document(auth.currentUser!!.phoneNumber!!)
-            .get()
+            .update(mapOf(Pair("username",username)))
             .addOnSuccessListener {
+                firebase
+                    .collection("Users")
+                    .document(auth.currentUser!!.phoneNumber!!)
+                    .collection(Constants.viewdata)
+                    .document("links")
+                    .update(mapOf(Pair("username",username)))
+                    .addOnSuccessListener {
+                        firebase.collection("Username")
+                            .document(username)
+                            .set(Username(username))
+                            .addOnSuccessListener {
+                                onSuccess()
+                            }
+                            .addOnFailureListener {
+                                onUploadFailed()
+                            }
+                    }
+                    .addOnFailureListener {
+                        onUploadFailed()
+                    }
 
+            }
+            .addOnFailureListener {
+                onUploadFailed()
             }
     }
 

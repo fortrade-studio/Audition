@@ -1,5 +1,6 @@
 package com.atria.myapplication
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -10,10 +11,12 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.atria.myapplication.databinding.FragmentUsernameBinding
 import com.atria.myapplication.viewModel.username.UsernameFragmentViewModel
 import com.atria.myapplication.viewModel.username.UsernameFragmentViewModelFactory
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.DisposableHandle
@@ -24,10 +27,12 @@ class UsernameFragment : Fragment() {
 
     private lateinit var usernameFragmentBinding: FragmentUsernameBinding
     private lateinit var usernameFragmentViewModel: UsernameFragmentViewModel
+    private lateinit var intent: Intent
 
     companion object {
         private val mainScope = CoroutineScope(Dispatchers.Main)
         private const val TAG = "UsernameFragment"
+        private val auth = FirebaseAuth.getInstance()
     }
 
 
@@ -41,6 +46,12 @@ class UsernameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (auth.currentUser == null){
+            requireActivity().onBackPressed()
+        }
+
+        intent = Intent(requireContext(), HomeActivity::class.java)
         usernameFragmentViewModel = ViewModelProvider(this, UsernameFragmentViewModelFactory()).get(
             UsernameFragmentViewModel::class.java
         )
@@ -76,12 +87,20 @@ class UsernameFragment : Fragment() {
         }
 
         usernameFragmentViewModel.usernameAcceptable.observe(viewLifecycleOwner) {
+            val s = usernameFragmentBinding.usernameEditText.text.toString()
             if (it) {
-                if (usernameFragmentBinding.usernameEditText.text.toString()
-                        .trim().length in 5..15
+                if (s.trim().length in 5..15
                 ) {
                     usernameFragmentBinding.appCompatButton.setOnClickListener {
-                        Log.i(TAG, "onViewCreated: alright clicked")
+                        usernameFragmentViewModel.uploadUsernameToCloud(s.trim(), {
+                            startActivity(intent)
+                        }) {
+                            Snackbar.make(
+                                requireView(),
+                                "Something Went Wrong !! Please Check Your Connection",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 } else {
                     // not in range 11 to 4

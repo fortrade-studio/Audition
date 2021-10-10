@@ -82,6 +82,8 @@ class VerificationFragment : Fragment() {
             verificationFragmentViewModel.sendVerificationCode(requireActivity(), { i, auth ->
                 when (i) {
                     1 -> {
+
+                        // here we need to store that the user is now officially logged in
                         verificationBinding.verifyButton.isClickable = false
                         verificationBinding.lvGhostView.visibility = View.VISIBLE
                         verificationBinding.lvGhostView.startAnim()
@@ -91,6 +93,7 @@ class VerificationFragment : Fragment() {
                             verificationFragmentViewModel.signInWithCredentials(auth!!) {
                                 if (it) {
                                     // success
+                                    verificationFragmentViewModel.storeInCache()
                                     verificationBinding.lvGhostView.stopAnim()
                                     verificationBinding.lvGhostView.visibility =
                                         View.INVISIBLE
@@ -114,16 +117,13 @@ class VerificationFragment : Fragment() {
                                         ) {
                                             if (it) {
                                                 // success
+                                                verificationFragmentViewModel.storeInCache()
                                                 verificationBinding.lvGhostView.stopAnim()
                                                 verificationBinding.lvGhostView.visibility =
                                                     View.INVISIBLE
                                                 mainScope.launch {
                                                     findNavController().navigate(R.id.action_verificationFragment_to_usernameFragment2)
-//                                                    val intent = Intent(
-//                                                        requireContext(),
-//                                                        HomeActivity::class.java
-//                                                    )
-//                                                    requireContext().startActivity(intent)
+//
                                                 }
                                             } else {
                                                 verificationBinding.lvGhostView.stopAnim()
@@ -221,9 +221,10 @@ class VerificationFragment : Fragment() {
                                 ioScope.launch {
                                     repo.insertUser(user!!)
                                     mainScope.launch {
-                                        if(!isLogin){
+                                        if (!isLogin) {
+                                            verificationFragmentViewModel.storeInCache()
                                             findNavController().navigate(R.id.action_verificationFragment_to_usernameFragment2)
-                                        }else {
+                                        } else {
                                             val intent = Intent(
                                                 requireContext(),
                                                 HomeActivity::class.java

@@ -27,11 +27,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        if(FirebaseAuth.getInstance().currentUser != null){
-//            val intent = Intent(this, HomeActivity::class.java)
-//            startActivity(intent)
-//        }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
