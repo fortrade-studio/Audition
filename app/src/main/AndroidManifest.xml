@@ -30,7 +30,20 @@
         <activity android:name=".WindowActivity"
             android:theme="@style/Theme.Transparent">
         </activity>
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".HomeActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category  android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="https"
+                    android:host="www.atria.com"></data>
+            </intent-filter>
+
+
+        </activity>
+
         <activity
             android:name=".ui.main.MainActivity"
             android:screenOrientation="portrait">
@@ -39,12 +52,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+
     </application>
 
 </manifest>

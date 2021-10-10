@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/usernameFragment2">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -40,5 +40,13 @@
         <action
             android:id="@+id/action_verificationFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_verificationFragment_to_usernameFragment2"
+            app:destination="@id/usernameFragment2" />
     </fragment>
+    <fragment
+        android:id="@+id/usernameFragment2"
+        android:name="com.atria.myapplication.UsernameFragment"
+        android:label="fragment_username"
+        tools:layout="@layout/fragment_username" />
 </navigation>

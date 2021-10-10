@@ -22,6 +22,7 @@ import com.atria.myapplication.notification.NotificationData
 import com.atria.myapplication.notification.PushNotification
 import com.atria.myapplication.notification.RetrofitInstance
 import com.atria.myapplication.service.NotificationFirebaseService
+import com.atria.myapplication.utils.NumberToUniqueStringGenerator.Companion.uniqueToNumber
 import com.atria.myapplication.utils.NumberToUniqueStringGenerator.Companion.userUniqueString
 import com.atria.myapplication.viewModel.home.HomeParentViewModel
 import com.atria.myapplication.viewModel.home.HomeParentViewModelFactory
@@ -53,41 +54,51 @@ class HomeFragment : Fragment() {
         return homeFragmentBinding.root
     }
 
+    private fun getVideoId(link:String):String{
+        return link.substringAfter("?","-1").substringBefore(",auth.url")
+    }
+
+    private fun getLink(link: String):String{
+        return link.substringAfter(",auth.url=").trim()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        var id:String = ""
+        var link :String = ""
+
+        val data = requireActivity().intent.data
+        if(data!=null){
+            id = uniqueToNumber(getVideoId(data.toString()))
+            link = getLink(data.toString())
+            val ph = id.dropLast(1)
+            Log.i(TAG, "onViewCreated: $id & $link $ph")
+        }else{
+            Log.i(TAG, "onViewCreated: not found link")
+        }
         homeParentViewModel = ViewModelProvider(
             this,
             HomeParentViewModelFactory()
         ).get(HomeParentViewModel::class.java)
 
-        val list :List<VideoData> =   listOf(VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-            VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",userid = "+9195489554572",uvid = "+919548955457"),
-
+        val list :List<VideoData> = if(data==null) {
+            listOf(
+                VideoData(
+                    "https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",
+                    userid = "+919548955457",
+                    uvid = "+9195489554572"
+                ),
             )
 
+        }else{
+            Log.i(TAG, "onViewCreated: $link")
+            listOf(
+                VideoData(
+                    link,userid = id.dropLast(1) , uvid = id
+                )
+            )
+        }
         val adapter = HomeAdapter(requireContext(),requireView(),
            ArrayList(list)
         )
@@ -112,7 +123,6 @@ class HomeFragment : Fragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                adapter.mute = false
                 val recycler = homeFragmentBinding.viewPager2[0] as RecyclerView
                 val constraintLayout = recycler[position] as ConstraintLayout
                 val video = constraintLayout[0] as VideoView

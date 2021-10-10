@@ -1,6 +1,7 @@
 package com.atria.myapplication.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.media.MediaPlayer
 import android.net.Uri
@@ -67,6 +68,9 @@ class HomeAdapter(
         val profilePicImageView = view.findViewById<ImageView>(R.id.profileImageView)
         val profileButton = view.findViewById<ImageView>(R.id.profileButton)
         val searchButton = view.findViewById<ImageView>(R.id.searchButton)
+
+        val shareButton = view.findViewById<ImageButton>(R.id.shareButton)
+        val reportButton = view.findViewById<ImageButton>(R.id.reportButton)
     }
 
     fun updateList(newList: List<VideoData>) {
@@ -109,10 +113,6 @@ class HomeAdapter(
     }
 
 
-    // 11- x = 1
-    // 21 -x = 1
-    // 31 -x = 1
-
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
 
         holder.progressView.visibility = View.VISIBLE
@@ -130,6 +130,23 @@ class HomeAdapter(
                 like = it
                 holder.likeButton.setBackgroundResource(R.drawable.ic_like)
             }
+        }
+
+        holder.reportButton.setOnClickListener {
+            
+        }
+
+        holder.shareButton.setOnClickListener {
+            val unique = NumberToUniqueStringGenerator.numberToUniqueString(list[position].uvid)+
+                    ",auth.url=${list[position].link}"
+            Log.i(TAG, "onBindViewHolder: $unique")
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(
+                Intent.EXTRA_TEXT,
+                Constants.linkPrefix.plus(unique)
+            )
+            context.startActivity(Intent.createChooser(shareIntent, "Share using"))
         }
 
         holder.profileButton.setOnClickListener {

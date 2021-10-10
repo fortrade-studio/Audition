@@ -32,6 +32,9 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/nav_main.xml"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_profileFragment_to_followingFragment"
+            app:destination="@id/followingFragment" />
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
@@ -51,6 +54,15 @@
         tools:layout="@layout/fragment_search" >
         <action
             android:id="@+id/action_searchFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/followingFragment"
+        android:name="com.atria.myapplication.FollowingFragment"
+        android:label="fragment_following"
+        tools:layout="@layout/fragment_following" >
+        <action
+            android:id="@+id/action_followingFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
     </fragment>
 

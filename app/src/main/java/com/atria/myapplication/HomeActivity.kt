@@ -1,10 +1,18 @@
 package com.atria.myapplication
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import com.atria.myapplication.service.NotificationFirebaseService
+import com.atria.myapplication.ui.main.MainActivity
+import com.atria.myapplication.utils.NumberToUniqueStringGenerator
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.installations.FirebaseInstallations
+import com.google.firebase.messaging.FirebaseMessaging
 
 class HomeActivity : AppCompatActivity() {
 
@@ -20,6 +28,22 @@ class HomeActivity : AppCompatActivity() {
             intent.extras?.getInt("user")!=0 -> 1
             else -> 0
         }
+
+        NotificationFirebaseService.sharedPreference =
+            this.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+        FirebaseInstallations.getInstance().getToken(true).addOnSuccessListener {
+            NotificationFirebaseService.token = it.token
+        }
+        FirebaseMessaging.getInstance().subscribeToTopic("/topics/" + NumberToUniqueStringGenerator.userUniqueString())
+            .addOnSuccessListener {}
+            .addOnFailureListener {
+                Log.e(TAG, "onViewCreated: ", it)
+                Toast.makeText(
+                    this,
+                    "Notification Pipe Unable to Set!",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
 
 
     }

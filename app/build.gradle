@@ -119,6 +119,8 @@ dependencies {
 
     implementation 'com.github.a914-gowtham:android-video-trimmer:1.7.0'
 
+    // edit material
+    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 
     implementation 'com.karumi:dexter:6.2.2'
 }

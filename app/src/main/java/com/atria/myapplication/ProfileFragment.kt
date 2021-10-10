@@ -1,6 +1,7 @@
 package com.atria.myapplication
 
 
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +18,10 @@ import com.atria.myapplication.databinding.FragmentProfileBinding
 import com.atria.myapplication.viewModel.profile.ProfileFragmentViewModel
 import com.atria.myapplication.viewModel.profile.ProfileFragmentViewModelFactory
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.firebase.auth.FirebaseAuth
 
 class ProfileFragment : Fragment() {
@@ -50,6 +55,8 @@ class ProfileFragment : Fragment() {
                 requireView()
             )
         ).get(ProfileFragmentViewModel::class.java)
+
+
 
         profileFragmentBinding.backButton.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
@@ -99,9 +106,9 @@ class ProfileFragment : Fragment() {
                 .load(biglink)
                 .into(profileFragmentBinding.bigScreenImageView)
 
-            Glide.with(requireContext())
-                .load(cirlink)
-                .into(profileFragmentBinding.cicularProfileView)
+//            Glide.with(requireContext())
+//                .load(cirlink)
+//                .into(profileFragmentBinding.cicularProfileView)
 
             if (auth?.phoneNumber != id) {
                 profileFragmentBinding.followButton.setOnClickListener {
@@ -111,7 +118,7 @@ class ProfileFragment : Fragment() {
                             profileViewModel.followLive.postValue(false)
                         }
                     } else {
-                        profileViewModel.followUser(id, v.username) {
+                        profileViewModel.followUser(id, v.username,v.circular,v.name) {
                             isFollowing = true
                             profileViewModel.followLive.postValue(true)
                         }
@@ -120,8 +127,6 @@ class ProfileFragment : Fragment() {
             } else {
                 profileFragmentBinding.followButton.setOnClickListener {
                     findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
-//                    Toast.makeText(requireContext(), "Feature #1901 missing", Toast.LENGTH_SHORT)
-//                        .show()
                 }
             }
             profileFragmentBinding.nameTextView.text = v.name
@@ -132,6 +137,12 @@ class ProfileFragment : Fragment() {
                  profileFragmentBinding.followingTextView.text = it.toString()
             }
 
+        }
+
+        if (auth?.phoneNumber == id) {
+            profileFragmentBinding.gridLayout.setOnClickListener {
+                findNavController().navigate(R.id.action_profileFragment_to_followingFragment)
+            }
         }
 
     }

@@ -80,14 +80,16 @@ class ProfileFragmentViewModel(
             }
     }
 
-    fun followUser(ph: String, username: String, onSuccess: () -> Unit) {
+    fun followUser(ph: String, username: String,image:String,name:String, onSuccess: () -> Unit) {
         if (followLive.value == false) {
             // you can follow
             firebase.collection(user)
                 .document(user_name!!)
                 .collection("Following")
                 .document(ph)
-                .set(mapOf(Pair(user, username),Pair("userId",ph)))
+                .set(mapOf(Pair(user, username),Pair("userId",ph), Pair("img",image),
+                    Pair("name", name)
+                ))
                 .addOnSuccessListener {
                     firebase.collection(user)
                         .document(ph)

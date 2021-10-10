@@ -118,11 +118,12 @@ class VerificationFragment : Fragment() {
                                                 verificationBinding.lvGhostView.visibility =
                                                     View.INVISIBLE
                                                 mainScope.launch {
-                                                    val intent = Intent(
-                                                        requireContext(),
-                                                        HomeActivity::class.java
-                                                    )
-                                                    requireContext().startActivity(intent)
+                                                    findNavController().navigate(R.id.action_verificationFragment_to_usernameFragment2)
+//                                                    val intent = Intent(
+//                                                        requireContext(),
+//                                                        HomeActivity::class.java
+//                                                    )
+//                                                    requireContext().startActivity(intent)
                                                 }
                                             } else {
                                                 verificationBinding.lvGhostView.stopAnim()
@@ -220,11 +221,15 @@ class VerificationFragment : Fragment() {
                                 ioScope.launch {
                                     repo.insertUser(user!!)
                                     mainScope.launch {
-                                        val intent = Intent(
-                                            requireContext(),
-                                            HomeActivity::class.java
-                                        )
-                                        requireContext().startActivity(intent)
+                                        if(!isLogin){
+                                            findNavController().navigate(R.id.action_verificationFragment_to_usernameFragment2)
+                                        }else {
+                                            val intent = Intent(
+                                                requireContext(),
+                                                HomeActivity::class.java
+                                            )
+                                            requireContext().startActivity(intent)
+                                        }
                                     }
                                 }
                             } else {

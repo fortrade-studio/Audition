@@ -21,6 +21,14 @@ class NumberToUniqueStringGenerator {
             return stringBuilder.toString().trim()
         }
 
+        fun uniqueToNumber(uniq:String):String{
+            val stringBuilder = StringBuilder()
+            for (char in uniq){
+                stringBuilder.append(alphabet.indexOf(char))
+            }
+            return "+"+stringBuilder.toString().trim()
+        }
+
         //jbjggicdaiid
         fun userUniqueString(): String {
             val stringBuilder = StringBuilder()

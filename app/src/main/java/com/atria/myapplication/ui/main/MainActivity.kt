@@ -27,27 +27,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if(FirebaseAuth.getInstance().currentUser != null){
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-        }
-
-        NotificationFirebaseService.sharedPreference =
-            this.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
-        FirebaseInstallations.getInstance().getToken(true).addOnSuccessListener {
-            NotificationFirebaseService.token = it.token
-        }
-        FirebaseMessaging.getInstance().subscribeToTopic("/topics/" + NumberToUniqueStringGenerator.userUniqueString())
-            .addOnSuccessListener {}
-            .addOnFailureListener {
-                Log.e(TAG, "onViewCreated: ", it)
-                Toast.makeText(
-                    this,
-                    "Notification Pipe Unable to Set!",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-
+//        if(FirebaseAuth.getInstance().currentUser != null){
+//            val intent = Intent(this, HomeActivity::class.java)
+//            startActivity(intent)
+//        }
 
     }
 

@@ -12,5 +12,7 @@
     <color name="colorOnPrimary">#F57F17</color>
     <color name="blackish">#706F6F</color>
     <color name="bg_black">#18191A</color>
+    <color name="green">#43A047</color>
+    <color name="red">#E53935</color>
 
 </resources>
