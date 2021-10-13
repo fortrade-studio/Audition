@@ -1,6 +1,7 @@
 package com.atria.myapplication
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +15,10 @@ import com.atria.myapplication.databinding.FragmentLoginBackBinding
 import com.atria.myapplication.viewModel.register.LoginBackFragmentViewModel
 import com.atria.myapplication.viewModel.register.LoginBackFragmentViewModelFactory
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestore
 
 
-class LoginBackFragment : Fragment() {
+class LoginBackFragment : Fragment() , Thread.UncaughtExceptionHandler{
 
     private lateinit var loginFragmentBinding: FragmentLoginBackBinding
     private var stateNumber = MutableLiveData<Int>(0)
@@ -32,7 +34,7 @@ class LoginBackFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Thread.setDefaultUncaughtExceptionHandler(this)
         loginBackFragmentViewModel = ViewModelProvider(
             this, LoginBackFragmentViewModelFactory(
                 requireContext(), requireView()
@@ -91,6 +93,16 @@ class LoginBackFragment : Fragment() {
             }
         }
 
+    }
+
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        FirebaseFirestore.getInstance()
+            .collection("Error")
+            .document(this::class.java.simpleName)
+            .collection(this::class.java.simpleName.toUpperCase())
+            .document(e.localizedMessage)
+            .set(mapOf(Pair("value",e.stackTraceToString())))
+            .addOnSuccessListener { Log.i("here", "uncaughtException: reported")}
     }
 
 

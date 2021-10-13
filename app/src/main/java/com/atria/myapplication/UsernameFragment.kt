@@ -17,13 +17,14 @@ import com.atria.myapplication.viewModel.username.UsernameFragmentViewModel
 import com.atria.myapplication.viewModel.username.UsernameFragmentViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.launch
 
 
-class UsernameFragment : Fragment() {
+class UsernameFragment : Fragment() , Thread.UncaughtExceptionHandler{
 
     private lateinit var usernameFragmentBinding: FragmentUsernameBinding
     private lateinit var usernameFragmentViewModel: UsernameFragmentViewModel
@@ -46,7 +47,7 @@ class UsernameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Thread.setDefaultUncaughtExceptionHandler(this)
         if (auth.currentUser == null){
             requireActivity().onBackPressed()
         }
@@ -121,6 +122,16 @@ class UsernameFragment : Fragment() {
             }
 
         }
+    }
+
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        FirebaseFirestore.getInstance()
+            .collection("Error")
+            .document(this::class.java.simpleName)
+            .collection(this::class.java.simpleName.toUpperCase())
+            .document(e.localizedMessage)
+            .set(mapOf(Pair("value",e.stackTraceToString())))
+            .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
     }
 
 }

@@ -29,6 +29,7 @@ import com.atria.myapplication.viewModel.video.VideoFragmentViewModel
 import com.atria.myapplication.viewModel.video.VideoFragmentViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.gowtham.library.utils.CompressOption
 import com.gowtham.library.utils.TrimVideo
 import com.gowtham.library.utils.TrimmerUtils
@@ -42,7 +43,7 @@ import java.io.File
 import kotlin.properties.Delegates
 
 
-class VideoFragment : Fragment() {
+class VideoFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
     private lateinit var videoFragmentBinding: FragmentVideoBinding
     private lateinit var videoFragmentViewModel: VideoFragmentViewModel
@@ -68,6 +69,7 @@ class VideoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Thread.setDefaultUncaughtExceptionHandler(this)
         isUserProfile =
             Constants.profile_id == FirebaseAuth.getInstance().currentUser?.phoneNumber
 
@@ -244,6 +246,16 @@ class VideoFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        FirebaseFirestore.getInstance()
+            .collection("Error")
+            .document(this::class.java.simpleName)
+            .collection(this::class.java.simpleName.toUpperCase())
+            .document(e.localizedMessage)
+            .set(mapOf(Pair("value",e.stackTraceToString())))
+            .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
     }
 
 

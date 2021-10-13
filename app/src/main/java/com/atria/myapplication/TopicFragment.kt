@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,9 +19,10 @@ import com.atria.myapplication.viewModel.profession.ProfessionFragmentViewModel
 import com.atria.myapplication.viewModel.profession.ProfessionFragmentViewModelFactory
 import com.atria.myapplication.viewModel.topic.TopicFragmentViewModel
 import com.atria.myapplication.viewModel.topic.TopicFragmentViewModelFactory
+import com.google.firebase.firestore.FirebaseFirestore
 
 
-class TopicFragment : Fragment() {
+class TopicFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
     private lateinit var fragmentTopicBinding: FragmentTopicBinding
     private lateinit var animatedDrawable: AnimatedVectorDrawable
@@ -45,7 +47,7 @@ class TopicFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Thread.setDefaultUncaughtExceptionHandler(this)
         topicFragmentViewModel = ViewModelProvider(this, TopicFragmentViewModelFactory(requireActivity())).get(
             TopicFragmentViewModel::class.java
         )
@@ -145,6 +147,16 @@ class TopicFragment : Fragment() {
             animatedDrawable.start()
         }
         
+    }
+
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        FirebaseFirestore.getInstance()
+            .collection("Error")
+            .document(this::class.java.simpleName)
+            .collection(this::class.java.simpleName.toUpperCase())
+            .document(e.localizedMessage)
+            .set(mapOf(Pair("value",e.stackTraceToString())))
+            .addOnSuccessListener { Log.i("here", "uncaughtException: reported")}
     }
 
 }

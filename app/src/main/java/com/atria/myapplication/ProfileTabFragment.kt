@@ -11,8 +11,9 @@ import androidx.viewpager.widget.ViewPager
 import com.atria.myapplication.databinding.FragmentProfileTabBinding
 import com.atria.myapplication.utils.SectionsPageAdapter
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.firestore.FirebaseFirestore
 
-class ProfileTabFragment : Fragment() {
+class ProfileTabFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
     private lateinit var profileTabFragmentBinding : FragmentProfileTabBinding
 
@@ -31,6 +32,7 @@ class ProfileTabFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Thread.setDefaultUncaughtExceptionHandler(this)
 
         val sectionsPagerAdapter = SectionsPageAdapter(requireContext(),  childFragmentManager,FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
         profileTabFragmentBinding.viewPager.adapter = sectionsPagerAdapter
@@ -46,6 +48,16 @@ class ProfileTabFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.i(TAG, "onResume: ")
+    }
+
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        FirebaseFirestore.getInstance()
+            .collection("Error")
+            .document(this::class.java.simpleName)
+            .collection(this::class.java.simpleName.toUpperCase())
+            .document(e.localizedMessage)
+            .set(mapOf(Pair("value",e.stackTraceToString())))
+            .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
     }
 
 }

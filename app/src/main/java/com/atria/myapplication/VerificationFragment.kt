@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.service.autofill.UserData
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,11 +20,12 @@ import com.atria.myapplication.room.UserRepository
 import com.atria.myapplication.viewModel.verify.VerificationFragmentViewModel
 import com.atria.myapplication.viewModel.verify.VerificationViewModelFactory
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class VerificationFragment : Fragment() {
+class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
 
     private lateinit var verificationBinding: FragmentVerificationBinding
     private lateinit var verificationFragmentViewModel: VerificationFragmentViewModel
@@ -51,7 +53,7 @@ class VerificationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Thread.setDefaultUncaughtExceptionHandler(this)
         val userDao = UserDatabase.getDatabase(requireContext()).getUserDao()
         repo = UserRepository(userDao)
 
@@ -249,6 +251,16 @@ class VerificationFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         countDownTimer.cancel()
+    }
+
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        FirebaseFirestore.getInstance()
+            .collection("Error")
+            .document(this::class.java.simpleName)
+            .collection(this::class.java.simpleName.toUpperCase())
+            .document(e.localizedMessage)
+            .set(mapOf(Pair("value",e.stackTraceToString())))
+            .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
     }
 
 

@@ -1,5 +1,6 @@
 package com.atria.myapplication.adapter
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
@@ -24,15 +25,18 @@ import com.atria.myapplication.notification.NotificationData
 import com.atria.myapplication.notification.PushNotification
 import com.atria.myapplication.notification.RetrofitInstance
 import com.atria.myapplication.utils.NumberToUniqueStringGenerator
-import com.atria.myapplication.viewModel.home.HomeParentViewModel
 import com.bumptech.glide.Glide
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.math.log
+import java.lang.StringBuilder
+
 
 class HomeAdapter(
     val context: Context,
@@ -71,6 +75,7 @@ class HomeAdapter(
 
         val shareButton = view.findViewById<ImageButton>(R.id.shareButton)
         val reportButton = view.findViewById<ImageButton>(R.id.reportButton)
+
     }
 
     fun updateList(newList: List<VideoData>) {
@@ -101,6 +106,7 @@ class HomeAdapter(
                 }
                 usernameTextView.text = it.get("username").toString()
                 nameTextView.text = it.get("name").toString()
+
                 Glide.with(context)
                     .load(it.get(Constants.circular))
                     .into(profilePicImageView)
@@ -133,8 +139,47 @@ class HomeAdapter(
         }
 
         holder.reportButton.setOnClickListener {
-            
+
+            val string = StringBuilder(list[position].link)
+
+
+            AlertDialog.Builder(context)
+                .setMessage("Sure you want to report this Audition?")
+            .setPositiveButton("Report") { dialog, which ->
+
+                firebase.collection(Constants.reports)
+                .document(list[position].userid)
+                .set(mapOf(Pair("reported",list[position])))
+                .addOnSuccessListener(OnSuccessListener<Void?> {
+
+                    Toast.makeText(context, "Successfully reported ", Toast.LENGTH_SHORT).show()
+
+                })
+                .addOnFailureListener(OnFailureListener() {
+
+                    Toast.makeText(context, "Something went wrong, try later. ", Toast.LENGTH_SHORT).show()
+
+                }) }
+            .setNegativeButton("cancel") { dialog, which -> dialog.dismiss() }
+            .show()
+//            firebase.collection(Constants.reports)
+//                .document(list[position].userid)
+//                .set(mapOf(Pair("reported",list[position])))
+//                .addOnSuccessListener(OnSuccessListener<Void?> {
+//                    Toast.makeText(view.context, "successfully reported ", Toast.LENGTH_SHORT).show()
+//
+//
+//                })
+//                .addOnFailureListener(OnFailureListener() {
+//
+//                    Toast.makeText(view.context, "Something went wrong ", Toast.LENGTH_SHORT).show()
+//
+//                })
+
+
         }
+
+
 
         holder.shareButton.setOnClickListener {
             val unique = NumberToUniqueStringGenerator.numberToUniqueString(list[position].uvid)+
@@ -170,6 +215,8 @@ class HomeAdapter(
             holder.beatsImageView.setImageDrawable(avd)
             avd.start()
         }
+
+
 
         holder.likeButton.setOnClickListener {
             if (!like) {
@@ -352,5 +399,7 @@ class HomeAdapter(
     override fun getItemCount(): Int {
         return list.size
     }
+
+
 
 }

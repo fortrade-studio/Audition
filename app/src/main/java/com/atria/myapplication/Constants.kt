@@ -5,6 +5,7 @@ import com.atria.myapplication.room.User
 
 object Constants {
     val user = "Users"
+    val reports="Reports"
     val notset = "not set"
     val username = "username"
     val title = "Username Not Picked"

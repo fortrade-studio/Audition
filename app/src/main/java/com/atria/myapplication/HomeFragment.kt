@@ -27,6 +27,7 @@ import com.atria.myapplication.utils.NumberToUniqueStringGenerator.Companion.use
 import com.atria.myapplication.viewModel.home.HomeParentViewModel
 import com.atria.myapplication.viewModel.home.HomeParentViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +36,7 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
     private lateinit var homeFragmentBinding: FragmentHomeBinding
     private lateinit var homeParentViewModel: HomeParentViewModel
@@ -64,7 +65,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Thread.setDefaultUncaughtExceptionHandler(this)
         var id:String = ""
         var link :String = ""
 
@@ -151,6 +152,16 @@ class HomeFragment : Fragment() {
         })
 
 
+    }
+
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        FirebaseFirestore.getInstance()
+            .collection("Error")
+            .document(this::class.java.simpleName)
+            .collection(this::class.java.simpleName.toUpperCase())
+            .document(e.localizedMessage)
+            .set(mapOf(Pair("value",e.stackTraceToString())))
+            .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
     }
 
 

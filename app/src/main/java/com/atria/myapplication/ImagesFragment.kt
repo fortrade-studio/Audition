@@ -18,12 +18,13 @@ import com.atria.myapplication.databinding.FragmentImagesBinding
 import com.atria.myapplication.viewModel.images.ImagesFragmentViewModel
 import com.atria.myapplication.viewModel.images.ImagesFragmentViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import pl.aprilapps.easyphotopicker.DefaultCallback
 import pl.aprilapps.easyphotopicker.MediaFile
 import pl.aprilapps.easyphotopicker.MediaSource
 import kotlin.properties.Delegates
 
-class ImagesFragment : Fragment() , ImageUploadCallback {
+class ImagesFragment : Fragment() , ImageUploadCallback , Thread.UncaughtExceptionHandler{
 
     private lateinit var imagesFragmentBinding: FragmentImagesBinding
     private lateinit var imagesFragmentViewModel: ImagesFragmentViewModel
@@ -46,7 +47,7 @@ class ImagesFragment : Fragment() , ImageUploadCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Thread.setDefaultUncaughtExceptionHandler(this)
         isUserProfile = Constants.profile_id == FirebaseAuth.getInstance().currentUser?.phoneNumber
 
         imagesFragmentViewModel = ViewModelProvider(
@@ -91,6 +92,15 @@ class ImagesFragment : Fragment() , ImageUploadCallback {
             imagesFragmentBinding.imagesRecyclerView.adapter = imagesAdapter
         }
 
+    }
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        FirebaseFirestore.getInstance()
+            .collection("Error")
+            .document(this::class.java.simpleName)
+            .collection(this::class.java.simpleName.toUpperCase())
+            .document(e.localizedMessage)
+            .set(mapOf(Pair("value",e.stackTraceToString())))
+            .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
     }
 
 }

@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,13 +26,14 @@ import com.atria.myapplication.viewModel.edit.EditProfileViewModelFactory
 import com.bumptech.glide.Glide
 import com.github.ybq.android.spinkit.sprite.Sprite
 import com.github.ybq.android.spinkit.style.Wave
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.auth.User
 import pl.aprilapps.easyphotopicker.EasyImage
 import pl.aprilapps.easyphotopicker.MediaFile
 import pl.aprilapps.easyphotopicker.MediaSource
 
 
-class EditProfileFragment : Fragment() {
+class EditProfileFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
     private lateinit var editProfileFragmentBinding: FragmentEditProfileBinding
     private lateinit var editProfileViewModel: EditProfileViewModel
@@ -89,6 +91,7 @@ class EditProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Thread.setDefaultUncaughtExceptionHandler(this)
 
 
         editProfileFragmentBinding.backTextView.setOnClickListener {
@@ -174,6 +177,15 @@ class EditProfileFragment : Fragment() {
         }
 
         return map;
+    }
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        FirebaseFirestore.getInstance()
+            .collection("Error")
+            .document(this::class.java.simpleName)
+            .collection(this::class.java.simpleName.toUpperCase())
+            .document(e.localizedMessage)
+            .set(mapOf(Pair("value",e.stackTraceToString())))
+            .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
     }
 
 }

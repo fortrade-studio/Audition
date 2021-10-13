@@ -4,6 +4,7 @@ package com.atria.myapplication
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +24,9 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment() , Thread.UncaughtExceptionHandler{
 
     private lateinit var profileFragmentBinding: FragmentProfileBinding
     private lateinit var profileViewModel: ProfileFragmentViewModel
@@ -43,7 +45,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        Thread.setDefaultUncaughtExceptionHandler(this)
         // we get the id of the user
         val id: String = arguments?.getString("ph") ?: auth?.phoneNumber!!
         Constants.profile_id = id
@@ -152,6 +154,17 @@ class ProfileFragment : Fragment() {
         private const val TAG = "ProfileFragment"
         private val auth = FirebaseAuth.getInstance().currentUser
     }
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        FirebaseFirestore.getInstance()
+            .collection("Error")
+            .document(this::class.java.simpleName)
+            .collection(this::class.java.simpleName.toUpperCase())
+            .document(e.localizedMessage)
+            .set(mapOf(Pair("value",e.stackTraceToString())))
+            .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
+    }
+
+
 
 
 }

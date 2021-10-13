@@ -1,6 +1,7 @@
 package com.atria.myapplication
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +18,10 @@ import com.atria.myapplication.adapter.AuditionAdapter
 import com.atria.myapplication.databinding.FragmentMainHomeBinding
 import com.atria.myapplication.viewModel.home.HomeFragmentViewModel
 import com.atria.myapplication.viewModel.home.HomeFragmentViewModelFactory
+import com.google.firebase.firestore.FirebaseFirestore
 
 
-class MainHomeFragment : Fragment()  {
+class MainHomeFragment : Fragment() , Thread.UncaughtExceptionHandler {
 
     private lateinit var mainHomeFragmentBinding : FragmentMainHomeBinding
     private lateinit var homeFragmentViewModel: HomeFragmentViewModel
@@ -35,6 +37,7 @@ class MainHomeFragment : Fragment()  {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Thread.setDefaultUncaughtExceptionHandler(this)
         Constants.mainHomeFragment =this
         homeFragmentViewModel  = ViewModelProvider(
             this, HomeFragmentViewModelFactory(
@@ -72,7 +75,15 @@ class MainHomeFragment : Fragment()  {
             )
         }
     }
-
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        FirebaseFirestore.getInstance()
+            .collection("Error")
+            .document(this::class.java.simpleName)
+            .collection(this::class.java.simpleName.toUpperCase())
+            .document(e.localizedMessage)
+            .set(mapOf(Pair("value",e.stackTraceToString())))
+            .addOnSuccessListener { Log.i("here", "uncaughtException: reported")}
+    }
 
 
 }
