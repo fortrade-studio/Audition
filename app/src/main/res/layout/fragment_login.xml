@@ -69,7 +69,7 @@
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:digits="1234567890"
-        android:inputType="textFilter"
+        android:inputType="textFilter|number"
         android:lines="1"
         android:maxLength="10"
         app:layout_constraintBottom_toTopOf="@+id/signUpButton"

@@ -64,7 +64,7 @@
         android:hint="@string/phNumber"
         android:lines="1"
         android:digits="1234567890"
-        android:inputType="textFilter"
+        android:inputType="textFilter|number"
         android:maxLength="10"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
