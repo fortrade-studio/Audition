@@ -68,7 +68,7 @@
         android:hint="@string/phNumber"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:inputType="phone"
+        android:inputType="number|phone"
         android:lines="1"
         android:maxLength="10"
         app:layout_constraintBottom_toTopOf="@+id/signUpButton"

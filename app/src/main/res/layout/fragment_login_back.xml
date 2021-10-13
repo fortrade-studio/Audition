@@ -62,7 +62,7 @@
         android:layout_marginStart="10dp"
         android:background="@color/blackish"
         android:hint="@string/phNumber"
-        android:inputType="phone"
+        android:inputType="number|phone"
         android:lines="1"
         android:maxLength="10"
         android:paddingStart="20dp"
