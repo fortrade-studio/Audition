@@ -30,7 +30,7 @@
         android:layout_height="60dp"
         android:hint="@string/name"
         android:lines="1"
-        android:inputType="text"
+        android:inputType="text|textCapSentences"
 
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
@@ -148,6 +148,7 @@
         android:ems="10"
         android:hint="@string/dob"
         android:inputType="date"
+        android:lines="1"
         android:paddingHorizontal="20dp"
         app:layout_constraintBottom_toTopOf="@+id/signUpButton"
         app:layout_constraintEnd_toEndOf="parent"
