@@ -76,8 +76,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
-        System.exit(0)
+        moveTaskToBack(true)
     }
-
 
 }
