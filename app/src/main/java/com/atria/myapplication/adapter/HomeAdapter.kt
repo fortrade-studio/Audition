@@ -104,7 +104,7 @@ class HomeAdapter(
                     Navigation.findNavController(view)
                         .navigate(R.id.action_homeFragment_to_profileFragment, bundle)
                 }
-                usernameTextView.text = it.get("username").toString()
+                usernameTextView.text = "@"+it.get("username").toString()
                 nameTextView.text = it.get("name").toString()
 
                 Glide.with(context)

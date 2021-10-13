@@ -37,6 +37,6 @@ object Constants {
     var backCallback : MutableLiveData<Int> = MutableLiveData(0)
     var homeToProfileCallback  = MutableLiveData("")
     var profile : User? = null
-    var big_link :String = "https://www.knivesindia.com/ecom/wp-content/uploads/2017/06/wood-blog-placeholder.jpg"
-    var circular_link:String = "https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png"
+    var big_link :String = "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fbackground.jpg?alt=media&token=f80b49c5-bc9b-4e88-b7b2-e60fc372e8f6"
+    var circular_link:String = "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fprofile.jpg?alt=media&token=9c73401c-6ac1-4826-932e-21c07d43b1a7"
 }

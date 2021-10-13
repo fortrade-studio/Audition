@@ -88,6 +88,9 @@ class ProfileFragment : Fragment() , Thread.UncaughtExceptionHandler{
             profileFragmentBinding.followTextView.text = it.toString()
         }
 
+        // big "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fbackground.jpg?alt=media&token=f80b49c5-bc9b-4e88-b7b2-e60fc372e8f6",
+        // cir "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fprofile.jpg?alt=media&token=9c73401c-6ac1-4826-932e-21c07d43b1a7",
+
         profileViewModel.getUserData(id) { v ->
             var biglink = ""
             var cirlink = ""
@@ -96,7 +99,7 @@ class ProfileFragment : Fragment() , Thread.UncaughtExceptionHandler{
                 biglink = v.big
             } else {
                 biglink =
-                    "https://www.knivesindia.com/ecom/wp-content/uploads/2017/06/wood-blog-placeholder.jpg"
+                    "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fbackground.jpg?alt=media&token=f80b49c5-bc9b-4e88-b7b2-e60fc372e8f6"
             }
             if (v.circular.isNotEmpty() && v.circular != "not set") {
                 circular_link = v.circular
@@ -108,9 +111,9 @@ class ProfileFragment : Fragment() , Thread.UncaughtExceptionHandler{
                 .load(biglink)
                 .into(profileFragmentBinding.bigScreenImageView)
 
-//            Glide.with(requireContext())
-//                .load(cirlink)
-//                .into(profileFragmentBinding.cicularProfileView)
+            Glide.with(requireContext())
+                .load(cirlink)
+                .into(profileFragmentBinding.cicularProfileView)
 
             if (auth?.phoneNumber != id) {
                 profileFragmentBinding.followButton.setOnClickListener {
@@ -132,7 +135,7 @@ class ProfileFragment : Fragment() , Thread.UncaughtExceptionHandler{
                 }
             }
             profileFragmentBinding.nameTextView.text = v.name
-            profileFragmentBinding.usernameTextView.text = v.username
+            profileFragmentBinding.usernameTextView.text = "@"+v.username
             profileFragmentBinding.summaryTextView.text = v.summary
             profileFragmentBinding.followTextView.text = v.follower.toString()
             profileViewModel.getFollowing(id) {

@@ -118,7 +118,7 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
                 positionOffset: Float,
                 positionOffsetPixels: Int
             ) {
-                Log.i(TAG, "onPageScrolled: ")
+
             }
 
             override fun onPageSelected(position: Int) {
@@ -147,7 +147,6 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
             override fun onPageScrollStateChanged(state: Int) {
                 super.onPageScrollStateChanged(state)
-                Log.i(TAG, "onPageScrollStateChanged: ")
             }
         })
 
@@ -163,6 +162,7 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
             .set(mapOf(Pair("value",e.stackTraceToString())))
             .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
     }
+
 
 
 }

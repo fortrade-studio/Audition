@@ -83,7 +83,7 @@ class TopicFragment : Fragment(), Thread.UncaughtExceptionHandler {
                     positionOffset: Float,
                     positionOffsetPixels: Int
                 ) {
-//                    TODO("Not yet implemented")
+//
                 }
 
                 override fun onPageSelected(position: Int) {

@@ -25,9 +25,6 @@ class VerificationFragmentViewModel(val context: Context, val view: View) : View
     private var verificationId : String? = null
     private val MY_PREFS_NAME = "User"
     private val logged = "loggedIn"
-    // int 1 -> already verified
-    // int 0 -> code sent
-    // int -1 -> failure
     fun sendVerificationCode(
         activity: Activity,
         onCodeSentFunction: (Int, PhoneAuthCredential?) -> Unit,
@@ -119,22 +116,24 @@ class VerificationFragmentViewModel(val context: Context, val view: View) : View
         }
     }
 
+    // todo : 0 is verified
+    // 1 is username verified
     fun storeInCache(){
         val editor: SharedPreferences.Editor =
             context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit()
-        editor.putBoolean("loggedIn", true)
+        editor.putInt(logged, 0)
         editor.apply()
     }
 
-    fun uploadDefaultLinkToUser(user: User, onSuccess: () -> Unit){
+    private fun uploadDefaultLinkToUser(user: User, onSuccess: () -> Unit){
         firebaseFireStore.collection("Users")
             .document(user.phNumber)
             .collection("ViewData")
             .document("links")
             .set(
                 ProfileFragmentViewModel.ViewData(
-                    "https://www.knivesindia.com/ecom/wp-content/uploads/2017/06/wood-blog-placeholder.jpg",
-                    "https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png",
+                    "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fbackground.jpg?alt=media&token=f80b49c5-bc9b-4e88-b7b2-e60fc372e8f6",
+                    "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fprofile.jpg?alt=media&token=9c73401c-6ac1-4826-932e-21c07d43b1a7",
                     0,
                     0,
                     user.name,

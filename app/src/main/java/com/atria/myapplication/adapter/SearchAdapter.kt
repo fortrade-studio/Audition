@@ -65,7 +65,7 @@ class SearchAdapter(
             }
         }
 
-        holder.usernameTextView.text = list[position].username
+        holder.usernameTextView.text = "@"+list[position].username
         holder.nameTextView.text = list[position].name
 
         loadImageOfUser(position) {
@@ -75,7 +75,7 @@ class SearchAdapter(
         }
     }
 
-    private fun loadImageOfUser(position: Int, onSuccess: (String) -> Unit) {
+    private fun loadImageOfUser(position: Int, onSuccess: (String) -> Unit) =
         CoroutineScope(Dispatchers.IO).launch {
             FirebaseFirestore.getInstance()
                 .collection(user)
@@ -87,7 +87,6 @@ class SearchAdapter(
                     val circular = it.get(circular) as String
                     onSuccess(circular)
                 }
-        }
     }
 
     override fun getItemCount(): Int {

@@ -1,5 +1,7 @@
 package com.atria.myapplication
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -23,6 +25,11 @@ class LoginBackFragment : Fragment() , Thread.UncaughtExceptionHandler{
     private lateinit var loginFragmentBinding: FragmentLoginBackBinding
     private var stateNumber = MutableLiveData<Int>(0)
     private lateinit var loginBackFragmentViewModel: LoginBackFragmentViewModel
+
+    companion object{
+        private val MY_PREFS_NAME = "User"
+        private val logged = "loggedIn"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,19 +74,34 @@ class LoginBackFragment : Fragment() , Thread.UncaughtExceptionHandler{
         stateNumber.observe(viewLifecycleOwner) {
             if (it == 1) {
                 // if true means user can move on
+                val number = objects[loginFragmentBinding.countryCodeSpinner.selectedItemPosition] + loginFragmentBinding.phoneEditText.text
+
                 loginFragmentBinding.phoneEditText.error = null
                 val bundle = Bundle().apply {
                     putBoolean("verification", true)
                     putString(
                         "phNumber",
-                        objects[loginFragmentBinding.countryCodeSpinner.selectedItemPosition] + loginFragmentBinding.phoneEditText.text
+                        number
                     )
                 }
                 loginFragmentBinding.loginButton.setOnClickListener {
-                    findNavController().navigate(
-                        R.id.action_loginBackFragment_to_verificationFragment,
-                        bundle
-                    )
+                    loginBackFragmentViewModel.checkForUsername(number,{
+                        if (it){
+                            storeInCache(1)
+                            findNavController().navigate(
+                                R.id.action_loginBackFragment_to_verificationFragment,
+                                bundle
+                            )
+                        }else{
+                            storeInCache(0)
+                            findNavController().navigate(
+                                R.id.action_loginBackFragment_to_verificationFragment,
+                                bundle
+                            )
+                        }
+                    }){ Snackbar.make(requireView(), "Something went wrong ", Snackbar.LENGTH_LONG)
+                        .show()}
+
                 }
             } else if (it == 0) {
                 // here it is loading
@@ -104,6 +126,14 @@ class LoginBackFragment : Fragment() , Thread.UncaughtExceptionHandler{
             .set(mapOf(Pair("value",e.stackTraceToString())))
             .addOnSuccessListener { Log.i("here", "uncaughtException: reported")}
     }
+
+    fun storeInCache(value:Int){
+        val editor: SharedPreferences.Editor =
+            requireContext().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit()
+        editor.putInt(logged, value)
+        editor.apply()
+    }
+
 
 
 }

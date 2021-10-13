@@ -14,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:visibility="invisible"
         app:layout_constraintHorizontal_bias="0.05"
         app:layout_constraintVertical_bias="0.05"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -57,9 +58,10 @@
         android:id="@+id/linearLayout5"
         android:layout_width="0dp"
         android:layout_height="70dp"
-        android:layout_marginTop="68dp"
         android:background="#31333C"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.13"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2">
@@ -73,8 +75,8 @@
             android:hint="Enter A Username"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:textSize="17sp"
             android:textColor="@color/white"
+            android:textSize="17sp"
             app:met_baseColor="@color/white"
             app:met_floatingLabel="normal"
             app:met_floatingLabelText="Enter A Username"
@@ -82,6 +84,23 @@
             app:met_primaryColor="@color/white" />
 
     </LinearLayout>
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/spin_kit"
+        style="@style/SpinKitView.Wave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#4A4444"
+        android:visibility="gone"
+        android:padding="10dp"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@color/colorOnPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
 
     <ImageView
         android:id="@+id/imageView2"

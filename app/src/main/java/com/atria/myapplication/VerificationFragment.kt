@@ -1,6 +1,8 @@
 package com.atria.myapplication
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -24,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
 
@@ -33,6 +36,9 @@ class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
     private lateinit var repo: UserRepository
 
     private var user: User? = null
+
+    private val MY_PREFS_NAME = "User"
+    private val logged = "loggedIn"
 
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private val mainScope = CoroutineScope(Dispatchers.Main)
@@ -100,9 +106,13 @@ class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
                                     verificationBinding.lvGhostView.visibility =
                                         View.INVISIBLE
                                     mainScope.launch {
-                                        val intent =
-                                            Intent(requireContext(), HomeActivity::class.java)
-                                        requireContext().startActivity(intent)
+                                        if (getCacheForUsername() == 0) {
+                                            findNavController().navigate(R.id.action_verificationFragment_to_usernameFragment2)
+                                        } else {
+                                            val intent =
+                                                Intent(requireContext(), HomeActivity::class.java)
+                                            requireContext().startActivity(intent)
+                                        }
                                     }
 
                                 }
@@ -124,8 +134,8 @@ class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
                                                 verificationBinding.lvGhostView.visibility =
                                                     View.INVISIBLE
                                                 mainScope.launch {
+                                                    storeInCache(0)
                                                     findNavController().navigate(R.id.action_verificationFragment_to_usernameFragment2)
-//
                                                 }
                                             } else {
                                                 verificationBinding.lvGhostView.stopAnim()
@@ -227,18 +237,24 @@ class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
                                             verificationFragmentViewModel.storeInCache()
                                             findNavController().navigate(R.id.action_verificationFragment_to_usernameFragment2)
                                         } else {
-                                            val intent = Intent(
-                                                requireContext(),
-                                                HomeActivity::class.java
-                                            )
-                                            requireContext().startActivity(intent)
+                                            if (getCacheForUsername() == 0) {
+                                                findNavController().navigate(R.id.action_verificationFragment_to_usernameFragment2)
+                                            } else {
+                                                val intent =
+                                                    Intent(requireContext(), HomeActivity::class.java)
+                                                requireContext().startActivity(intent)
+                                            }
                                         }
                                     }
                                 }
                             } else {
-                                val intent =
-                                    Intent(requireContext(), HomeActivity::class.java)
-                                requireContext().startActivity(intent)
+                                if (getCacheForUsername() == 0) {
+                                    findNavController().navigate(R.id.action_verificationFragment_to_usernameFragment2)
+                                } else {
+                                    val intent =
+                                        Intent(requireContext(), HomeActivity::class.java)
+                                    requireContext().startActivity(intent)
+                                }
                             }
                         }
                     }
@@ -247,6 +263,23 @@ class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
         }
 
     }
+
+    private fun storeInCache(value: Int = 2) {
+        val editor: SharedPreferences.Editor =
+            requireActivity().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit()
+        editor.putInt(logged, value)
+        editor.apply()
+    }
+
+    private fun getCacheForUsername(): Int {
+        val prefs: SharedPreferences = requireContext().getSharedPreferences(
+            MY_PREFS_NAME,
+            Context.MODE_PRIVATE
+        )
+        val looged = prefs.getInt(logged, -1)
+        return looged
+    }
+
 
     override fun onDetach() {
         super.onDetach()

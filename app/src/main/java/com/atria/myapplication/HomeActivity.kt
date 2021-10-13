@@ -73,5 +73,11 @@ class HomeActivity : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+        System.exit(0)
+    }
+
 
 }

@@ -1,6 +1,8 @@
 package com.atria.myapplication
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.atria.myapplication.databinding.FragmentUsernameBinding
 import com.atria.myapplication.viewModel.username.UsernameFragmentViewModel
 import com.atria.myapplication.viewModel.username.UsernameFragmentViewModelFactory
+import com.github.ybq.android.spinkit.style.Wave
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -93,9 +96,14 @@ class UsernameFragment : Fragment() , Thread.UncaughtExceptionHandler{
                 if (s.trim().length in 5..15
                 ) {
                     usernameFragmentBinding.appCompatButton.setOnClickListener {
+                        usernameFragmentBinding.spinKit.visibility = View.VISIBLE
+                        usernameFragmentBinding.spinKit.setIndeterminateDrawable(Wave())
                         usernameFragmentViewModel.uploadUsernameToCloud(s.trim(), {
+                            storeInCache()
+                            usernameFragmentBinding.spinKit.visibility = View.GONE
                             startActivity(intent)
                         }) {
+                            usernameFragmentBinding.spinKit.visibility = View.GONE
                             Snackbar.make(
                                 requireView(),
                                 "Something Went Wrong !! Please Check Your Connection",
@@ -132,6 +140,16 @@ class UsernameFragment : Fragment() , Thread.UncaughtExceptionHandler{
             .document(e.localizedMessage)
             .set(mapOf(Pair("value",e.stackTraceToString())))
             .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
+    }
+
+    private val MY_PREFS_NAME = "User"
+    private val logged = "loggedIn"
+
+    fun storeInCache(){
+        val editor: SharedPreferences.Editor =
+            requireActivity().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit()
+        editor.putInt(logged, 1)
+        editor.apply()
     }
 
 }
