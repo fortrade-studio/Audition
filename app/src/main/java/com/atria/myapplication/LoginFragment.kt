@@ -52,6 +52,7 @@ class LoginFragment : Fragment(), Thread.UncaughtExceptionHandler {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Thread.setDefaultUncaughtExceptionHandler(this)
+
         if(firebase.currentUser !=null){
             val intent = Intent(requireContext(), HomeActivity::class.java)
             requireContext().startActivity(intent)

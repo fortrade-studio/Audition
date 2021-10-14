@@ -12,12 +12,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.properties.Delegates
 
 class SplashFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
 
     private val MY_PREFS_NAME = "User"
     private val logged = "loggedIn"
+    private var value by Delegates.notNull<Int>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +34,8 @@ class SplashFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
         val sharedPreference  =
             requireContext().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE)
-        val value = sharedPreference.getInt(logged,-1)
+        value = sharedPreference.getInt(logged,-1)
+
 
 
         Handler().postDelayed({
@@ -60,6 +63,24 @@ class SplashFragment : Fragment(), Thread.UncaughtExceptionHandler {
             .document(e.localizedMessage)
             .set(mapOf(Pair("value",e.stackTraceToString())))
             .addOnSuccessListener { Log.i("here", "uncaughtException: reported")}
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Handler().postDelayed({
+            if(value == 0){
+                findNavController().navigate(R.id.action_splashFragment_to_usernameFragment2)
+            }else if (value == 1 || value == 2){
+                if(context!=null) {
+                    val intent = Intent(requireContext(), HomeActivity::class.java)
+                    startActivity(intent)
+                }
+            }else{
+                lifecycleScope.launchWhenResumed {
+                    findNavController().navigate(R.id.loginFragment)
+                }
+            }
+        },2000L)
     }
 
 }
