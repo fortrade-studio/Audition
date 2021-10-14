@@ -83,33 +83,34 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
             HomeParentViewModelFactory()
         ).get(HomeParentViewModel::class.java)
 
-        val list :List<VideoData> = if(data==null) {
-            listOf(
-                VideoData(
-                    "https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",
-                    userid = "+919548955457",
-                    uvid = "+9195489554572"
-                ),
-            )
+//        val list :List<VideoData> = if(data==null) {
+//            listOf(
+//                VideoData(
+//                    "https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",
+//                    userid = "+919548955457",
+//                    uvid = "+9195489554572"
+//                ),
+//            )
+//
+//        }else{
+//            Log.i(TAG, "onViewCreated: $link")
+//            listOf(
+//                VideoData(
+//                    link,userid = id.dropLast(1) , uvid = id
+//                )
+//            )
+//        }
 
-        }else{
-            Log.i(TAG, "onViewCreated: $link")
-            listOf(
-                VideoData(
-                    link,userid = id.dropLast(1) , uvid = id
-                )
-            )
-        }
         val adapter = HomeAdapter(requireContext(),requireView(),
-           ArrayList(list)
+           ArrayList(emptyList())
         )
         homeFragmentBinding.viewPager2.adapter = adapter
         homeFragmentBinding.viewPager2.offscreenPageLimit = 5
 
-//
-//        homeParentViewModel.getVideos{
-//             adapter.updateList(it.values.toList())
-//        }
+
+        homeParentViewModel.getVideos{
+             adapter.updateList(it.values.toList())
+        }
 
         homeFragmentBinding.viewPager2.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {

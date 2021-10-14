@@ -18,6 +18,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.atria.myapplication.Constants
+import com.atria.myapplication.HomeFragment
 import com.atria.myapplication.R
 import com.atria.myapplication.diffutils.VideoData
 import com.atria.myapplication.diffutils.VideoDiffUtils
@@ -42,7 +43,7 @@ class HomeAdapter(
     val context: Context,
     val view: View,
     val list: ArrayList<VideoData>
-) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>() {
+) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>() , Thread.UncaughtExceptionHandler {
 
     var mute: Boolean = true
     companion object {
@@ -121,6 +122,7 @@ class HomeAdapter(
 
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
 
+        Thread.setDefaultUncaughtExceptionHandler(this)
         holder.progressView.visibility = View.VISIBLE
         holder.videoView.setOnPreparedListener {
             it.isLooping = true
@@ -398,6 +400,17 @@ class HomeAdapter(
 
     override fun getItemCount(): Int {
         return list.size
+    }
+
+
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        FirebaseFirestore.getInstance()
+            .collection("Error")
+            .document(this::class.java.simpleName)
+            .collection(this::class.java.simpleName.toUpperCase())
+            .document(e.localizedMessage)
+            .set(mapOf(Pair("value",e.stackTraceToString())))
+            .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
     }
 
 
