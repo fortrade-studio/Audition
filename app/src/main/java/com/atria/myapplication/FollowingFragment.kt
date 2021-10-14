@@ -42,11 +42,18 @@ class FollowingFragment : Fragment() , Thread.UncaughtExceptionHandler{
         Thread.setDefaultUncaughtExceptionHandler(this)
         followingFragmentViewModel = ViewModelProvider(this,FollowingViewModelFactory()).get(FollowingViewModel::class.java)
 
-        followingViewBinding.recyclerView.layoutManager= LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+        if(context != null) {
+            followingViewBinding.recyclerView.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-        followingFragmentViewModel.getFollowings {
-            followingViewBinding.recyclerView.adapter = FollowAdapter(it,requireContext(),requireView())
+            followingFragmentViewModel.getFollowings {
+                if(context !=null) {
+                    followingViewBinding.recyclerView.adapter =
+                        FollowAdapter(it, requireContext(), requireView())
+                }
+            }
         }
+
 
     }
     override fun uncaughtException(t: Thread, e: Throwable) {

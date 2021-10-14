@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -33,12 +34,19 @@ class SplashFragment : Fragment(), Thread.UncaughtExceptionHandler {
             requireContext().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE)
         val value = sharedPreference.getInt(logged,-1)
 
+
         Handler().postDelayed({
             if(value == 0){
                 findNavController().navigate(R.id.action_splashFragment_to_usernameFragment2)
             }else if (value == 1 || value == 2){
-                val intent = Intent(requireContext(),HomeActivity::class.java)
-                startActivity(intent)
+                if(context!=null) {
+                    val intent = Intent(requireContext(), HomeActivity::class.java)
+                        startActivity(intent)
+                }
+            }else{
+                lifecycleScope.launchWhenResumed {
+                    findNavController().navigate(R.id.loginFragment)
+                }
             }
         },2000L)
 
