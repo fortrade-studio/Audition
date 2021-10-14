@@ -41,6 +41,7 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
     private lateinit var homeFragmentBinding: FragmentHomeBinding
     private lateinit var homeParentViewModel: HomeParentViewModel
     private val positionLiveData  = MutableLiveData<Int>(0)
+    private lateinit var adapter:HomeAdapter
 
     companion object {
         private const val TAG = "HomeFragment"
@@ -83,25 +84,7 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
             HomeParentViewModelFactory()
         ).get(HomeParentViewModel::class.java)
 
-//        val list :List<VideoData> = if(data==null) {
-//            listOf(
-//                VideoData(
-//                    "https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",
-//                    userid = "+919548955457",
-//                    uvid = "+9195489554572"
-//                ),
-//            )
-//
-//        }else{
-//            Log.i(TAG, "onViewCreated: $link")
-//            listOf(
-//                VideoData(
-//                    link,userid = id.dropLast(1) , uvid = id
-//                )
-//            )
-//        }
-
-        val adapter = HomeAdapter(requireContext(),requireView(),
+         adapter = HomeAdapter(requireContext(),requireView(),
            ArrayList(emptyList())
         )
         homeFragmentBinding.viewPager2.adapter = adapter
@@ -152,6 +135,13 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
         })
 
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        homeParentViewModel.getVideos{
+            adapter.updateList(it.values.toList())
+        }
     }
 
     override fun uncaughtException(t: Thread, e: Throwable) {
