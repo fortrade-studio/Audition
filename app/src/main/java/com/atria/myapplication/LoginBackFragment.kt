@@ -54,7 +54,7 @@ class LoginBackFragment : Fragment() , Thread.UncaughtExceptionHandler{
         loginFragmentBinding.phoneEditText.addTextChangedListener {
             loginFragmentBinding.phoneEditText.error = null
             stateNumber.postValue(0)
-            loginBackFragmentViewModel.verifyNumber("+91" + it.toString()) {s->
+            loginBackFragmentViewModel.verifyNumber("+91" + it.toString(), {s->
                 if (s) {
                     // available
                     stateNumber.postValue(1)
@@ -65,6 +65,9 @@ class LoginBackFragment : Fragment() , Thread.UncaughtExceptionHandler{
                     loginFragmentBinding.phoneEditText.error = "No Account For this Number"
                     stateNumber.postValue(-1)
                 }
+            }){
+                // ERROR :
+                Snackbar.make(requireView(),"Something went wrong !!",Snackbar.LENGTH_LONG).show()
             }
         }
 
@@ -129,7 +132,7 @@ class LoginBackFragment : Fragment() , Thread.UncaughtExceptionHandler{
             .addOnSuccessListener { Log.i("here", "uncaughtException: reported")}
     }
 
-    fun storeInCache(value:Int){
+    private fun storeInCache(value:Int){
         val editor: SharedPreferences.Editor =
             requireContext().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit()
         editor.putInt(logged, value)

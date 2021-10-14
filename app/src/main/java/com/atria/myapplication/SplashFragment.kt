@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,13 +13,17 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.*
 import kotlin.properties.Delegates
 
 class SplashFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
 
-    private val MY_PREFS_NAME = "User"
-    private val logged = "loggedIn"
+    companion object{
+        private const val MY_PREFS_NAME = "User"
+        private const val logged = "loggedIn"
+    }
+
     private var value by Delegates.notNull<Int>()
 
     override fun onCreateView(
@@ -38,7 +43,7 @@ class SplashFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
 
 
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             if(value == 0){
                 findNavController().navigate(R.id.action_splashFragment_to_usernameFragment2)
             }else if (value == 1 || value == 2){
@@ -59,7 +64,7 @@ class SplashFragment : Fragment(), Thread.UncaughtExceptionHandler {
         FirebaseFirestore.getInstance()
             .collection("Error")
             .document(this::class.java.simpleName)
-            .collection(this::class.java.simpleName.toUpperCase())
+            .collection(this::class.java.simpleName.toUpperCase(Locale.ROOT))
             .document(e.localizedMessage)
             .set(mapOf(Pair("value",e.stackTraceToString())))
             .addOnSuccessListener { Log.i("here", "uncaughtException: reported")}
@@ -67,7 +72,7 @@ class SplashFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
     override fun onResume() {
         super.onResume()
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             if(value == 0){
                 findNavController().navigate(R.id.action_splashFragment_to_usernameFragment2)
             }else if (value == 1 || value == 2){

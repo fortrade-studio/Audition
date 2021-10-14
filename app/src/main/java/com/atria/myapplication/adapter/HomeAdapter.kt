@@ -1,5 +1,6 @@
 package com.atria.myapplication.adapter
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -36,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.IllegalArgumentException
 import java.lang.StringBuilder
 
 
@@ -109,9 +111,12 @@ class HomeAdapter(
                 usernameTextView.text = "@"+it.get("username").toString()
                 nameTextView.text = it.get("name").toString()
 
-                Glide.with(context)
-                    .load(it.get(Constants.circular))
-                    .into(profilePicImageView)
+
+                catchCloseError {
+                    Glide.with(context)
+                        .load(it.get(Constants.circular))
+                        .into(profilePicImageView)
+                }
 
                 usernameTextView.setOnClickListener { click() }
                 nameTextView.setOnClickListener { click() }
@@ -120,7 +125,13 @@ class HomeAdapter(
             }
     }
 
+    private fun catchCloseError(block:()->Unit){
+        try {
+            block()
+        }catch (_ : IllegalArgumentException){ }
+    }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
 
         Thread.setDefaultUncaughtExceptionHandler(this)
@@ -143,9 +154,6 @@ class HomeAdapter(
 
         holder.reportButton.setOnClickListener {
 
-            val string = StringBuilder(list[position].link)
-
-
             AlertDialog.Builder(context)
                 .setMessage("Sure you want to report this Audition?")
             .setPositiveButton("Report") { dialog, which ->
@@ -165,19 +173,6 @@ class HomeAdapter(
                 }) }
             .setNegativeButton("cancel") { dialog, which -> dialog.dismiss() }
             .show()
-//            firebase.collection(Constants.reports)
-//                .document(list[position].userid)
-//                .set(mapOf(Pair("reported",list[position])))
-//                .addOnSuccessListener(OnSuccessListener<Void?> {
-//                    Toast.makeText(view.context, "successfully reported ", Toast.LENGTH_SHORT).show()
-//
-//
-//                })
-//                .addOnFailureListener(OnFailureListener() {
-//
-//                    Toast.makeText(view.context, "Something went wrong ", Toast.LENGTH_SHORT).show()
-//
-//                })
 
 
         }

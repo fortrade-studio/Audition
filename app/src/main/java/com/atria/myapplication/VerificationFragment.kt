@@ -26,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 import kotlin.math.log
 
 class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
@@ -37,13 +38,14 @@ class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
 
     private var user: User? = null
 
-    private val MY_PREFS_NAME = "User"
-    private val logged = "loggedIn"
 
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
     companion object {
+        private const val MY_PREFS_NAME = "User"
+        private const val logged = "loggedIn"
+
         private const val TAG = "VerificationFragment"
     }
 
@@ -290,7 +292,7 @@ class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
         FirebaseFirestore.getInstance()
             .collection("Error")
             .document(this::class.java.simpleName)
-            .collection(this::class.java.simpleName.toUpperCase())
+            .collection(this::class.java.simpleName.toUpperCase(Locale.ROOT))
             .document(e.localizedMessage)
             .set(mapOf(Pair("value",e.stackTraceToString())))
             .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}

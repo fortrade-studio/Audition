@@ -37,7 +37,7 @@ class LoginBackFragmentViewModel(
             }
     }
 
-    fun verifyNumber(ph:String,onVerified:(Boolean)->Unit){
+    fun verifyNumber(ph:String,onVerified:(Boolean)->Unit , onFailure: () -> Unit){
         fb.collection(userString)
             .document(ph)
             .get()
@@ -49,8 +49,7 @@ class LoginBackFragmentViewModel(
                 }
             }
             .addOnFailureListener {
-                Log.e(TAG, "verifyNumber: ", it)
-                onVerified(true)
+                onFailure()
             }
     }
 

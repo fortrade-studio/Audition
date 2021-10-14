@@ -1,5 +1,6 @@
 package com.atria.myapplication
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
@@ -20,6 +21,7 @@ import com.atria.myapplication.viewModel.profession.ProfessionFragmentViewModelF
 import com.atria.myapplication.viewModel.topic.TopicFragmentViewModel
 import com.atria.myapplication.viewModel.topic.TopicFragmentViewModelFactory
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.*
 
 
 class TopicFragment : Fragment(), Thread.UncaughtExceptionHandler {
@@ -30,9 +32,11 @@ class TopicFragment : Fragment(), Thread.UncaughtExceptionHandler {
     private val scrollStateLive = MutableLiveData<State>()
     private var previousPage:Int = 0
 
-    private val MOVIES = "AUDITIONING FOR MOVIES"
-    private val TELEVISION = "AUDITIONING FOR TELEVISION"
-    private val MUSIC = "AUDITIONING FOR MUSIC"
+    companion object{
+        private const val MOVIES = "AUDITIONING FOR MOVIES"
+        private const val TELEVISION = "AUDITIONING FOR TELEVISION"
+        private const val MUSIC = "AUDITIONING FOR MUSIC"
+    }
 
     private lateinit var intent : Intent
     private var value : String = "MOVIES"
@@ -127,6 +131,7 @@ class TopicFragment : Fragment(), Thread.UncaughtExceptionHandler {
         val current: Int
     )
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun State.updateAnimated() {
         if (previous == 0 && current == 1) {
@@ -153,7 +158,7 @@ class TopicFragment : Fragment(), Thread.UncaughtExceptionHandler {
         FirebaseFirestore.getInstance()
             .collection("Error")
             .document(this::class.java.simpleName)
-            .collection(this::class.java.simpleName.toUpperCase())
+            .collection(this::class.java.simpleName.toUpperCase(Locale.ROOT))
             .document(e.localizedMessage)
             .set(mapOf(Pair("value",e.stackTraceToString())))
             .addOnSuccessListener { Log.i("here", "uncaughtException: reported")}
