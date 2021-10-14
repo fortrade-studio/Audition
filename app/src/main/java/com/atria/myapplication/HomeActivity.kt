@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.atria.myapplication.service.NotificationFirebaseService
 import com.atria.myapplication.ui.main.MainActivity
 import com.atria.myapplication.utils.NumberToUniqueStringGenerator
@@ -75,8 +77,11 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        finish()
-        moveTaskToBack(true)
+        if (Constants.isHome){
+            finish()
+            moveTaskToBack(true)
+        }
     }
+
 
 }

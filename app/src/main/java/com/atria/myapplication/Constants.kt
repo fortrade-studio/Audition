@@ -32,6 +32,7 @@ object Constants {
     var mainHomeFragment: MainHomeFragment ? = null
     var searchStringLiveData : MutableLiveData<String> = MutableLiveData()
 
+    var isHome = false
     // https://ww.atria.com?jjafdjlsdf,auth.url="",
     var linkPrefix = "https://www.atria.com?"
     var backCallback : MutableLiveData<Int> = MutableLiveData(0)

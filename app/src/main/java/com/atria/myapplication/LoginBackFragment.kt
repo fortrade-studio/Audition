@@ -29,6 +29,7 @@ class LoginBackFragment : Fragment() , Thread.UncaughtExceptionHandler{
     companion object{
         private val MY_PREFS_NAME = "User"
         private val logged = "loggedIn"
+        private const val TAG = "LoginBackFragment"
     }
 
     override fun onCreateView(
@@ -53,13 +54,14 @@ class LoginBackFragment : Fragment() , Thread.UncaughtExceptionHandler{
         loginFragmentBinding.phoneEditText.addTextChangedListener {
             loginFragmentBinding.phoneEditText.error = null
             stateNumber.postValue(0)
-            loginBackFragmentViewModel.verifyNumber("+91" + it.toString()) {
-                if (it) {
+            loginBackFragmentViewModel.verifyNumber("+91" + it.toString()) {s->
+                if (s) {
                     // available
                     stateNumber.postValue(1)
                 } else {
                     // not available
                     loginFragmentBinding.phoneEditText.requestFocus()
+                    Log.i(TAG, "onViewCreated: ${it.toString()}")
                     loginFragmentBinding.phoneEditText.error = "No Account For this Number"
                     stateNumber.postValue(-1)
                 }

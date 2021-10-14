@@ -1,6 +1,7 @@
 package com.atria.myapplication.viewModel.register
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModel
 import com.atria.myapplication.room.User
@@ -14,6 +15,7 @@ class LoginBackFragmentViewModel(
     private val fb = FirebaseFirestore.getInstance()
 
     companion object{
+        private const val TAG = "LoginBackFragmentViewMo"
         const val userString = "Users"
     }
 
@@ -37,16 +39,17 @@ class LoginBackFragmentViewModel(
 
     fun verifyNumber(ph:String,onVerified:(Boolean)->Unit){
         fb.collection(userString)
-            .whereEqualTo("phNumber",ph)
+            .document(ph)
             .get()
             .addOnSuccessListener {
-                if(it.isEmpty){
+                if(!it.exists()){
                     onVerified(false)
                 }else{
                     onVerified(true)
                 }
             }
             .addOnFailureListener {
+                Log.e(TAG, "verifyNumber: ", it)
                 onVerified(true)
             }
     }

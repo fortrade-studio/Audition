@@ -61,7 +61,7 @@ class ProfileFragment : Fragment() , Thread.UncaughtExceptionHandler{
 
 
         profileFragmentBinding.backButton.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
+            requireActivity().onBackPressed()
         }
 
         profileViewModel.checkIfFollow(id)

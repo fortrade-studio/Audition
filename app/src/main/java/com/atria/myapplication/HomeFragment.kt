@@ -15,6 +15,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.atria.myapplication.Constants.isHome
 import com.atria.myapplication.adapter.HomeAdapter
 import com.atria.myapplication.databinding.FragmentHomeBinding
 import com.atria.myapplication.diffutils.VideoData
@@ -66,6 +67,7 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        isHome = true
         Thread.setDefaultUncaughtExceptionHandler(this)
         var id:String = ""
         var link :String = ""
@@ -84,16 +86,17 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
             HomeParentViewModelFactory()
         ).get(HomeParentViewModel::class.java)
 
+        val list =  arrayListOf(VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",2,"+9196682308837","+91966823088376"))
          adapter = HomeAdapter(requireContext(),requireView(),
-           ArrayList(emptyList())
+          list
         )
         homeFragmentBinding.viewPager2.adapter = adapter
         homeFragmentBinding.viewPager2.offscreenPageLimit = 5
 
 
-        homeParentViewModel.getVideos{
-             adapter.updateList(it.values.toList())
-        }
+//        homeParentViewModel.getVideos{
+//             adapter.updateList(it.values.toList())
+//        }
 
         homeFragmentBinding.viewPager2.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
@@ -139,9 +142,10 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
     override fun onResume() {
         super.onResume()
-        homeParentViewModel.getVideos{
-            adapter.updateList(it.values.toList())
-        }
+        isHome = true
+//        homeParentViewModel.getVideos{
+//            adapter.updateList(it.values.toList())
+//        }
     }
 
     override fun uncaughtException(t: Thread, e: Throwable) {
@@ -155,5 +159,19 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
     }
 
 
+    override fun onPause() {
+        super.onPause()
+        isHome = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isHome = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isHome = false
+    }
 
 }
