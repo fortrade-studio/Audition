@@ -23,8 +23,10 @@ class VerificationFragmentViewModel(val context: Context, val view: View) : View
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val firebaseFireStore = FirebaseFirestore.getInstance()
     private var verificationId : String? = null
-    private val MY_PREFS_NAME = "User"
-    private val logged = "loggedIn"
+    companion object {
+        private const val MY_PREFS_NAME = "User"
+        private const val logged = "loggedIn"
+    }
     fun sendVerificationCode(
         activity: Activity,
         onCodeSentFunction: (Int, PhoneAuthCredential?) -> Unit,

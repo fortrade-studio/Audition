@@ -50,11 +50,18 @@ class LoginBackFragment : Fragment() , Thread.UncaughtExceptionHandler{
         ).get(LoginBackFragmentViewModel::class.java)
 
 
+        val objects = listOf("+91", "+00")
 
+        loginFragmentBinding.countryCodeSpinner.adapter =
+            ArrayAdapter(requireContext(), R.layout.spinner_item, objects)
+
+
+        //
         loginFragmentBinding.phoneEditText.addTextChangedListener {
             loginFragmentBinding.phoneEditText.error = null
             stateNumber.postValue(0)
-            loginBackFragmentViewModel.verifyNumber("+91" + it.toString(), {s->
+            val index = loginFragmentBinding.countryCodeSpinner.selectedItemPosition
+            loginBackFragmentViewModel.verifyNumber(objects[index]+ it.toString(), {s->
                 if (s) {
                     // available
                     stateNumber.postValue(1)
@@ -71,10 +78,6 @@ class LoginBackFragment : Fragment() , Thread.UncaughtExceptionHandler{
             }
         }
 
-        val objects = listOf("+91", "+00")
-
-        loginFragmentBinding.countryCodeSpinner.adapter =
-            ArrayAdapter(requireContext(), R.layout.spinner_item, objects)
 
         stateNumber.observe(viewLifecycleOwner) {
             if (it == 1) {

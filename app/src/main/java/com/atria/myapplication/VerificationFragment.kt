@@ -116,7 +116,6 @@ class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
                                             requireContext().startActivity(intent)
                                         }
                                     }
-
                                 }
                             }
                         } else {

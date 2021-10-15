@@ -17,7 +17,7 @@ class TopicFragmentViewModel(
         private val auth = FirebaseAuth.getInstance().currentUser!!
     }
 
-    fun saveRecord(){
+    private fun saveRecord(){
         val sharedPref = activity.getPreferences(Context.MODE_PRIVATE) ?: return
         with (sharedPref.edit()) {
             putInt("saved", 0)
