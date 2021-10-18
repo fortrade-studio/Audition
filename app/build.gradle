@@ -125,5 +125,9 @@ dependencies {
     // edit material
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 
+    // android network manager
+    implementation 'com.github.jumadeveloper:networkmanager:0.0.2'
+
+
     implementation 'com.karumi:dexter:6.2.2'
 }

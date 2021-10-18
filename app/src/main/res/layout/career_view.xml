@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="15dp"
-    android:background="@color/bg_black">
+    android:layout_marginBottom="15dp"
+    android:background="@color/bg_black"
+    >
 
 
     <androidx.gridlayout.widget.GridLayout
@@ -45,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="19dp"
             android:text="-"
+            android:maxEms="5"
             android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_column="1"
@@ -74,6 +77,7 @@
             android:layout_marginTop="19dp"
             android:layout_marginEnd="40dp"
             android:text="-"
+            android:maxEms="5"
             android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_column="5"

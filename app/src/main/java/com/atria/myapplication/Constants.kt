@@ -1,5 +1,6 @@
 package com.atria.myapplication
 
+import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.atria.myapplication.room.User
 
@@ -25,6 +26,8 @@ object Constants {
     val extras = "data"
     val current = "current"
     val user_id = "userId"
+
+    var view: View ? = null
 
     //testing boolean
     var checkIfUser = 0 // 1 means yes it is userprofile , -1 means no

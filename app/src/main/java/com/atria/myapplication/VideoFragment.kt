@@ -22,6 +22,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.atria.myapplication.adapter.VideoAdapter
 import com.atria.myapplication.databinding.FragmentVideoBinding
@@ -83,7 +84,7 @@ class VideoFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
         videoFragmentViewModel.getVideos {
             videoFragmentBinding.videosRecyclerView.adapter =
-                VideoAdapter(it, requireContext(), this, isUserProfile)
+                VideoAdapter(it, requireContext(), this, isUserProfile,Constants.profile_id)
         }
 
         but = view.findViewById(R.id.uploadVideoButton)

@@ -8,6 +8,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,14 +19,17 @@ import android.widget.MediaController
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.core.net.toUri
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.atria.myapplication.Constants
 import com.atria.myapplication.Constants.current
 import com.atria.myapplication.Constants.extras
+import com.atria.myapplication.Constants.view
 import com.atria.myapplication.R
 import com.atria.myapplication.VideoFragment
 import com.atria.myapplication.WindowActivity
+import com.atria.myapplication.diffutils.ParserVideos
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +41,8 @@ class VideoAdapter(
     val videos:List<String>,
     val context:Context,
     val fragment:VideoFragment,
-    val isUserProfile:Boolean
+    val isUserProfile:Boolean,
+    val id:String
 ) : RecyclerView.Adapter<VideoAdapter.VideoHolder>() {
 
 
@@ -83,15 +88,22 @@ class VideoAdapter(
             val link = if(isUserProfile) videos[position.minus(1)]
             else videos[position]
             holder.videoView.setVideoURI(Uri.parse(link))
+            // here we will parse and send the video
+
+            val parserVideos = ParserVideos(videos,id,position)
+            val bundle = Bundle().apply {
+                this.putSerializable("videos",parserVideos)
+            }
             holder.videoView.setOnPreparedListener {
                 it.setVolume(0f, 0f)
                 it.start()
                 holder.videoView.setOnClickListener {
-                    val intent = Intent(context, WindowActivity::class.java)
-                    intent.putExtra(extras, videos.toTypedArray())
-                    intent.putExtra(current, if(isUserProfile) position-1 else position)
-                    intent.putExtra(Constants.videos, true)
-                    context.startActivity(intent)
+                    view?.let { it1 -> Navigation.findNavController(it1).navigate(R.id.action_profileFragment_to_homeFragment,bundle) }
+//                    val intent = Intent(context, WindowActivity::class.java)
+//                    intent.putExtra(extras, videos.toTypedArray())
+//                    intent.putExtra(current, if(isUserProfile) position-1 else position)
+//                    intent.putExtra(Constants.videos, true)
+//                    context.startActivity(intent)
                 }
             }
         }

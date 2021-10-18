@@ -9,9 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.core.net.toUri
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
@@ -37,6 +35,8 @@ class EditProfileFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
     private lateinit var editProfileFragmentBinding: FragmentEditProfileBinding
     private lateinit var editProfileViewModel: EditProfileViewModel
+
+    private val objects = listOf("Male", "Female")
 
     var big : Uri? = null
     var circular: Uri? = null
@@ -99,6 +99,12 @@ class EditProfileFragment : Fragment(), Thread.UncaughtExceptionHandler {
             findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
         }
 
+        val objects = listOf("MALE", "FEMALE")
+
+        editProfileFragmentBinding.included.genderEditText.adapter =
+            ArrayAdapter(requireContext(), R.layout.spinner_item, objects)
+
+
         editProfileViewModel = ViewModelProvider(
             this, EditProfileViewModelFactory(
                 requireContext(), requireView()
@@ -117,7 +123,11 @@ class EditProfileFragment : Fragment(), Thread.UncaughtExceptionHandler {
 
             editProfileFragmentBinding.included.fnameEditText.setText(profile?.name)
             editProfileFragmentBinding.included.dateEditText.setText(profile?.date)
-            editProfileFragmentBinding.included.genderEditText.setText(profile?.gender)
+            if(profile?.gender?.trim().equals("MALE",true)){
+                editProfileFragmentBinding.included.genderEditText.setSelection(0)
+            }else{
+                editProfileFragmentBinding.included.genderEditText.setSelection(1)
+            }
             editProfileFragmentBinding.included.cityEditText.setText(profile?.city)
             editProfileFragmentBinding.included.emailEditText.setText(profile?.email)
             editProfileFragmentBinding.included.countryEditText.setText(profile?.country)
@@ -165,7 +175,11 @@ class EditProfileFragment : Fragment(), Thread.UncaughtExceptionHandler {
                 if (it.text.isNotEmpty()) {
                     map.put(it.tag.toString(), it.text.toString())
                 }
-            } else if (it is LinearLayout) {
+            }else if (it is Spinner){
+                val index = it.selectedItemPosition
+                map[it.tag.toString()] = objects[index]
+            }
+            else if (it is LinearLayout) {
                 for (child in it.children) {
                     if (child is EditText) {
                         if (child.text.isNotEmpty()) {

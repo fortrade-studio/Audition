@@ -1,6 +1,7 @@
 package com.atria.myapplication.adapter
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -44,20 +45,23 @@ import java.lang.StringBuilder
 class HomeAdapter(
     val context: Context,
     val view: View,
-    val list: ArrayList<VideoData>
-) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>() , Thread.UncaughtExceptionHandler {
+    val list: ArrayList<VideoData>,
+    val activity: Activity,
+    val user: Boolean = false,
+) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>(), Thread.UncaughtExceptionHandler {
 
     var mute: Boolean = true
+
     companion object {
         var mediaPlayer: MediaPlayer? = null
         val db = FirebaseDatabase.getInstance()
         val firebase = FirebaseFirestore.getInstance()
         val phNumber = FirebaseAuth.getInstance().currentUser?.phoneNumber
         private const val TAG = "HomeAdapter"
-        val init :(Int)->MediaPlayer={
-             MediaPlayer()
+        val init: (Int) -> MediaPlayer = {
+            MediaPlayer()
         }
-        val map = mutableMapOf<Int,MediaPlayer>()
+        val map = mutableMapOf<Int, MediaPlayer>()
         val listMedia = Array(11, init)
         val liked = "Liked"
     }
@@ -68,7 +72,6 @@ class HomeAdapter(
         val beatsImageView = view.findViewById<ImageView>(R.id.beatsImageView)
         val volumeImageView = view.findViewById<ImageView>(R.id.volumeImageView)
         val likeButton = view.findViewById<ImageButton>(R.id.likeButton)
-
 
 
         val usernameTextView = view.findViewById<TextView>(R.id.usernameTextView)
@@ -87,7 +90,6 @@ class HomeAdapter(
         list.clear()
         list.addAll(newList)
         diff.dispatchUpdatesTo(this)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
@@ -96,6 +98,9 @@ class HomeAdapter(
     }
 
     private fun HomeViewHolder.loadProfile(position: Int) = CoroutineScope(Dispatchers.IO).launch {
+        if(list[position].userid.isEmpty()){
+            return@launch
+        }
         firebase.collection("Users")
             .document(list[position].userid)
             .collection(Constants.viewdata)
@@ -108,7 +113,7 @@ class HomeAdapter(
                     Navigation.findNavController(view)
                         .navigate(R.id.action_homeFragment_to_profileFragment, bundle)
                 }
-                usernameTextView.text = "@"+it.get("username").toString()
+                usernameTextView.text = "@" + it.get("username").toString()
                 nameTextView.text = it.get("name").toString()
 
 
@@ -125,28 +130,42 @@ class HomeAdapter(
             }
     }
 
-    private fun catchCloseError(block:()->Unit){
+    private fun catchCloseError(block: () -> Unit) {
         try {
             block()
-        }catch (_ : IllegalArgumentException){ }
+        } catch (_: IllegalArgumentException) {
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
 
         Thread.setDefaultUncaughtExceptionHandler(this)
+
+        if (user) {
+            holder.profileButton.visibility = View.GONE
+            holder.searchButton.setImageResource(R.drawable.ic_baseline_arrow_back_24)
+            holder.searchButton.setOnClickListener {
+                Constants.isHome = false
+                activity.onBackPressed()
+            }
+        }
+
         holder.progressView.visibility = View.VISIBLE
         holder.videoView.setOnPreparedListener {
             it.isLooping = true
             synchronized(listMedia) {
-                map.put(position,it)
+                map.put(position, it)
             }
             holder.progressView.visibility = View.INVISIBLE
+            if (user) {
+                it.start()
+            }
         }
         var like: Boolean = false
 
-        checkIfAlreadyLiked(list[position].uvid){
-            if(it){
+        checkIfAlreadyLiked(list[position].uvid) {
+            if (it) {
                 like = it
                 holder.likeButton.setBackgroundResource(R.drawable.ic_like)
             }
@@ -156,23 +175,29 @@ class HomeAdapter(
 
             AlertDialog.Builder(context)
                 .setMessage("Sure you want to report this Audition?")
-            .setPositiveButton("Report") { dialog, which ->
+                .setPositiveButton("Report") { dialog, which ->
 
-                firebase.collection(Constants.reports)
-                .document(list[position].userid)
-                .set(mapOf(Pair("reported",list[position])))
-                .addOnSuccessListener(OnSuccessListener<Void?> {
+                    firebase.collection(Constants.reports)
+                        .document(list[position].userid)
+                        .set(mapOf(Pair("reported", list[position])))
+                        .addOnSuccessListener(OnSuccessListener<Void?> {
 
-                    Toast.makeText(context, "Successfully reported ", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Successfully reported ", Toast.LENGTH_SHORT)
+                                .show()
 
-                })
-                .addOnFailureListener(OnFailureListener() {
+                        })
+                        .addOnFailureListener(OnFailureListener() {
 
-                    Toast.makeText(context, "Something went wrong, try later. ", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Something went wrong, try later. ",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                }) }
-            .setNegativeButton("cancel") { dialog, which -> dialog.dismiss() }
-            .show()
+                        })
+                }
+                .setNegativeButton("cancel") { dialog, which -> dialog.dismiss() }
+                .show()
 
 
         }
@@ -180,7 +205,7 @@ class HomeAdapter(
 
 
         holder.shareButton.setOnClickListener {
-            val unique = NumberToUniqueStringGenerator.numberToUniqueString(list[position].uvid)+
+            val unique = NumberToUniqueStringGenerator.numberToUniqueString(list[position].uvid) +
                     ",auth.url=${list[position].link}"
             Log.i(TAG, "onBindViewHolder: $unique")
             val shareIntent = Intent(Intent.ACTION_SEND)
@@ -198,8 +223,11 @@ class HomeAdapter(
             Navigation.findNavController(view)
                 .navigate(R.id.action_homeFragment_to_profileFragment, bundle)
         }
-        holder.searchButton.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_searchFragment)
+        if (!user) {
+            holder.searchButton.setOnClickListener {
+                Navigation.findNavController(view)
+                    .navigate(R.id.action_homeFragment_to_searchFragment)
+            }
         }
 
         val hideFunction = Handler()
@@ -335,8 +363,8 @@ class HomeAdapter(
                 }
         }
 
-    private fun sendNotification(topic: String)  {
-       sendNotification(
+    private fun sendNotification(topic: String) {
+        sendNotification(
             PushNotification(
                 NotificationData(
                     "Hello Arya", "Somebody liked your post"
@@ -344,31 +372,33 @@ class HomeAdapter(
             )
         )
     }
-    private fun sendNotification(notification: PushNotification){
+
+    private fun sendNotification(notification: PushNotification) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitInstance.api.postNotification(notification)
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     Log.i(TAG, "sendNotification: ${response.body().toString()}")
-                }else{
+                } else {
                     Log.i(TAG, "failed: ${response.errorBody().toString()}")
                 }
 
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e(TAG, "sendNotification: ", e)
             }
         }
     }
 
 
-    private fun saveToLikes(uvid: String){
+    private fun saveToLikes(uvid: String) {
         firebase.collection(Constants.user)
             .document(phNumber!!)
             .collection(liked)
             .document(uvid)
-            .set(mapOf(Pair("uvid",uvid)))
+            .set(mapOf(Pair("uvid", uvid)))
     }
-    private fun removeFromLikes(uvid: String){
+
+    private fun removeFromLikes(uvid: String) {
         firebase.collection(Constants.user)
             .document(phNumber!!)
             .collection(liked)
@@ -376,7 +406,11 @@ class HomeAdapter(
             .delete()
     }
 
-    private fun checkIfAlreadyLiked(uvid:String,onChecked:(Boolean)->Unit){
+    private fun checkIfAlreadyLiked(uvid: String, onChecked: (Boolean) -> Unit) {
+        if (uvid == "") {
+            onChecked(false)
+            return
+        }
         firebase.collection(Constants.user)
             .document(phNumber!!)
             .collection(liked)
@@ -405,10 +439,9 @@ class HomeAdapter(
             .document(this::class.java.simpleName)
             .collection(this::class.java.simpleName.toUpperCase())
             .document(e.localizedMessage)
-            .set(mapOf(Pair("value",e.stackTraceToString())))
-            .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
+            .set(mapOf(Pair("value", e.stackTraceToString())))
+            .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported") }
     }
-
 
 
 }

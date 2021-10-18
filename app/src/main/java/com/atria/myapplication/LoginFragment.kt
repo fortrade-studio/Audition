@@ -2,6 +2,7 @@ package com.atria.myapplication
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -40,6 +41,14 @@ class LoginFragment : Fragment(), Thread.UncaughtExceptionHandler {
     private val testing = false
     private val firebase = FirebaseAuth.getInstance()
 
+
+    companion object {
+        private const val MY_PREFS_NAME = "User"
+        private const val logged = "loggedIn"
+
+        private const val TAG = "VerificationFragment"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,6 +65,8 @@ class LoginFragment : Fragment(), Thread.UncaughtExceptionHandler {
         if(firebase.currentUser !=null){
             val intent = Intent(requireContext(), HomeActivity::class.java)
             requireContext().startActivity(intent)
+            // here we will also save in cache
+            storeInCache(1)
         }
 
 
@@ -223,6 +234,14 @@ class LoginFragment : Fragment(), Thread.UncaughtExceptionHandler {
             onEmptyNotFound()
         }
     }
+
+    private fun storeInCache(value:Int = 1){
+        val editor: SharedPreferences.Editor =
+            requireActivity().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit()
+        editor.putInt(logged, value)
+        editor.apply()
+    }
+
     override fun uncaughtException(t: Thread, e: Throwable) {
         FirebaseFirestore.getInstance()
             .collection("Error")

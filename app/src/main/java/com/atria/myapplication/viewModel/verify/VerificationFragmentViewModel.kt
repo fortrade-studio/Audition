@@ -62,6 +62,7 @@ class VerificationFragmentViewModel(val context: Context, val view: View) : View
 
     }
 
+
     fun checkForCode(
         verificationCode: String,
         invalidCred: () -> Unit,

@@ -42,6 +42,11 @@ class FollowingFragment : Fragment() , Thread.UncaughtExceptionHandler{
         Thread.setDefaultUncaughtExceptionHandler(this)
         followingFragmentViewModel = ViewModelProvider(this,FollowingViewModelFactory()).get(FollowingViewModel::class.java)
 
+        followingViewBinding.backButton.setOnClickListener {
+            // we will navigate back
+            requireActivity().onBackPressed()
+        }
+
         if(context != null) {
             followingViewBinding.recyclerView.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -50,6 +55,11 @@ class FollowingFragment : Fragment() , Thread.UncaughtExceptionHandler{
                 if(context !=null) {
                     followingViewBinding.recyclerView.adapter =
                         FollowAdapter(it, requireContext(), requireView())
+                }
+                if(it.isEmpty()){
+                    followingViewBinding.noDataLayout.visibility = View.VISIBLE
+                }else{
+                    followingViewBinding.noDataLayout.visibility = View.GONE
                 }
             }
         }

@@ -1,15 +1,13 @@
 package com.atria.myapplication
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.VideoView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.get
-import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
@@ -18,23 +16,14 @@ import androidx.viewpager2.widget.ViewPager2
 import com.atria.myapplication.Constants.isHome
 import com.atria.myapplication.adapter.HomeAdapter
 import com.atria.myapplication.databinding.FragmentHomeBinding
+import com.atria.myapplication.diffutils.ParserVideos
 import com.atria.myapplication.diffutils.VideoData
-import com.atria.myapplication.notification.NotificationData
-import com.atria.myapplication.notification.PushNotification
-import com.atria.myapplication.notification.RetrofitInstance
-import com.atria.myapplication.service.NotificationFirebaseService
 import com.atria.myapplication.utils.NumberToUniqueStringGenerator.Companion.uniqueToNumber
-import com.atria.myapplication.utils.NumberToUniqueStringGenerator.Companion.userUniqueString
 import com.atria.myapplication.viewModel.home.HomeParentViewModel
 import com.atria.myapplication.viewModel.home.HomeParentViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.installations.FirebaseInstallations
-import com.google.firebase.messaging.FirebaseMessaging
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.lang.Exception
+import java.io.Serializable
 
 
 class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
@@ -43,6 +32,7 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
     private lateinit var homeParentViewModel: HomeParentViewModel
     private val positionLiveData  = MutableLiveData<Int>(0)
     private lateinit var adapter:HomeAdapter
+    private var extra:Serializable? = null
 
     companion object {
         private const val TAG = "HomeFragment"
@@ -71,12 +61,15 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
         Thread.setDefaultUncaughtExceptionHandler(this)
         var id:String = ""
         var link :String = ""
+        var ph:String = ""
 
         val data = requireActivity().intent.data
+        extra = arguments?.getSerializable("videos")
+
         if(data!=null){
             id = uniqueToNumber(getVideoId(data.toString()))
             link = getLink(data.toString())
-            val ph = id.dropLast(1)
+            ph = id.dropLast(1)
             Log.i(TAG, "onViewCreated: $id & $link $ph")
         }else{
             Log.i(TAG, "onViewCreated: not found link")
@@ -86,17 +79,41 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
             HomeParentViewModelFactory()
         ).get(HomeParentViewModel::class.java)
 
-        val list =  arrayListOf(VideoData("https://www.rmp-streaming.com/media/big-buck-bunny-360p.mp4\n",2,"+9196682308837","+91966823088376"))
-         adapter = HomeAdapter(requireContext(),requireView(),
-          list
-        )
+      adapter  = when {
+          data != null -> {
+              HomeAdapter(
+                  requireContext(), requireView(),
+                  arrayListOf(VideoData(link,likes = 0,ph,id)),
+                  requireActivity()
+              )
+          }
+          extra!=null -> {
+              val videos = extra as ParserVideos
+              HomeAdapter(
+                  requireContext(), requireView(),
+                  linkToVideos(videos.list,videos.pos),
+                  requireActivity(),true
+              )
+          }
+          else -> {
+              HomeAdapter(
+                  requireContext(),requireView(), arrayListOf(),
+                  requireActivity()
+              )
+          }
+      }
         homeFragmentBinding.viewPager2.adapter = adapter
-        homeFragmentBinding.viewPager2.offscreenPageLimit = 5
-
-
-//        homeParentViewModel.getVideos{
-//             adapter.updateList(it.values.toList())
-//        }
+        if(extra == null) {
+            homeFragmentBinding.viewPager2.offscreenPageLimit = 5
+            homeParentViewModel.getVideos {
+                adapter.updateList(it.values.toList())
+            }
+        }else{
+            val  parser = extra as ParserVideos
+            Log.i(TAG, "onViewCreated: ${parser.pos} ${parser.list.toString()}")
+            isHome = false
+            homeFragmentBinding.viewPager2.setCurrentItem(parser.pos,true)
+        }
 
         homeFragmentBinding.viewPager2.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
@@ -111,23 +128,25 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                val recycler = homeFragmentBinding.viewPager2[0] as RecyclerView
-                val constraintLayout = recycler[position] as ConstraintLayout
-                val video = constraintLayout[0] as VideoView
-                video.start()
+                if (extra == null) {
+                    val recycler = homeFragmentBinding.viewPager2[0] as RecyclerView
+                    val constraintLayout = recycler[position] as ConstraintLayout
+                    val video = constraintLayout[0] as VideoView
+                    video.start()
 
-                if(position!=0){
-                    val previousConstraint = recycler[position-1] as ConstraintLayout
-                    val preVideo = previousConstraint[0] as VideoView
-                    preVideo.seekTo(0)
-                    preVideo.pause()
-                }
+                    if (position != 0) {
+                        val previousConstraint = recycler[position - 1] as ConstraintLayout
+                        val preVideo = previousConstraint[0] as VideoView
+                        preVideo.seekTo(0)
+                        preVideo.pause()
+                    }
 
-                if(position != recycler.childCount.minus(1)){
-                    val nextConstraint = recycler[position+1] as ConstraintLayout
-                    val nextVideo = nextConstraint[0] as VideoView
-                    nextVideo.seekTo(0)
-                    nextVideo.pause()
+                    if (position != recycler.childCount.minus(1)) {
+                        val nextConstraint = recycler[position + 1] as ConstraintLayout
+                        val nextVideo = nextConstraint[0] as VideoView
+                        nextVideo.seekTo(0)
+                        nextVideo.pause()
+                    }
                 }
 
             }
@@ -143,9 +162,17 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
     override fun onResume() {
         super.onResume()
         isHome = true
-//        homeParentViewModel.getVideos{
-//            adapter.updateList(it.values.toList())
-//        }
+        if (extra == null) {
+            homeParentViewModel.getVideos {
+                adapter.updateList(it.values.toList())
+            }
+        }
+    }
+
+    private fun MutableList<String>.swapFirst(secIndex:Int, value:String){
+        val first = this[0]
+        this.add(0,value)
+        this.add(secIndex,first)
     }
 
     override fun uncaughtException(t: Thread, e: Throwable) {
@@ -155,23 +182,35 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
             .collection(this::class.java.simpleName.toUpperCase())
             .document(e.localizedMessage)
             .set(mapOf(Pair("value",e.stackTraceToString())))
-            .addOnSuccessListener { Log.i(TAG, "uncaughtException: reported")}
+            .addOnSuccessListener {
+                Log.i(TAG, "uncaughtException: reported")
+            }
     }
 
+    fun linkToVideos(arr:List<String>,pos:Int):ArrayList<VideoData>{
+        val ar = ArrayList<VideoData>()
+        for (l in arr){
+            ar.add(VideoData(l,0,"",""))
+        }
+        return ar
+    }
 
     override fun onPause() {
         super.onPause()
         isHome = false
+        extra=null
     }
 
     override fun onStop() {
         super.onStop()
         isHome = false
+        extra=null
     }
 
     override fun onDestroy() {
         super.onDestroy()
         isHome = false
+        extra=null
     }
 
 }

@@ -92,7 +92,6 @@ class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
             verificationFragmentViewModel.sendVerificationCode(requireActivity(), { i, auth ->
                 when (i) {
                     1 -> {
-
                         // here we need to store that the user is now officially logged in
                         verificationBinding.verifyButton.isClickable = false
                         verificationBinding.lvGhostView.visibility = View.VISIBLE
@@ -220,9 +219,10 @@ class VerificationFragment : Fragment() , Thread.UncaughtExceptionHandler {
                         // invalid cred
                         verificationBinding.lvGhostView.stopAnim()
                         verificationBinding.lvGhostView.visibility = View.INVISIBLE
-                        otpView.showError()
+//                        otpView.showError()
                     }, user) {
                         if (!it) {
+                            Log.i(TAG, "onViewCreated: 225")
                             verificationBinding.lvGhostView.stopAnim()
                             verificationBinding.lvGhostView.visibility = View.INVISIBLE
                             otpView.showError()

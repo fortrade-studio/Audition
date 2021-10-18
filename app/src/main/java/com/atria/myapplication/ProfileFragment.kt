@@ -49,6 +49,7 @@ class ProfileFragment : Fragment() , Thread.UncaughtExceptionHandler{
         // we get the id of the user
         val id: String = arguments?.getString("ph") ?: auth?.phoneNumber!!
         Constants.profile_id = id
+        Constants.view = requireView()
 
 
         profileViewModel = ViewModelProvider(
@@ -145,7 +146,10 @@ class ProfileFragment : Fragment() , Thread.UncaughtExceptionHandler{
         }
 
         if (auth?.phoneNumber == id) {
-            profileFragmentBinding.gridLayout.setOnClickListener {
+            profileFragmentBinding.followingTextView.setOnClickListener {
+                findNavController().navigate(R.id.action_profileFragment_to_followingFragment)
+            }
+            profileFragmentBinding.followingLabelView.setOnClickListener {
                 findNavController().navigate(R.id.action_profileFragment_to_followingFragment)
             }
         }
