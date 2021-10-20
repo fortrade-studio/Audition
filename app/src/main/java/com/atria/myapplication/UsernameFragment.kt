@@ -37,6 +37,8 @@ class UsernameFragment : Fragment() , Thread.UncaughtExceptionHandler{
         private val mainScope = CoroutineScope(Dispatchers.Main)
         private const val TAG = "UsernameFragment"
         private val auth = FirebaseAuth.getInstance()
+        private const val MY_PREFS_NAME = "User"
+        private const val logged = "loggedIn"
     }
 
 
@@ -51,8 +53,14 @@ class UsernameFragment : Fragment() , Thread.UncaughtExceptionHandler{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Thread.setDefaultUncaughtExceptionHandler(this)
+
         if (auth.currentUser == null){
             requireActivity().onBackPressed()
+        }
+
+        if(getStoredCache() != -1){
+            requireActivity().finish()
+            requireActivity().moveTaskToBack(true)
         }
 
         intent = Intent(requireContext(), HomeActivity::class.java)
@@ -150,6 +158,12 @@ class UsernameFragment : Fragment() , Thread.UncaughtExceptionHandler{
             requireActivity().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit()
         editor.putInt(logged, 1)
         editor.apply()
+    }
+
+    fun getStoredCache():Int{
+        val sharedPreference  =
+            requireContext().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE)
+        return sharedPreference.getInt(logged,-1)
     }
 
 }

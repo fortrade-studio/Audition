@@ -190,7 +190,7 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
             }
     }
 
-    fun linkToVideos(arr:ParserVideos,pos:Int):ArrayList<VideoData>{
+    private fun linkToVideos(arr:ParserVideos, pos:Int):ArrayList<VideoData>{
         val ar = ArrayList<VideoData>()
         var index =-1
         for (l in arr.list){
