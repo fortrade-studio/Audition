@@ -58,7 +58,7 @@ class UsernameFragment : Fragment() , Thread.UncaughtExceptionHandler{
             requireActivity().onBackPressed()
         }
 
-        if(getStoredCache() != -1){
+        if(getStoredCache() == 10){
             requireActivity().finish()
             requireActivity().moveTaskToBack(true)
         }
