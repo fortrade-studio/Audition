@@ -19,6 +19,7 @@ import com.atria.myapplication.databinding.FragmentHomeBinding
 import com.atria.myapplication.diffutils.ParserVideos
 import com.atria.myapplication.diffutils.VideoData
 import com.atria.myapplication.utils.NumberToUniqueStringGenerator.Companion.uniqueToNumber
+import com.atria.myapplication.utils.ViewUtils
 import com.atria.myapplication.viewModel.home.HomeParentViewModel
 import com.atria.myapplication.viewModel.home.HomeParentViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
@@ -91,7 +92,7 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
               val videos = extra as ParserVideos
               HomeAdapter(
                   requireContext(), requireView(),
-                  linkToVideos(videos.list,videos.pos),
+                  linkToVideos(videos,videos.pos),
                   requireActivity(),true
               )
           }
@@ -111,8 +112,10 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
         }else{
             val  parser = extra as ParserVideos
             Log.i(TAG, "onViewCreated: ${parser.pos} ${parser.list.toString()}")
-            isHome = false
-            homeFragmentBinding.viewPager2.setCurrentItem(parser.pos,true)
+            ViewUtils.waitForLayout(requireView()){
+                isHome = false
+                homeFragmentBinding.viewPager2.setCurrentItem(parser.pos,true)
+            }
         }
 
         homeFragmentBinding.viewPager2.registerOnPageChangeCallback(object :
@@ -187,10 +190,12 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
             }
     }
 
-    fun linkToVideos(arr:List<String>,pos:Int):ArrayList<VideoData>{
+    fun linkToVideos(arr:ParserVideos,pos:Int):ArrayList<VideoData>{
         val ar = ArrayList<VideoData>()
-        for (l in arr){
-            ar.add(VideoData(l,0,"",""))
+        var index =-1
+        for (l in arr.list){
+            ++index;
+            ar.add(VideoData(l,0,arr.id,arr.id+index))
         }
         return ar
     }

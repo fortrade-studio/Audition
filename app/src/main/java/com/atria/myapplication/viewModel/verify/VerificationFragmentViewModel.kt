@@ -135,8 +135,8 @@ class VerificationFragmentViewModel(val context: Context, val view: View) : View
             .document("links")
             .set(
                 ProfileFragmentViewModel.ViewData(
-                    "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fbackground.jpg?alt=media&token=f80b49c5-bc9b-4e88-b7b2-e60fc372e8f6",
-                    "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fprofile.jpg?alt=media&token=9c73401c-6ac1-4826-932e-21c07d43b1a7",
+                    "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fbackground%20(1).png?alt=media&token=cd2f233e-711c-4e0b-9687-3dc62fe4cb5e",
+                    "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fpo.png?alt=media&token=964fe43d-d25a-41c5-88ba-b626bdef73b8",
                     0,
                     0,
                     user.name,

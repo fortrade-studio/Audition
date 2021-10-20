@@ -1,6 +1,8 @@
 package com.atria.myapplication.utils
 
 import android.util.Log
+import android.view.View
+import android.view.ViewTreeObserver
 import com.google.firebase.auth.FirebaseAuth
 import java.lang.StringBuilder
 
@@ -40,4 +42,18 @@ class NumberToUniqueStringGenerator {
 
     }
 
+}
+
+class ViewUtils{
+    companion object{
+        fun waitForLayout(view: View,run:Runnable){
+            view.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    run.run()
+                }
+
+            })
+        }
+    }
 }

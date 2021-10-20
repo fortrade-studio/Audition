@@ -42,8 +42,8 @@ class EditProfileViewModel(
 
     fun uploadProfileImage(profile: Uri? = null, big: Uri? = null, onSuccess: () -> Unit) {
         if (profile != null && big != null) {
-            if (big_link == "https://www.knivesindia.com/ecom/wp-content/uploads/2017/06/wood-blog-placeholder.jpg") {
-                if (circular_link == "https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png") {
+            if (big_link == "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fbackground%20(1).png?alt=media&token=cd2f233e-711c-4e0b-9687-3dc62fe4cb5e") {
+                if (circular_link == "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fpo.png?alt=media&token=964fe43d-d25a-41c5-88ba-b626bdef73b8") {
                     storage.getReference("users/images/${auth?.phoneNumber}/")
                         .child(System.currentTimeMillis().toString())
                         .putFile(profile)
@@ -102,7 +102,7 @@ class EditProfileViewModel(
                     .delete()
                     .addOnSuccessListener {
                         storage.getReference("users/images/${auth?.phoneNumber}/")
-                            .child(circular_link.substringBefore("?alt").split("%2F").last())
+                            .child(circular_link.substringBefore("?alt").split("%2F").last().replace("%20",""))
                             .delete()
                             .addOnSuccessListener {
                                 storage.getReference("users/images/${auth?.phoneNumber}/")
@@ -137,7 +137,7 @@ class EditProfileViewModel(
             }
 
         } else if (profile != null && big == null) {
-            if (circular_link == "https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png") {
+            if (circular_link == "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fpo.png?alt=media&token=964fe43d-d25a-41c5-88ba-b626bdef73b8") {
                 storage.getReference("users/images/${auth?.phoneNumber}/")
                     .child(System.currentTimeMillis().toString())
                     .putFile(profile)
@@ -180,7 +180,7 @@ class EditProfileViewModel(
                     }
             }
         } else if (big != null && profile == null) {
-            if (big_link == "https://www.knivesindia.com/ecom/wp-content/uploads/2017/06/wood-blog-placeholder.jpg") {
+            if (big_link == "https://firebasestorage.googleapis.com/v0/b/audition-15207.appspot.com/o/default%2Fbackground%20(1).png?alt=media&token=cd2f233e-711c-4e0b-9687-3dc62fe4cb5e") {
                 storage.getReference("users/images/${auth?.phoneNumber}/")
                     .child(System.currentTimeMillis().toString())
                     .putFile(big)
@@ -200,7 +200,7 @@ class EditProfileViewModel(
                     }
             }else {
                 storage.getReference("users/images/${auth?.phoneNumber}/")
-                    .child(big_link.substringBefore("?alt").split("%2F").last())
+                    .child(big_link.substringBefore("?alt").split("%2F").last().replace("%20",""))
                     .delete()
                     .addOnSuccessListener {
                         storage.getReference("users/images/${auth?.phoneNumber}/")

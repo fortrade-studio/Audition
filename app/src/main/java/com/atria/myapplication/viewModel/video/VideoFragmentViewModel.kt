@@ -61,6 +61,8 @@ class VideoFragmentViewModel(
                         .document(Constants.videos)
                         .set(mapOf(Pair(links, videos.apply { add(it.toString()) })))
                         .addOnSuccessListener { v->
+
+                            //todo: FIX: ERROR("0 -> -1") // problem
                             id = auth.currentUser?.phoneNumber.toString() + videos.size.minus(1)
                             database.getReference("videos")
                                 .child(id)

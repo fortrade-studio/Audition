@@ -90,7 +90,7 @@ class VideoAdapter(
             holder.videoView.setVideoURI(Uri.parse(link))
             // here we will parse and send the video
 
-            val parserVideos = ParserVideos(videos,id,position)
+            val parserVideos = ParserVideos(videos,id,if(isUserProfile){position-1}else{position})
             val bundle = Bundle().apply {
                 this.putSerializable("videos",parserVideos)
             }
@@ -99,11 +99,6 @@ class VideoAdapter(
                 it.start()
                 holder.videoView.setOnClickListener {
                     view?.let { it1 -> Navigation.findNavController(it1).navigate(R.id.action_profileFragment_to_homeFragment,bundle) }
-//                    val intent = Intent(context, WindowActivity::class.java)
-//                    intent.putExtra(extras, videos.toTypedArray())
-//                    intent.putExtra(current, if(isUserProfile) position-1 else position)
-//                    intent.putExtra(Constants.videos, true)
-//                    context.startActivity(intent)
                 }
             }
         }

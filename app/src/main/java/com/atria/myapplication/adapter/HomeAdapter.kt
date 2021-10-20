@@ -315,6 +315,7 @@ class HomeAdapter(
 
     private fun likePost(position: Int, onLiked: () -> Unit) =
         CoroutineScope(Dispatchers.IO).launch {
+            Log.i(TAG, "likePost: ${list[position].uvid}]")
             db.getReference("videos")
                 .child(list[position].uvid)
                 .get()
