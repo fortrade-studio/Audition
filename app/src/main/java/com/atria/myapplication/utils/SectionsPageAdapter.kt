@@ -17,7 +17,7 @@ class SectionsPageAdapter(
 ) :FragmentStatePagerAdapter(fragmentManager,behavior){
 
     companion object{
-        val array = arrayOf("About Me","Images","Videos")
+        val array = arrayOf("About Me","Portfolio","Videos")
     }
 
     override fun getPageTitle(position: Int): CharSequence? {

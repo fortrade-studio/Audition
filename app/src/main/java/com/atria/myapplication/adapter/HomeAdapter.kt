@@ -16,6 +16,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -47,13 +49,14 @@ class HomeAdapter(
     val view: View,
     val list: ArrayList<VideoData>,
     val activity: Activity,
+    val viewLife : LifecycleOwner,
     val user: Boolean = false,
 ) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>(), Thread.UncaughtExceptionHandler {
 
     var mute: Boolean = true
+    var muteNotifier : MutableLiveData<Boolean> = MutableLiveData(false)
 
     companion object {
-        var mediaPlayer: MediaPlayer? = null
         val db = FirebaseDatabase.getInstance()
         val firebase = FirebaseFirestore.getInstance()
         val phNumber = FirebaseAuth.getInstance().currentUser?.phoneNumber
@@ -160,6 +163,15 @@ class HomeAdapter(
             holder.progressView.visibility = View.INVISIBLE
             if (user) {
                 it.start()
+            }
+            muteNotifier.observe(viewLife){b->
+                mute = if(b){
+                    it.setVolume(0f,0f)
+                    false
+                }else{
+                    it.setVolume(1f,1f)
+                    true
+                }
             }
         }
         var like: Boolean = false
@@ -275,12 +287,15 @@ class HomeAdapter(
             } else {
                 // user have clicked once
                 if (mute) {
+                    // we need to make sure that other videos also mute
+                    muteNotifier.postValue(true)
                     holder.volumeImageView.visibility = View.VISIBLE
                     holder.volumeImageView.setImageResource(R.drawable.ic_mute)
                     blockError {
                         map[position]?.setVolume(0f, 0f)
                     }
                 } else {
+                    muteNotifier.postValue(false)
                     holder.volumeImageView.visibility = View.VISIBLE
                     holder.volumeImageView.setImageResource(R.drawable.ic_unmute)
                     blockError { map[position]?.setVolume(1f, 1f) }

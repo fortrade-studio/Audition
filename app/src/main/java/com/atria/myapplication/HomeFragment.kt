@@ -85,7 +85,7 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
               HomeAdapter(
                   requireContext(), requireView(),
                   arrayListOf(VideoData(link,likes = 0,ph,id)),
-                  requireActivity()
+                  requireActivity(),viewLifecycleOwner
               )
           }
           extra!=null -> {
@@ -93,13 +93,13 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
               HomeAdapter(
                   requireContext(), requireView(),
                   linkToVideos(videos,videos.pos),
-                  requireActivity(),true
+                  requireActivity(),viewLifecycleOwner,true
               )
           }
           else -> {
               HomeAdapter(
                   requireContext(),requireView(), arrayListOf(),
-                  requireActivity()
+                  requireActivity(),viewLifecycleOwner
               )
           }
       }
@@ -107,7 +107,7 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
         if(extra == null) {
             homeFragmentBinding.viewPager2.offscreenPageLimit = 5
             homeParentViewModel.getVideos {
-                adapter.updateList(it.values.toList())
+                adapter.updateList(it.values.toList().shuffled())
             }
         }else{
             val  parser = extra as ParserVideos
@@ -167,7 +167,7 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
         isHome = true
         if (extra == null) {
             homeParentViewModel.getVideos {
-                adapter.updateList(it.values.toList())
+                adapter.updateList(it.values.toList().shuffled())
             }
         }
     }
