@@ -46,7 +46,7 @@ class SplashFragment : Fragment(), Thread.UncaughtExceptionHandler {
         Handler(Looper.getMainLooper()).postDelayed({
             if(value == 0){
                 findNavController().navigate(R.id.action_splashFragment_to_usernameFragment2)
-            }else if (value == 1 || value == 2){
+            }else if (value == 1 || value == 2 || value==10){
                 if(context!=null) {
                     val intent = Intent(requireContext(), HomeActivity::class.java)
                         startActivity(intent)

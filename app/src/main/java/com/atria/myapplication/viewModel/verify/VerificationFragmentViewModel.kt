@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.atria.myapplication.room.User
 import com.atria.myapplication.viewModel.profile.ProfileFragmentViewModel
@@ -39,6 +40,7 @@ class VerificationFragmentViewModel(val context: Context, val view: View) : View
             }
 
             override fun onVerificationFailed(p0: FirebaseException) {
+                Toast.makeText(context, p0.localizedMessage.toString(), Toast.LENGTH_SHORT).show()
                 onCodeSentFunction(-1, null)
             }
 

@@ -1,5 +1,7 @@
 package com.atria.myapplication
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -38,6 +40,8 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
     companion object {
         private const val TAG = "HomeFragment"
         private val num = FirebaseAuth.getInstance().currentUser?.phoneNumber.toString()
+        private const val MY_PREFS_NAME = "User"
+        private const val logged = "loggedIn"
     }
 
     override fun onCreateView(
@@ -63,6 +67,8 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
         var id:String = ""
         var link :String = ""
         var ph:String = ""
+
+        storeInCache()
 
         val data = requireActivity().intent.data
         extra = arguments?.getSerializable("videos")
@@ -190,7 +196,7 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
             }
     }
 
-    fun linkToVideos(arr:ParserVideos,pos:Int):ArrayList<VideoData>{
+    private fun linkToVideos(arr:ParserVideos, pos:Int):ArrayList<VideoData>{
         val ar = ArrayList<VideoData>()
         var index =-1
         for (l in arr.list){
@@ -199,6 +205,14 @@ class HomeFragment : Fragment(), Thread.UncaughtExceptionHandler {
         }
         return ar
     }
+
+    fun storeInCache(){
+        val editor: SharedPreferences.Editor =
+            requireActivity().getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit()
+        editor.putInt(logged, 10)
+        editor.apply()
+    }
+
 
     override fun onPause() {
         super.onPause()

@@ -97,6 +97,7 @@ class VideoFragment : Fragment(), Thread.UncaughtExceptionHandler {
                 showdialogfun()
             }
         } else {
+            but.visibility = View.GONE
             but.setOnClickListener {
             }
         }
